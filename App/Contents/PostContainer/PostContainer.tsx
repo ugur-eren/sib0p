@@ -6,7 +6,6 @@ import PostTypes from '../../Includes/Types/PostTypes'
 import Types from '../../Includes/Types/Types'
 import Carousel, { Pagination } from 'react-native-snap-carousel'
 import styles from './styles'
-import Gallery from 'react-native-image-gallery';
 
 interface Props {
     theme: Types.Theme
@@ -43,16 +42,7 @@ class PostContainer extends React.PureComponent<Props, State> {
 		if (postData.length > 1){
             return (
                 <View style={styles.carouselContainer}>
-                    <Gallery
-                        style={{ flex: 1, backgroundColor: 'black' }}
-                        images={
-                            postData.map((data) => ({
-                                source: {uri: data.uri}
-                            }))
-                        }
-                    />
-                    
-                    {/* <Carousel
+                    <Carousel
                         ref={(ref: any) => (this._carouselRef = ref)}
                         data={postData}
                         renderItem={this.renderCarouselItem}
@@ -81,7 +71,7 @@ class PostContainer extends React.PureComponent<Props, State> {
                         inactiveDotScale={0.7}
                         carouselRef={this._carouselRef}
                         tappableDots={!!this._carouselRef}
-                    /> */}
+                    />
                 </View>
             )
         } else {
