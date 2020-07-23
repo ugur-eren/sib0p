@@ -9,11 +9,15 @@ declare namespace Types {
 	export interface ScreenProps {
 		theme: Theme
 		user: ScreenPropsUser
+		selectedTheme: SupportedThemes
+
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void
+		setTheme: (theme: SupportedThemes, callback?: () => void) => void
 	}
 
 	export interface AppState {
-		theme: 'light' | 'dark',
+		theme: 'light' | 'dark'
+		selectedTheme: SupportedThemes
 		user: ScreenPropsUser
 	}
 
@@ -44,8 +48,8 @@ declare namespace Types {
 			contrast: string
 			halfContrast: string
 			primary: string
-            bottomBarTint: string
-            bottomBarActive: string
+			bottomBarTint: string
+			bottomBarActive: string
 			bottomBarInactive: string
 			buttonBackground: string
 			buttonText: string
@@ -68,6 +72,8 @@ declare namespace Types {
 		fontFamily: string
 		fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900'
 	}
+
+	export type SupportedThemes = 'light' | 'dark' | 'timed' | 'system'
 }
 
 export default Types

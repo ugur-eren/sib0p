@@ -13,7 +13,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		super(props)
 
 		this.state = {
-			theme: 'dark',
+			theme: 'light',
+			selectedTheme: 'light',
 			user: {
 				active: false,
 				username: 'berat'
@@ -23,6 +24,14 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 	setUserData = (user: Types.ScreenPropsUser, callback?: () => void) => {
 		this.setState({ user }, () => {
+			if (callback){
+				callback()
+			}
+		})
+	}
+
+	setTheme = (theme: Types.SupportedThemes, callback?: () => void) => {
+		this.setState({ selectedTheme: theme, theme: (theme === 'dark' || theme === 'light') ? theme : this.state.theme }, () => {
 			if (callback){
 				callback()
 			}
@@ -49,7 +58,10 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 						screenProps={{
 							theme: Theme[this.state.theme],
 							user: this.state.user,
-							setUserData: this.setUserData
+							selectedTheme: this.state.selectedTheme,
+							
+							setUserData: this.setUserData,
+							setTheme: this.setTheme
 						} as Types.ScreenProps}
 					/>
 				</PaperProvider>
