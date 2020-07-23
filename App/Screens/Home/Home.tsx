@@ -101,12 +101,7 @@ class Home extends React.PureComponent<Props, State> {
 						uri: 'https://sib0p.com/inc/imgs/posts/1593982053-1486-57-0.jpg',
 						type: 'image',
 						ratio: 0.888888888888889,
-					},
-					{
-						uri: 'https://sib0p.com/inc/imgs/posts/1593982993-1461-94-1.jpg',
-						type: 'image',
-						ratio: 1,
-					},
+					}
 				],
 				likesCount: 5,
 				dislikesCount: 0,
