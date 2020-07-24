@@ -1,7 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Text, withTheme, Divider } from 'react-native-paper'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 import FastImage from 'react-native-fast-image'
 import TextButton from '../../Components/TextButton/TextButton'
 import TransparentHeader from '../../Components/TransparentHeader/TransparentHeader'
@@ -181,67 +181,79 @@ class UserProfile extends React.PureComponent<Props, State> {
 		this.props.navigation.navigate('Settings')
 	}
 
-	_renderPosts = (item: PostTypes.Post, index: number) => (
+	_renderPost = ({ item, index }: { item: PostTypes.Post; index: number }) => (
 		<View key={item.id}>
 			<Post navigation={this.props.navigation} post={item} noUserTouchable />
 			{index !== this.user.posts.length - 1 ? <View style={styles.postsDivider}></View> : <></>}
 		</View>
 	)
 
-	render() {
+	_renderHeader = () => {
 		let { theme, navigation } = this.props
 		let myself = navigation.getScreenProps().user
 		let isMyself = myself.username === this.user.username
 
 		return (
-			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
-				<ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContainer}>
-					<View style={styles.backgroundContainer}>
-						<FastImage source={{ uri: this.user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
-						<TransparentHeader title={this.user.username} onSettings={isMyself ? this.onSettingsPress : undefined} />
-					</View>
-					<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
-						<FastImage source={{ uri: this.user.profilePhoto }} style={[styles.profilePhoto, { borderColor: this.props.theme.colors.main }]} />
+			<>
+				<View style={styles.backgroundContainer}>
+					<FastImage source={{ uri: this.user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
+					<TransparentHeader title={this.user.username} onSettings={isMyself ? this.onSettingsPress : undefined} />
+				</View>
+				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
+					<FastImage source={{ uri: this.user.profilePhoto }} style={[styles.profilePhoto, { borderColor: this.props.theme.colors.main }]} />
 
-						<View style={styles.userInfo}>
-							<Text style={styles.username}>{this.user.username}</Text>
-							<Text>{this.user.fullName}</Text>
-						</View>
-
-						<TextButton label={isMyself ? 'Profili Düzenle' : 'Takip Et'} onPress={() => {}} />
+					<View style={styles.userInfo}>
+						<Text style={styles.username}>{this.user.username}</Text>
+						<Text>{this.user.fullName}</Text>
 					</View>
 
-					{this.user.bio ? (
-						<View style={[styles.bio, { backgroundColor: theme.colors.surface }]}>
-							<Text>{this.user.bio}</Text>
-						</View>
-					) : (
-						<></>
-					)}
+					<TextButton label={isMyself ? 'Profili Düzenle' : 'Takip Et'} onPress={() => {}} />
+				</View>
 
-					<View style={[styles.centerContainer, { backgroundColor: theme.colors.surface }]}>
-						<View style={styles.postsCount}>
-							<Text>Postlar</Text>
-							<Text style={styles.centerText}>{this.user.postsCount}</Text>
-						</View>
+				{this.user.bio ? (
+					<View style={[styles.bio, { backgroundColor: theme.colors.surface }]}>
+						<Text>{this.user.bio}</Text>
+					</View>
+				) : (
+					<></>
+				)}
 
-						<Divider style={styles.centerDivider} />
-
-						<TouchableOpacity onPress={this.handleFollosPress} style={styles.centerTouchable} containerStyle={styles.centerTouchableContainer}>
-							<Text>Takip</Text>
-							<Text style={styles.centerText}>{this.user.followsCount}</Text>
-						</TouchableOpacity>
-
-						<Divider style={styles.centerDivider} />
-
-						<TouchableOpacity onPress={this.handleFollowersPress} style={styles.centerTouchable} containerStyle={styles.centerTouchableContainer}>
-							<Text>Takipçi</Text>
-							<Text style={styles.centerText}>{this.user.followersCount}</Text>
-						</TouchableOpacity>
+				<View style={[styles.centerContainer, { backgroundColor: theme.colors.surface }]}>
+					<View style={styles.postsCount}>
+						<Text>Postlar</Text>
+						<Text style={styles.centerText}>{this.user.postsCount}</Text>
 					</View>
 
-					<View>{this.user.posts.map(this._renderPosts)}</View>
-				</ScrollView>
+					<Divider style={styles.centerDivider} />
+
+					<TouchableOpacity onPress={this.handleFollosPress} style={styles.centerTouchable} containerStyle={styles.centerTouchableContainer}>
+						<Text>Takip</Text>
+						<Text style={styles.centerText}>{this.user.followsCount}</Text>
+					</TouchableOpacity>
+
+					<Divider style={styles.centerDivider} />
+
+					<TouchableOpacity onPress={this.handleFollowersPress} style={styles.centerTouchable} containerStyle={styles.centerTouchableContainer}>
+						<Text>Takipçi</Text>
+						<Text style={styles.centerText}>{this.user.followersCount}</Text>
+					</TouchableOpacity>
+				</View>
+			</>
+		)
+	}
+
+	render() {
+		let { theme } = this.props
+
+		return (
+			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+				<FlatList
+					style={styles.scrollView}
+					contentContainerStyle={styles.scrollViewContainer}
+					data={this.user.posts}
+					renderItem={this._renderPost}
+					ListHeaderComponent={this._renderHeader}
+				/>
 			</View>
 		)
 	}

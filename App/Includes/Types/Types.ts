@@ -73,7 +73,13 @@ declare namespace Types {
 		fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900'
 	}
 
-	export type SupportedThemes = 'light' | 'dark' | 'timed' | 'system'
+	export type SupportedThemesObject = {
+		light: string
+		dark: string
+		timed: string
+		system: string
+	}
+	export type SupportedThemes = keyof SupportedThemesObject
 }
 
 export default Types

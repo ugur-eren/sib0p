@@ -42,6 +42,9 @@
 		F0E16F8BBE754CFDA6A7CCCB /* login_background.png in Resources */ = {isa = PBXBuildFile; fileRef = CA7F6A1EFC934DC49CFA3659 /* login_background.png */; };
 		F0528E83380F4ACEADBF062B /* logo-wide.png in Resources */ = {isa = PBXBuildFile; fileRef = DFADFBEED8334098B3A3288C /* logo-wide.png */; };
 		BDAB4EA941554D1E9ED0C5AA /* earworm.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94E462D6FCCD463E873F56A6 /* earworm.ttf */; };
+		00F3678968B24FC48FFCD962 /* icon-bell.png in Resources */ = {isa = PBXBuildFile; fileRef = BF6AE1942DE44F169536F6A8 /* icon-bell.png */; };
+		CCFD31AD28AA4C1181CB940A /* icon-plus-square.png in Resources */ = {isa = PBXBuildFile; fileRef = 5EF3A6158B8046EDA7B33C47 /* icon-plus-square.png */; };
+		FF00EF09D2DE42258CF3756F /* EvaIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C01C373F5A584C4682F4E6BD /* EvaIcons.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +106,9 @@
 		CA7F6A1EFC934DC49CFA3659 /* login_background.png */ = {isa = PBXFileReference; name = "login_background.png"; path = "../App/Assets/Images/login_background.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		DFADFBEED8334098B3A3288C /* logo-wide.png */ = {isa = PBXFileReference; name = "logo-wide.png"; path = "../App/Assets/Images/logo-wide.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		94E462D6FCCD463E873F56A6 /* earworm.ttf */ = {isa = PBXFileReference; name = "earworm.ttf"; path = "../App/Assets/Fonts/earworm.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BF6AE1942DE44F169536F6A8 /* icon-bell.png */ = {isa = PBXFileReference; name = "icon-bell.png"; path = "../App/Assets/Images/icon-bell.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5EF3A6158B8046EDA7B33C47 /* icon-plus-square.png */ = {isa = PBXFileReference; name = "icon-plus-square.png"; path = "../App/Assets/Images/icon-plus-square.png"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C01C373F5A584C4682F4E6BD /* EvaIcons.ttf */ = {isa = PBXFileReference; name = "EvaIcons.ttf"; path = "../App/Assets/Fonts/EvaIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +245,9 @@
 				CA7F6A1EFC934DC49CFA3659 /* login_background.png */,
 				DFADFBEED8334098B3A3288C /* logo-wide.png */,
 				94E462D6FCCD463E873F56A6 /* earworm.ttf */,
+				BF6AE1942DE44F169536F6A8 /* icon-bell.png */,
+				5EF3A6158B8046EDA7B33C47 /* icon-plus-square.png */,
+				C01C373F5A584C4682F4E6BD /* EvaIcons.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -408,6 +417,9 @@
 				F0E16F8BBE754CFDA6A7CCCB /* login_background.png in Resources */,
 				F0528E83380F4ACEADBF062B /* logo-wide.png in Resources */,
 				BDAB4EA941554D1E9ED0C5AA /* earworm.ttf in Resources */,
+				00F3678968B24FC48FFCD962 /* icon-bell.png in Resources */,
+				CCFD31AD28AA4C1181CB940A /* icon-plus-square.png in Resources */,
+				FF00EF09D2DE42258CF3756F /* EvaIcons.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

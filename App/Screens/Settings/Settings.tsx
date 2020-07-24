@@ -14,7 +14,7 @@ interface Props {
 
 interface State {}
 
-const SupportedThemes = {
+const SupportedThemes: Types.SupportedThemesObject = {
 	light: 'Aydınlık',
 	dark: 'Karanlık',
 	timed: 'Zaman Ayarlı',
@@ -27,7 +27,6 @@ class Settings extends React.PureComponent<Props, State> {
 	}
 
 	render() {
-		console.log("awawaw", this.props.navigation.getScreenProps().selectedTheme)
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
 				<Header title='Ayarlar' />
