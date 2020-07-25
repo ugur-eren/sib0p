@@ -14,7 +14,7 @@ interface Props {
 
 interface State {}
 
-class Home extends React.PureComponent<Props, State> {
+class Explore extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
@@ -133,4 +133,4 @@ class Home extends React.PureComponent<Props, State> {
 	}
 }
 
-export default withTheme(Home)
+export default withTheme(Explore)

@@ -7,6 +7,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import AppRouter from './App/router'
 import Theme from './App/Includes/Theme/Theme'
 import Types from './App/Includes/Types/Types'
+import Api from './App/Includes/Api'
 
 export default class App extends React.PureComponent<{}, Types.AppState> {
 	constructor(props: {}) {

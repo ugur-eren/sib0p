@@ -14,7 +14,7 @@ import PasswordRecoverySecond from './Screens/Auth/PasswordRecovery/PasswordReco
 import ShareInitiator from './Screens/ShareInitiator/ShareInitiator'
 import Share from './Screens/Share/Share'
 
-import Home from './Screens/Home/Home'
+import Explore from './Screens/Explore/Explore'
 import Notifications from './Screens/Notifications/Notifications'
 import Comments from './Screens/Comments/Comments'
 import UserProfile from './Screens/UserProfile/UserProfile'
@@ -64,15 +64,15 @@ const tabBarIcon = (name: string) => ({ tintColor }) => <Feather name={name} col
 var lastFocusedRoute: string | false = false
 const bottomStack = createMaterialBottomTabNavigator(
 	{
-		Home: {
-			screen: Home,
+		Explore: {
+			screen: Explore,
 			navigationOptions: {
-				tabBarIcon: tabBarIcon('home'),
+				tabBarIcon: tabBarIcon('compass'),
 				title: 'Keşfet',
 			},
 		},
 		Follows: {
-			screen: Home,
+			screen: Explore,
 			navigationOptions: {
 				tabBarIcon: tabBarIcon('users'),
 				title: 'Takip',
@@ -108,7 +108,7 @@ const bottomStack = createMaterialBottomTabNavigator(
 		},
 	},
 	{
-		initialRouteName: 'Home',
+		initialRouteName: 'Explore',
 		backBehavior: 'history',
 		shifting: true,
 		defaultNavigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
