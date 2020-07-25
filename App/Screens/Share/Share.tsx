@@ -4,6 +4,7 @@ import { TouchableRipple, withTheme } from 'react-native-paper'
 import CameraRoll from '@react-native-community/cameraroll'
 import { FlatGrid } from 'react-native-super-grid'
 import FastImage from 'react-native-fast-image'
+import RNVideo from 'react-native-video'
 import ActivityIndicator from '../../Components/ActivityIndicator/ActivityIndicator'
 import Permissions from '../../Includes/Permissions'
 import Types from '../../Includes/Types/Types'
@@ -53,6 +54,10 @@ class Share extends React.PureComponent<Props, State> {
 		})
 	}
 
+	_onvideoError = () => {
+		console.log('video error')
+	}
+
 	render() {
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
@@ -65,11 +70,32 @@ class Share extends React.PureComponent<Props, State> {
 						{this.state.selectedImage ? (
 							<View style={{ width: '100%', paddingVertical: 10 }}>
 								<View style={{ paddingBottom: '50%' }} />
-								<FastImage
-									source={{ uri: this.state.selectedImage.node.image.uri }}
-									style={{ position: 'absolute', left: 0, top: 10, width: '100%', height: '100%' }}
-									resizeMode='contain'
-								/>
+								{this.state.selectedImage.node.type.startsWith('video/') ? (
+									<View
+										style={{
+											position: 'absolute',
+											left: '25%',
+											top: 10,
+											width: '100%',
+											height: '100%',
+										}}
+									>
+										<RNVideo
+											source={{ uri: this.state.selectedImage.node.image.uri }}
+											onError={this._onvideoError}
+											resizemode='contain'
+											style={{
+												flex: 1,
+											}}
+										/>
+									</View>
+								) : (
+									<FastImage
+										source={{ uri: this.state.selectedImage.node.image.uri }}
+										style={{ position: 'absolute', left: 0, top: 10, width: '100%', height: '100%' }}
+										resizeMode='contain'
+									/>
+								)}
 							</View>
 						) : (
 							<></>

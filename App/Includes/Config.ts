@@ -1,4 +1,9 @@
 const Config = {
+	api: {
+		version: '1',
+		uri: 'https://sib0p.com/api/v1'
+	},
+
 	fonts: {
 		regular: 'FiraSans-Regular',
 		semi: 'FiraSans-SemiBold',

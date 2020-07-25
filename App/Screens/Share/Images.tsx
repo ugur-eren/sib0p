@@ -3,6 +3,7 @@ import { withTheme } from 'react-native-paper'
 import CameraRoll from '@react-native-community/cameraroll'
 import { FlatGrid } from 'react-native-super-grid'
 import Image from './Image'
+import Video from './Video'
 import Types from '../../Includes/Types/Types'
 import styles from './styles'
 
@@ -23,9 +24,17 @@ class Images extends React.PureComponent<Props, State> {
 		}
 	}
 
-	_renderItem = ({ item }: { item: CameraRoll.PhotoIdentifier }) => (
-		<Image image={item} onImagePress={this.props.onImagePress} />
-    )
+	_renderItem = ({ item }: { item: CameraRoll.PhotoIdentifier }) => {
+        if (item.node.type.startsWith('video/')){
+            return (
+                <Video video={item} onVideoPress={this.props.onImagePress} />
+            )
+        } else {
+            return (
+                <Image image={item} onImagePress={this.props.onImagePress} />
+            )
+        }
+    }
     _keyExtractor = (item: CameraRoll.PhotoIdentifier) => item.node.image.uri
 
 	render() {
