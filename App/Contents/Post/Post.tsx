@@ -13,19 +13,18 @@ interface Props {
 	navigation: Types.Navigation
 	post: PostTypes.Post
 	theme: Types.Theme
+	isVisible: boolean
 	noUser?: boolean
 	noUserTouchable?: boolean
 }
 
-interface State {
-}
+interface State {}
 
 class Post extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
-		this.state = {
-		}
+		this.state = {}
 	}
 
 	render() {
@@ -44,7 +43,7 @@ class Post extends React.PureComponent<Props, State> {
 
 				{post.description ? <Text style={styles.description}>{post.description}</Text> : <></>}
 
-				<PostContainer postData={post.postData} />
+				{post.postData.length > 0 ? <PostContainer postData={post.postData} navigation={this.props.navigation} isVisible={this.props.isVisible} /> : <></>}
 
 				<View style={styles.bottomContainer}>
 					<View style={styles.buttons}>
@@ -74,10 +73,12 @@ class Post extends React.PureComponent<Props, State> {
 							}}
 						>
 							<View style={styles.commentsInner}>
-								{post.comments.slice(0, 3).map((comment, index) => (
+								{post.comments.map((comment, index) => (
 									<View key={index} style={styles.comment}>
 										<Text style={styles.commentAuthor}>{comment.user.username}</Text>
-										<Text style={styles.commentText}>{comment.content}</Text>
+										<Text style={styles.commentText} numberOfLines={1}>
+											{comment.content}
+										</Text>
 									</View>
 								))}
 							</View>

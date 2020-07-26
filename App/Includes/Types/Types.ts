@@ -13,6 +13,9 @@ declare namespace Types {
 
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void
 		setTheme: (theme: SupportedThemes, callback?: () => void) => void
+		setIsVideoMuted: (isMuted: boolean) => void
+
+		getIsVideoMuted: () => boolean
 	}
 
 	export interface AppState {
@@ -56,6 +59,7 @@ declare namespace Types {
 			inputBackground: string
 			inputBorder: string
 			inputPlaceholder: string
+			surfaceRgb: string
 			gradient: string[]
 		}
 		fonts: {

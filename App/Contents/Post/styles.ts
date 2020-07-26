@@ -49,5 +49,6 @@ export default StyleSheet.create({
 	},
 	commentText: {
 		marginLeft: 10,
+		flex: 1,
 	},
 })

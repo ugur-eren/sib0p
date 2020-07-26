@@ -30,6 +30,7 @@ const Config = {
 			inputBackground: '#F7F9FC',
 			inputBorder: '#EEF2F7',
 			inputPlaceholder: '#737985',
+			surfaceRgb: '240, 240, 240',
 			gradient: ['#F94D1D', '#FF4747', '#F94D1D'],
 		},
 		dark: {
@@ -49,6 +50,7 @@ const Config = {
 			inputBackground: '#272727',
 			inputBorder: '#3D3D3D',
 			inputPlaceholder: '#BABABA',
+			surfaceRgb: '39, 39, 39',
 			gradient: ['#F94D1D', '#FF4747', '#F94D1D'],
 		},
 	},

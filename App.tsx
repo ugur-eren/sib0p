@@ -23,6 +23,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 	}
 
+	private isVideoMuted: boolean = false
+
 	setUserData = (user: Types.ScreenPropsUser, callback?: () => void) => {
 		this.setState({ user }, () => {
 			if (callback) {
@@ -38,6 +40,12 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			}
 		})
 	}
+
+	setIsVideoMuted = (isMuted: boolean) => {
+		this.isVideoMuted = isMuted
+	}
+	
+	getIsVideoMuted = () => this.isVideoMuted
 
 	render() {
 		return (
@@ -60,6 +68,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 								setUserData: this.setUserData,
 								setTheme: this.setTheme,
+								setIsVideoMuted: this.setIsVideoMuted,
+
+								getIsVideoMuted: this.getIsVideoMuted,
 							} as Types.ScreenProps
 						}
 					/>

@@ -11,7 +11,7 @@ export default new (class Functions {
 
 	private get = (method: string): ApiTypes.Response => {
 		return new Promise((resolve, reject) => {
-			fetch(this.uri + method)
+			fetch(this.uri + method + '.php')
 				.then((response) => response.json())
 				.then((data) => {
 					console.log(method, data)
@@ -32,7 +32,7 @@ export default new (class Functions {
 		let joinedBody = formBody.join('&')
 
 		return new Promise((resolve, reject) => {
-			fetch(this.uri + method, {
+			fetch(this.uri + method + '.php', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -45,7 +45,7 @@ export default new (class Functions {
 					resolve(data)
 				})
 				.catch((err) => {
-					console.log('api error', method, err)
+					console.log('api error', this.uri + method + '.php', err)
 					resolve(false)
 				})
 		})
@@ -56,6 +56,6 @@ export default new (class Functions {
     }
     
     getExplore = (params: Params): Response<ApiTypes.GetExploreResponse> => {
-        return this.post("getExplore", params)
+        return this.post("GetExplore", params)
     }
 })()
