@@ -1,12 +1,13 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Text, withTheme } from 'react-native-paper'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import MainHeader from '../../Components/MainHeader/MainHeader'
 import Posts from '../../Contents/Posts/Posts'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
-import styles from './styles'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import Api from '../../Includes/Api'
+import styles from './styles'
 
 interface Props {
 	navigation: Types.Navigation
@@ -15,6 +16,7 @@ interface Props {
 
 interface State {
 	posts: PostTypes.Post[]
+	currentTime: number
 }
 
 class Explore extends React.PureComponent<Props, State> {
@@ -23,15 +25,32 @@ class Explore extends React.PureComponent<Props, State> {
 
 		this.state = {
 			posts: [],
+			currentTime: 0,
 		}
 	}
 
 	private _flatListRef: any = null
 
 	async componentDidMount() {
-		let posts = await Api.getExplore({})
-		if (posts && posts.status){
-			this.setState({posts: posts.posts})
+		let posts = await Api.getExplore({ last: 0 })
+		if (posts && posts.status) {
+			this.setState({ posts: posts.posts, currentTime: posts.currentTime })
+		} else {
+		}
+	}
+
+	refresh = async () => {
+		let posts = await Api.getExplore({ last: 0 })
+		if (posts && posts.status) {
+			this.setState({ posts: posts.posts, currentTime: posts.currentTime })
+		} else {
+		}
+	}
+
+	getNextPage = async () => {
+		let posts = await Api.getExplore({ last: this.state.posts[this.state.posts.length - 1].time })
+		if (posts && posts.status) {
+			this.setState({ posts: [...this.state.posts, ...posts.posts], currentTime: posts.currentTime })
 		} else {
 		}
 	}
@@ -47,7 +66,15 @@ class Explore extends React.PureComponent<Props, State> {
 		}
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
-				<Posts _flatListRef={this._setFlatListRef} navigation={this.props.navigation} posts={this.state.posts} />
+				<MainHeader />
+				<Posts
+					_flatListRef={this._setFlatListRef}
+					navigation={this.props.navigation}
+					refresh={this.refresh}
+					getNextPage={this.getNextPage}
+					posts={this.state.posts}
+					currentTime={this.state.currentTime}
+				/>
 			</View>
 		)
 	}

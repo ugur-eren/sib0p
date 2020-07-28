@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList } from 'react-native'
+import { View, FlatList, RefreshControl } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import Post from '../Post/Post'
 import Types from '../../Includes/Types/Types'
@@ -10,11 +10,15 @@ interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
 	posts: PostTypes.Post[]
+	currentTime: number
 	_flatListRef: any
+	refresh: () => Promise<any>
+	getNextPage: () => Promise<any>
 }
 
 interface State {
 	visibleItem: string
+	refreshing: boolean
 }
 
 class Posts extends React.PureComponent<Props, State> {
@@ -22,7 +26,8 @@ class Posts extends React.PureComponent<Props, State> {
 		super(props)
 
 		this.state = {
-			visibleItem: ""
+			visibleItem: "",
+			refreshing: false
 		}
 	}
 	
@@ -31,7 +36,7 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	_renderItem = ({ item }: {item: PostTypes.Post}) => {
-	return <Post key={item.id} post={item} navigation={this.props.navigation} isVisible={this.state.visibleItem === item.id.toString()} />
+	return <Post key={item.id} post={item} navigation={this.props.navigation} isVisible={this.state.visibleItem === item.id.toString()} currentTime={this.props.currentTime} />
 	}
 
 	_itemSeperatorComponent = () => <View style={styles.itemSeperator}></View>
@@ -46,6 +51,13 @@ class Posts extends React.PureComponent<Props, State> {
 		}
 	}
 
+	refresh = async () => {
+		this.setState({refreshing: true}, async () => {
+			let refresh = await this.props.refresh()
+			this.setState({refreshing: false})
+		})
+	}
+
 	render() {
 		return (
 			<FlatList
@@ -58,6 +70,8 @@ class Posts extends React.PureComponent<Props, State> {
 				onViewableItemsChanged={this._viewableItemsChanged}
 				viewabilityConfig={this._viewabilityConfig}
 				removeClippedSubviews={false}
+				refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
+				onEndReached={this.props.getNextPage}
 			/>
 		)
 	}

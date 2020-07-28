@@ -5,7 +5,7 @@ declare namespace PostTypes {
 	export interface Post {
 		id: string
 		user: UserTypes.TopContent
-		time: string
+		time: number
 		description: string
 		postData: PostTypes.PostData[]
 		likesCount: number

@@ -4,7 +4,7 @@ declare namespace CommentTypes {
 	export interface Comment {
         id: string
         user: UserTypes.TopContent
-        time: string
+        time: number
         content: string
         likesCount: number
         dislikesCount: number

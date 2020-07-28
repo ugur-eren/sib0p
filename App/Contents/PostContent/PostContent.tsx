@@ -5,6 +5,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import FastImage, { OnProgressEvent, OnLoadEvent } from 'react-native-fast-image'
 import Video from 'react-native-video'
 import { Circle as CircleProgress } from 'react-native-progress'
+import Feather from 'react-native-vector-icons/Feather'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import Post from '../Post/Post'
@@ -36,13 +37,11 @@ class PostContent extends React.PureComponent<Props, State> {
 
 	toggleMuteVideo = () => {
 		this.props.navigation.getScreenProps().setIsVideoMuted(!this.props.navigation.getScreenProps().getIsVideoMuted())
-		this.setState({ muted: !this.props.navigation.getScreenProps().getIsVideoMuted() })
+		this.setState({ muted: this.props.navigation.getScreenProps().getIsVideoMuted() })
 	}
 
 	_ImageLoading = (event: OnProgressEvent) => {
-		console.log('progress', event.nativeEvent.loaded / event.nativeEvent.total)
-		if (event.nativeEvent.loaded / event.nativeEvent.total > this.state.imageProgress + 0.15) {
-			console.log('trueee')
+		if (event.nativeEvent.loaded / event.nativeEvent.total > this.state.imageProgress + 0.1) {
 			this.setState({ imageProgress: event.nativeEvent.loaded / event.nativeEvent.total })
 		}
 	}
@@ -96,9 +95,31 @@ class PostContent extends React.PureComponent<Props, State> {
 						style={[this.props.style, { height: this.width / post.ratio, aspectRatio: post.ratio }]}
 						paused={!this.props.isVisible}
 						repeat={true}
+						muted={this.state.muted}
 						resizeMode='contain'
 					/>
-					{this.state.muted ? <View style={{ backgroundColor: 'red', width: 100, height: 100 }}></View> : <></>}
+					{this.state.muted ? (
+						<View
+							style={{
+								position: 'absolute',
+								top: 10,
+								right: 10,
+							}}
+						>
+							<Feather
+								name='volume-x'
+								size={24}
+								color={'white'}
+								style={{
+									textShadowColor: 'rgba(0, 0, 0, 1)',
+									textShadowOffset: { width: 0, height: 0 },
+									textShadowRadius: 10,
+								}}
+							/>
+						</View>
+					) : (
+						<></>
+					)}
 				</TouchableWithoutFeedback>
 			)
 		}

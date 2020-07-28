@@ -10,6 +10,7 @@ declare namespace ApiTypes {
 
     export interface GetExploreResponse extends Init {
         posts: PostTypes.Post[]
+        currentTime: number
     }
 }
 

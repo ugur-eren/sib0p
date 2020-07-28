@@ -22,7 +22,6 @@ import FollowsList from './Screens/FollowsList/FollowsList'
 import Settings from './Screens/Settings/Settings'
 import Search from './Screens/Search/Search'
 
-
 const passwordRecoveryStack = createSwitchNavigator(
 	{
 		PasswordRecoveryFirst: {
@@ -78,13 +77,6 @@ const bottomStack = createMaterialBottomTabNavigator(
 				title: 'Takip',
 			},
 		},
-		Search: {
-			screen: Search,
-			navigationOptions: {
-				tabBarIcon: tabBarIcon('search'),
-				title: 'Arama',
-			},
-		},
 		ShareInitiator: {
 			screen: ShareInitiator,
 			navigationOptions: {
@@ -113,10 +105,10 @@ const bottomStack = createMaterialBottomTabNavigator(
 		shifting: true,
 		defaultNavigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 			activeColor: navigation.getScreenProps().theme.colors.main,
-			
+
 			tabBarOnPress: ({ navigation, defaultHandler }: { navigation: Types.Navigation; defaultHandler: any }) => {
-				if (lastFocusedRoute === navigation.state.key){
-					navigation.setParams({scrollToTop: true})
+				if (lastFocusedRoute === navigation.state.key) {
+					navigation.setParams({ scrollToTop: true })
 				}
 				lastFocusedRoute = navigation.state.key
 				defaultHandler()
@@ -143,8 +135,11 @@ const mainStack = createStackNavigator(
 			screen: Settings,
 		},
 		Share: {
-			screen: Share
-		}
+			screen: Share,
+		},
+		Search: {
+			screen: Search,
+		},
 	},
 	{
 		defaultNavigationOptions: {

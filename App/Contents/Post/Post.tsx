@@ -8,12 +8,14 @@ import PostTypes from '../../Includes/Types/PostTypes'
 import Types from '../../Includes/Types/Types'
 import LikeButton from '../../Components/LikeButton/LikeButton'
 import styles from './styles'
+import Functions from '../../Includes/Functions'
 
 interface Props {
 	navigation: Types.Navigation
 	post: PostTypes.Post
 	theme: Types.Theme
 	isVisible: boolean
+	currentTime: number
 	noUser?: boolean
 	noUserTouchable?: boolean
 }
@@ -33,7 +35,7 @@ class Post extends React.PureComponent<Props, State> {
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
 				{!this.props.noUser ? (
 					<TopProfile
-						user={{ username: post.user.username, profilePhoto: post.user.profilePhoto, time: post.time, isFollowed: post.user.isFollowed }}
+						user={{ username: post.user.username, profilePhoto: post.user.profilePhoto, time: Functions.convertTime(post.time, this.props.currentTime), isFollowed: post.user.isFollowed }}
 						navigation={this.props.navigation}
 						noUserTouchable={this.props.noUserTouchable}
 					/>
