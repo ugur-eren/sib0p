@@ -55,6 +55,12 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>earworm.ttf</string>
+		<string>EvaIcons.ttf</string>
+		<string>FiraSans-Bold.ttf</string>
+		<string>FiraSans-Medium.ttf</string>
+		<string>FiraSans-Regular.ttf</string>
+		<string>FiraSans-SemiBold.ttf</string>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>
@@ -71,12 +77,6 @@
 		<string>Octicons.ttf</string>
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
-		<string>FiraSans-Bold.ttf</string>
-		<string>FiraSans-Medium.ttf</string>
-		<string>FiraSans-Regular.ttf</string>
-		<string>FiraSans-SemiBold.ttf</string>
-		<string>earworm.ttf</string>
-		<string>EvaIcons.ttf</string>
 	</array>
 </dict>
 </plist>
