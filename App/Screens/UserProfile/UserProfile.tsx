@@ -1,131 +1,60 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Text, withTheme, Divider } from 'react-native-paper'
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import FastImage from 'react-native-fast-image'
 import TextButton from '../../Components/TextButton/TextButton'
 import TransparentHeader from '../../Components/TransparentHeader/TransparentHeader'
-import Post from '../../Contents/Post/Post'
-import Config from '../../Includes/Config'
 import Types from '../../Includes/Types/Types'
 import UserTypes from '../../Includes/Types/UserTypes'
 import styles from './styles'
+import Posts from '../../Contents/Posts/Posts'
+import Api from '../../Includes/Api'
 import PostTypes from '../../Includes/Types/PostTypes'
 
 interface Props {
-	navigation: Types.Navigation
+	navigation: Types.Navigation<{
+		scrollToTop: boolean
+		username: string
+	}>
 	theme: Types.Theme
 }
 
-interface State {}
+interface State {
+	loading: boolean
+	user: UserTypes.Profile
+	posts: PostTypes.Post[]
+	currentTime: number
+}
 
 class UserProfile extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
-		this.state = {}
-
-		this.user = {
-			username: 'berat',
-			fullName: 'Berat Kaya',
-			bio: '',
-			profilePhoto: 'https://sib0p.com/inc/imgs/pps/1589744671-940.jpg',
-			backgroundPhoto: 'https://sib0p.com/inc/imgs/bgs/1589744715-940.jpg',
-			postsCount: 79,
-			followsCount: 107,
-			followersCount: 81,
-			posts: [
-				{
-					id: '1',
-					user: {
-						username: 'berat',
-						profilePhoto: 'https://sib0p.com/inc/imgs/pps/1589744671-940.jpg',
-					},
-					time: '2 Gün önce',
-					description: '#badass',
-					postData: [
-						{
-							uri: 'https://sib0p.com/inc/imgs/posts/1594550236-940-65-0.jpg',
-							type: 'image',
-							ratio: 0.837037037037037,
-						},
-					],
-					likesCount: 3,
-					dislikesCount: 0,
-					hasLiked: true,
-					hasDisliked: false,
-					commentsCount: 3,
-					comments: [
-						{
-							id: '1',
-							user: {
-								username: 'edavcis',
-								profilePhoto: 'https://sib0p.com/inc/imgs/pps/1593635668-1461.jpg',
-							},
-							time: '3 Dakika önce',
-							content: 'instası; m.aesy',
-							likesCount: 1,
-							dislikesCount: 0,
-							hasLiked: true,
-							hasDisliked: false,
-						},
-						{
-							id: '2',
-							user: {
-								username: 'aids',
-								profilePhoto: 'https://sib0p.com/inc/imgs/pps/1590216343-1130.jpg',
-							},
-							time: '3 Dakika önce',
-							content: 'kralım eski hali daha güzelmiş',
-							likesCount: 2,
-							dislikesCount: 0,
-							hasLiked: true,
-							hasDisliked: false,
-						},
-						{
-							id: '3',
-							user: {
-								username: 'edavcis',
-								profilePhoto: 'https://sib0p.com/inc/imgs/pps/1593635668-1461.jpg',
-							},
-							time: '2 Dakika önce',
-							content: '@aids dogru :D',
-							likesCount: 1,
-							dislikesCount: 0,
-							hasLiked: false,
-							hasDisliked: false,
-						},
-					],
-				},
-				{
-					id: '2',
-					user: {
-						username: 'beratakin',
-						profilePhoto: 'https://sib0p.com/inc/imgs/pps/1589744671-940.jpg',
-					},
-					time: '20 Dakika önce',
-					description: '',
-					postData: [
-						{
-							uri: 'https://sib0p.com/inc/imgs/posts/1593982053-1486-57-0.jpg',
-							type: 'image',
-							ratio: 0.888888888888889,
-						},
-					],
-					likesCount: 5,
-					dislikesCount: 0,
-					hasLiked: true,
-					hasDisliked: false,
-					commentsCount: 0,
-					comments: [],
-				},
-			],
+		this.state = {
+			loading: true,
+			user: null,
+			posts: [],
+			currentTime: 0,
 		}
 	}
 
-	private user: UserTypes.Profile
+	private _flatListRef: any = null
 
-	handleFollosPress = () => {
+	async componentDidMount() {
+		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
+		let user = await Api.getProfile({ username: username })
+		if (user && user.status) {
+			let posts = await Api.getExplore({ last: 0, username: username })
+			if (posts && posts.status) {
+				this.setState({ loading: false, user: user.user, posts: posts.posts, currentTime: posts.currentTime })
+			} else {
+			}
+		} else {
+		}
+	}
+
+	handleFollowsPress = () => {
 		this.props.navigation.navigate('FollowsList', {
 			follows: [
 				{
@@ -181,38 +110,32 @@ class UserProfile extends React.PureComponent<Props, State> {
 		this.props.navigation.navigate('Settings')
 	}
 
-	_renderPost = ({ item, index }: { item: PostTypes.Post; index: number }) => (
-		<View key={item.id}>
-			<Post navigation={this.props.navigation} post={item} noUserTouchable />
-			{index !== this.user.posts.length - 1 ? <View style={styles.postsDivider}></View> : <></>}
-		</View>
-	)
-
 	_renderHeader = () => {
 		let { theme, navigation } = this.props
 		let myself = navigation.getScreenProps().user
-		let isMyself = myself.username === this.user.username
+		let isMyself = this.state.loading !== false && myself.username === this.state.user.username
+		let user = this.state.user
 
 		return (
 			<>
 				<View style={styles.backgroundContainer}>
-					<FastImage source={{ uri: this.user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
-					<TransparentHeader title={this.user.username} onSettings={isMyself ? this.onSettingsPress : undefined} />
+					<FastImage source={{ uri: user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
+					<TransparentHeader title={user.username} onSettings={isMyself ? this.onSettingsPress : undefined} />
 				</View>
 				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
-					<FastImage source={{ uri: this.user.profilePhoto }} style={[styles.profilePhoto, { borderColor: this.props.theme.colors.main }]} />
+					<FastImage source={{ uri: user.profilePhoto }} style={[styles.profilePhoto, { borderColor: this.props.theme.colors.main }]} />
 
 					<View style={styles.userInfo}>
-						<Text style={styles.username}>{this.user.username}</Text>
-						<Text>{this.user.fullName}</Text>
+						<Text style={styles.username}>{user.username}</Text>
+						<Text>{user.fullName}</Text>
 					</View>
 
 					<TextButton label={isMyself ? 'Profili Düzenle' : 'Takip Et'} onPress={() => {}} />
 				</View>
 
-				{this.user.bio ? (
+				{user.bio ? (
 					<View style={[styles.bio, { backgroundColor: theme.colors.surface }]}>
-						<Text>{this.user.bio}</Text>
+						<Text>{user.bio}</Text>
 					</View>
 				) : (
 					<></>
@@ -221,39 +144,92 @@ class UserProfile extends React.PureComponent<Props, State> {
 				<View style={[styles.centerContainer, { backgroundColor: theme.colors.surface }]}>
 					<View style={styles.postsCount}>
 						<Text>Postlar</Text>
-						<Text style={styles.centerText}>{this.user.postsCount}</Text>
+						<Text style={styles.centerText}>{user.postsCount}</Text>
 					</View>
 
 					<Divider style={styles.centerDivider} />
 
-					<TouchableOpacity onPress={this.handleFollosPress} style={styles.centerTouchable} containerStyle={styles.centerTouchableContainer}>
+					<TouchableOpacity
+						onPress={this.handleFollowsPress}
+						style={styles.centerTouchable}
+						containerStyle={styles.centerTouchableContainer}
+					>
 						<Text>Takip</Text>
-						<Text style={styles.centerText}>{this.user.followsCount}</Text>
+						<Text style={styles.centerText}>{user.followsCount}</Text>
 					</TouchableOpacity>
 
 					<Divider style={styles.centerDivider} />
 
-					<TouchableOpacity onPress={this.handleFollowersPress} style={styles.centerTouchable} containerStyle={styles.centerTouchableContainer}>
+					<TouchableOpacity
+						onPress={this.handleFollowersPress}
+						style={styles.centerTouchable}
+						containerStyle={styles.centerTouchableContainer}
+					>
 						<Text>Takipçi</Text>
-						<Text style={styles.centerText}>{this.user.followersCount}</Text>
+						<Text style={styles.centerText}>{user.followersCount}</Text>
 					</TouchableOpacity>
 				</View>
 			</>
 		)
 	}
 
+	_setFlatListRef = (ref: any) => {
+		this._flatListRef = ref
+	}
+
+	getNextPage = async () => {
+		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
+		let posts = await Api.getExplore({ last: this.state.posts[this.state.posts.length - 1].time, username: username })
+		if (posts && posts.status) {
+			this.setState({
+				user: this.state.user,
+				posts: [...this.state.posts, ...posts.posts],
+				currentTime: posts.currentTime,
+			})
+		} else {
+		}
+	}
+
+	refresh = async () => {
+		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
+		let user = await Api.getProfile({ username: username })
+		if (user && user.status) {
+			let posts = await Api.getExplore({ last: 0, username: username })
+			if (posts && posts.status) {
+				this.setState({ loading: false, user: user.user, posts: posts.posts, currentTime: posts.currentTime })
+			} else {
+			}
+		} else {
+		}
+	}
+
 	render() {
+		if (this.props.navigation.getParam('scrollToTop')) {
+			this.props.navigation.setParams({ scrollToTop: false })
+			if (this._flatListRef) {
+				this._flatListRef.scrollToOffset({ animated: true, offset: 0 })
+			}
+		}
 		let { theme } = this.props
 
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				<FlatList
-					style={styles.scrollView}
-					contentContainerStyle={styles.scrollViewContainer}
-					data={this.user.posts}
-					renderItem={this._renderPost}
-					ListHeaderComponent={this._renderHeader}
-				/>
+				{this.state.loading ? (
+					<></>
+				) : (
+					<Posts
+						_flatListRef={this._setFlatListRef}
+						style={styles.scrollView}
+						contentContainerStyle={styles.scrollViewContainer}
+						posts={this.state.posts}
+						currentTime={this.state.currentTime}
+						getNextPage={this.getNextPage}
+						navigation={this.props.navigation}
+						refresh={this.refresh}
+						ListHeaderComponent={this._renderHeader}
+						noUserTouchable
+					/>
+				)}
 			</View>
 		)
 	}

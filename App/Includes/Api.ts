@@ -57,5 +57,13 @@ export default new (class Functions {
     
     getExplore = (params: Params): Response<ApiTypes.GetExploreResponse> => {
         return this.post("GetExplore", params)
-    }
+	}
+	
+	getComments = (params: Params): Response<ApiTypes.GetCommentsResponse> => {
+        return this.post("GetComments", params)
+	}
+
+	getProfile = (params: Params): Response<ApiTypes.GetProfileResponse> => {
+        return this.post("GetProfile", params)
+	}
 })()

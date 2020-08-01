@@ -13,7 +13,7 @@ declare namespace PostTypes {
 		hasLiked: boolean
 		hasDisliked: boolean
 		commentsCount: number
-		comments: CommentTypes.Comment[]
+		featuredComments: CommentTypes.Comment[]
 	}
 	
 	export interface PostData {

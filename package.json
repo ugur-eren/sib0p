@@ -28,15 +28,16 @@
     "react-native-screens": "^2.9.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-super-grid": "^4.0.3",
+    "react-native-v8": "0.63.2-patch.0",
     "react-native-vector-icons": "^7.0.0",
     "react-native-video": "^4.4.5",
     "react-navigation": "^4.4.0",
     "react-navigation-material-bottom-tabs": "1.0.0",
     "react-navigation-stack": "^2.8.2",
-    "react-navigation-tabs": "^2.9.0"
+    "react-navigation-tabs": "^2.9.0",
+    "v8-android-nointl": "^8.84.0"
   },
   "devDependencies": {
-    "patch-package": "^6.2.2",
     "@babel/core": "^7.10.5",
     "@babel/runtime": "^7.10.5",
     "@react-native-community/eslint-config": "^2.0.0",
@@ -47,6 +48,7 @@
     "eslint": "^7.5.0",
     "jest": "^26.2.1",
     "metro-react-native-babel-preset": "^0.61.0",
+    "patch-package": "^6.2.2",
     "postinstall-postinstall": "^2.1.0",
     "react-test-renderer": "16.13.1",
     "typescript": "^3.9.6"

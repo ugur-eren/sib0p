@@ -9,6 +9,7 @@ import Types from '../../Includes/Types/Types'
 import LikeButton from '../../Components/LikeButton/LikeButton'
 import styles from './styles'
 import Functions from '../../Includes/Functions'
+import FeaturedComments from '../FeaturedComments/FeaturedComments'
 
 interface Props {
 	navigation: Types.Navigation
@@ -56,7 +57,7 @@ class Post extends React.PureComponent<Props, State> {
 					<View style={styles.commentsButton}>
 						<TouchableOpacity
 							onPress={() => {
-								this.props.navigation.push('Comments', { comments: post.comments })
+								this.props.navigation.push('Comments', { post: post.id })
 							}}
 							style={styles.commentsButtonInner}
 						>
@@ -71,19 +72,10 @@ class Post extends React.PureComponent<Props, State> {
 						<TouchableOpacity
 							style={styles.commentsContainer}
 							onPress={() => {
-								this.props.navigation.push('Comments', { comments: post.comments })
+								this.props.navigation.push('Comments', { post: post.id })
 							}}
 						>
-							<View style={styles.commentsInner}>
-								{post.comments.map((comment, index) => (
-									<View key={index} style={styles.comment}>
-										<Text style={styles.commentAuthor}>{comment.user.username}</Text>
-										<Text style={styles.commentText} numberOfLines={1}>
-											{comment.content}
-										</Text>
-									</View>
-								))}
-							</View>
+							<FeaturedComments comments={post.featuredComments} />
 						</TouchableOpacity>
 					</>
 				) : (

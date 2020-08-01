@@ -6,11 +6,13 @@ import LikeButton from '../../Components/LikeButton/LikeButton'
 import Types from '../../Includes/Types/Types'
 import CommentTypes from '../../Includes/Types/CommentTypes'
 import {CommentStyles as styles} from './styles'
+import Functions from '../../Includes/Functions'
 
 interface Props {
     navigation: Types.Navigation
     theme: Types.Theme
 	comment: CommentTypes.Comment
+	currentTime: number
 }
 
 interface State {}
@@ -26,7 +28,7 @@ class Comment extends React.PureComponent<Props, State> {
 		let { comment, navigation } = this.props
 		return (
 			<View style={styles.container}>
-				<TopProfile user={{ username: comment.user.username, profilePhoto: comment.user.profilePhoto, time: comment.time, isFollowed: comment.user.isFollowed }} navigation={navigation} />
+				<TopProfile user={{ username: comment.user.username, profilePhoto: comment.user.profilePhoto, time: Functions.convertTime(comment.time, this.props.currentTime), isFollowed: comment.user.isFollowed }} navigation={navigation} />
 
 				<Text style={styles.content}>{comment.content}</Text>
 

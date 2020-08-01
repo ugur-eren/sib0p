@@ -1,22 +1,24 @@
 import React from 'react'
 import { View, FlatList, SafeAreaView, TextInput } from 'react-native'
-import { Text, Divider, withTheme } from 'react-native-paper'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Divider, withTheme } from 'react-native-paper'
 import Header from '../../Components/Header/Header'
-import Comment from './Comment'
+import TextButton from '../../Components/TextButton/TextButton'
 import Types from '../../Includes/Types/Types'
 import CommentTypes from '../../Includes/Types/CommentTypes'
-import TextButton from '../../Components/TextButton/TextButton'
+import Api from '../../Includes/Api'
+import Comment from './Comment'
 import { CommentsStyles as styles } from './styles'
 
 interface Props {
 	navigation: Types.Navigation<{
-		comments: CommentTypes.Comment[]
+		post: number
 	}>
 	theme: Types.Theme
 }
 
 interface State {
+	comments: CommentTypes.Comment[]
+	currentTime: number
 	commentInput: string
 }
 
@@ -25,11 +27,21 @@ class Comments extends React.PureComponent<Props, State> {
 		super(props)
 
 		this.state = {
+			comments: [],
+			currentTime: 0,
 			commentInput: '',
 		}
 	}
 
-	comments = this.props.navigation.getParam('comments')
+	private postId = this.props.navigation.getParam('post')
+
+	async componentDidMount(){
+		let comments = await Api.getComments({ post: this.postId, last: 0 })
+		if (comments && comments.status) {
+			this.setState({ comments: comments.comments, currentTime: comments.currentTime })
+		} else {
+		}
+	}
 
 	handleCommentChange = (text: string) => {
 		this.setState({ commentInput: text })
@@ -43,7 +55,7 @@ class Comments extends React.PureComponent<Props, State> {
 		})
 	}
 
-	_renderItem = ({ item }) => <Comment navigation={this.props.navigation} comment={item} />
+	_renderItem = ({ item }) => <Comment navigation={this.props.navigation} comment={item} currentTime={this.state.currentTime} />
 	_itemSeperator = () => <Divider style={styles.itemSeperator} />
 	_keyExtractor = (item: CommentTypes.Comment) => item.id
 
@@ -53,7 +65,7 @@ class Comments extends React.PureComponent<Props, State> {
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<Header title='Yorumlar' />
 
-				<FlatList data={this.comments} keyExtractor={this._keyExtractor} ItemSeparatorComponent={this._itemSeperator} renderItem={this._renderItem} />
+				<FlatList data={this.state.comments} keyExtractor={this._keyExtractor} ItemSeparatorComponent={this._itemSeperator} renderItem={this._renderItem} />
 
 				<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
 					<TextInput

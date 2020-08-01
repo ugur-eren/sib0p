@@ -1,5 +1,3 @@
-import PostTypes from './PostTypes'
-
 declare namespace UserTypes {
 	export interface TopInfo {
 		username: string
@@ -17,7 +15,6 @@ declare namespace UserTypes {
 		postsCount: number
 		followsCount: number
 		followersCount: number
-		posts: PostTypes.Post[]
 	}
 
 	export interface Follows {

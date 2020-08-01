@@ -61,7 +61,7 @@ class PostContent extends React.PureComponent<Props, State> {
 			return (
 				<View>
 					<FastImage
-						source={{ uri: post.uri + '?a=5878' }}
+						source={{ uri: post.uri }}
 						style={[this.props.style, { height: this.width / post.ratio }]}
 						onProgress={this._ImageLoading}
 						onLoadEnd={this._ImageLoadEnd}

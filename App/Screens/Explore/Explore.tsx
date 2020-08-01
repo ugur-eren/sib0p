@@ -1,7 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { Text, withTheme } from 'react-native-paper'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { withTheme } from 'react-native-paper'
 import MainHeader from '../../Components/MainHeader/MainHeader'
 import Posts from '../../Contents/Posts/Posts'
 import Types from '../../Includes/Types/Types'
@@ -30,6 +29,7 @@ class Explore extends React.PureComponent<Props, State> {
 	}
 
 	private _flatListRef: any = null
+	private newPageActive: boolean = false
 
 	async componentDidMount() {
 		let posts = await Api.getExplore({ last: 0 })
@@ -48,10 +48,16 @@ class Explore extends React.PureComponent<Props, State> {
 	}
 
 	getNextPage = async () => {
-		let posts = await Api.getExplore({ last: this.state.posts[this.state.posts.length - 1].time })
-		if (posts && posts.status) {
-			this.setState({ posts: [...this.state.posts, ...posts.posts], currentTime: posts.currentTime })
-		} else {
+		if (!this.newPageActive) {
+			this.newPageActive = true
+
+			let posts = await Api.getExplore({ last: this.state.posts[this.state.posts.length - 1].time })
+			if (posts && posts.status) {
+				this.setState({ posts: [...this.state.posts, ...posts.posts], currentTime: posts.currentTime })
+			} else {
+			}
+
+			this.newPageActive = false
 		}
 	}
 

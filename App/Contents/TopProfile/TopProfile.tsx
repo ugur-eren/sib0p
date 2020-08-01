@@ -25,7 +25,7 @@ class Post extends React.PureComponent<Props, State> {
 	}
 
 	handleProfilePress = () => {
-		this.props.navigation.push('UserProfile')
+		this.props.navigation.push('UserProfile', { username: this.props.user.username })
 	}
 
 	render() {
@@ -44,10 +44,12 @@ class Post extends React.PureComponent<Props, State> {
 
 					<Timer time={user.time} />
 				</View>
-				
-				{(noUserTouchable || user.isFollowed) ? (<></>): (
+
+				{noUserTouchable || user.isFollowed ? (
+					<></>
+				) : (
 					<View style={styles.followButton}>
-						<Text style={{color: theme.colors.main}}>Takip Et</Text>
+						<Text style={{ color: theme.colors.main }}>Takip Et</Text>
 					</View>
 				)}
 			</ContainerComponent>

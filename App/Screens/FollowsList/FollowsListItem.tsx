@@ -25,7 +25,7 @@ class FollowsListItem extends React.PureComponent<Props, State> {
 	}
 
 	handleProfilePress = () => {
-		this.props.navigation.push("UserProfile")
+		this.props.navigation.push('UserProfile', { username: this.props.user.username })
 	}
 
 	render() {

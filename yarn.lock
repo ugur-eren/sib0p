@@ -5853,6 +5853,13 @@ react-native-tab-view@^2.11.0:
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-2.15.0.tgz#71b0c87f7cb2cde1d740f7130c17f213f2cbcaa0"
   integrity sha512-rCQPNp0N4t2IZHTVpdb/eddJ9kTLC8QlD/8Ce1+z2Fk3Evk0HPhuhTAW3mfa+thzRXkXYxxsS7QcIjJKs2Wu3w==
 
+react-native-v8@0.63.2-patch.0:
+  version "0.63.2-patch.0"
+  resolved "https://registry.yarnpkg.com/react-native-v8/-/react-native-v8-0.63.2-patch.0.tgz#ff80bce7e6c59afab9d9a88526b2f6c4eee00a0f"
+  integrity sha512-ewyhfAQLIbyQ0PYwZUlCH2e5xRbVkAUm0vW+iizN6hzwYdws8RJnRvsYHeHdgNocrqSb3rYgScF67MNzDpxFXQ==
+  dependencies:
+    v8-android "~8.84.0"
+
 react-native-vector-icons@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-7.0.0.tgz#5b92ed363c867645daad48c559e1f99efcfbb813"
@@ -7149,6 +7156,16 @@ uuid@^8.2.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
   integrity sha512-fX6Z5o4m6XsXBdli9g7DtWgAx+osMsRRZFKma1mIUsLCz6vRvv+pz5VNbyu9UEDzpMWulZfvpgb/cmDXVulYFQ==
+
+v8-android-nointl@^8.84.0:
+  version "8.84.0"
+  resolved "https://registry.yarnpkg.com/v8-android-nointl/-/v8-android-nointl-8.84.0.tgz#4efde4d1d6d28615b672e6a0032573a3716f8dd6"
+  integrity sha512-G8aMJY+y8kg4rsM7zPEo1UIkv3+7MazDd7TQHLur4O7vSGMiv5d7gBjrrYaYQcIMxawykW+Z4oNyHstvoA77EQ==
+
+v8-android@~8.84.0:
+  version "8.84.0"
+  resolved "https://registry.yarnpkg.com/v8-android/-/v8-android-8.84.0.tgz#b9a5b2284d31f530598d7dd5c0124e300999bc6a"
+  integrity sha512-A03L2HfwdobdMSXpGe9fBFqM3tOXh6NWmhkB2cWyav5eQnmF+ajl6Ryyw+Dhwh/GbQXbqgkvZJmBb6dRk+1wYA==
 
 v8-compile-cache@^2.0.3:
   version "2.1.1"
