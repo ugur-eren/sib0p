@@ -74,6 +74,7 @@ class Comments extends React.PureComponent<Props, State> {
 						placeholder={'Yorumunuz...'}
 						placeholderTextColor={theme.colors.halfContrast}
 						style={[styles.writeCommentInput, { color: theme.colors.contrast }]}
+						keyboardAppearance={this.props.theme.dark ? 'dark' : 'default'}
 					/>
 
 					<TextButton label='Gönder' loadable onPress={this.sendComment} />

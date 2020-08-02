@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage'
 
-export default class Storage {
+export default new (class Storage {
 	public set = async (key: string, value: string): Promise<boolean> => {
 		try {
 			await AsyncStorage.setItem(key, value)
@@ -41,14 +41,48 @@ export default class Storage {
 		}
 	}
 
-	public getMultiple = async (keys: string[]): Promise<false | { [x: string]: string }[]> => {
+	public getMultiple = async (keys: string[]): Promise<false | { [x: string]: string }> => {
 		try {
 			const values = await AsyncStorage.multiGet(keys)
-			return values.map((item) => ({
-				[item[0]]: item[1],
-			}))
+			let retValues = {}
+			values.map((item) => {
+				retValues[item[0]] = item[1] !== null ? item[1] : ''
+			})
+			return retValues
 		} catch (e) {
 			return false
+		}
+	}
+
+	public getMultipleWithDefault = async (keys: { [key: string]: string }): Promise<false | { [x: string]: string }> => {
+		try {
+			const values = await AsyncStorage.multiGet(Object.keys(keys))
+			let retValues = {}
+			let emptyValues: string[] = []
+			values.map((item) => {
+				retValues[item[0]] = item[1] !== null ? item[1] : ''
+				if (item[1] === null) {
+					emptyValues.push(item[0])
+				}
+			})
+
+			let formatted = {}
+			emptyValues.map((value) => {
+				formatted[value] = keys[value]
+			})
+
+			let isOk = await this.setMultiple(formatted)
+			if (isOk) {
+				return {
+					...retValues,
+					...formatted,
+				}
+			} else {
+				return retValues
+			}
+		} catch (e) {
+			let isOk = await this.setMultiple(keys)
+			return isOk ? keys : false
 		}
 	}
 
@@ -69,4 +103,4 @@ export default class Storage {
 			return false
 		}
 	}
-}
+})()

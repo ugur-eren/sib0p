@@ -113,7 +113,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 	_renderHeader = () => {
 		let { theme, navigation } = this.props
 		let myself = navigation.getScreenProps().user
-		let isMyself = this.state.loading !== false && myself.username === this.state.user.username
+		let isMyself = this.state.loading === false && myself.username === this.state.user.username
 		let user = this.state.user
 
 		return (

@@ -21,12 +21,16 @@ declare namespace Types {
 	export interface AppState {
 		theme: 'light' | 'dark'
 		selectedTheme: SupportedThemes
+		notification: boolean
+		language: 'en' | 'tr',
+		selectedLanguage: 'en' | 'tr' | 'system',
 		user: ScreenPropsUser
 	}
 
 	export interface ScreenPropsUser {
 		active: boolean
 		username: string
+		token: string
 	}
 
 	export interface Theme {
