@@ -96,11 +96,11 @@ class Login extends React.PureComponent<Props, State> {
 		let { theme } = this.props
 		return (
 			<ScrollView
-				style={[styles.container, { backgroundColor: theme.colors.background }]}
+				style={[styles.container, { backgroundColor: theme.colors.surface }]}
 				keyboardDismissMode='none'
 				keyboardShouldPersistTaps='handled'
 			>
-				<View style={[styles.topContainer, { backgroundColor: theme.colors.surface }]}>
+				<View style={[styles.topContainer, { backgroundColor: theme.colors.background }]}>
 					<FastImage source={require('../../../Assets/Images/logo-wide.png')} style={styles.topLogo} resizeMode='contain' />
 					<Text style={[styles.topSubtitle, { color: theme.colors.contrast }]}>Giriş Yap</Text>
 				</View>
