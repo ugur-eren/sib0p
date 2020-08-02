@@ -30,7 +30,7 @@ class Comment extends React.PureComponent<Props, State> {
 			<View style={styles.container}>
 				<TopProfile user={{ username: comment.user.username, profilePhoto: comment.user.profilePhoto, time: Functions.convertTime(comment.time, this.props.currentTime), isFollowed: comment.user.isFollowed }} navigation={navigation} />
 
-				<Text style={styles.content}>{comment.content}</Text>
+				<Text style={styles.content}>{Functions.replaceUserTagWithPage(comment.content, navigation)}</Text>
 
 				<View style={styles.buttonsContainer}>
 					<LikeButton type='like' active={comment.hasLiked} count={comment.likesCount} onPress={() => {}} containerStyle={styles.likeButton} />

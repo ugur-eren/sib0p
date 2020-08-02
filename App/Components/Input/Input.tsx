@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, TextInput, StyleProp, ViewStyle, TextStyle } from 'react-native'
+import { IconButton, Text } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 
 import styles from './styles'
@@ -17,34 +18,56 @@ interface Props {
 
 	placeholder: string
 	value: string
+	error?: string
 	leftIcon?: string
 	rightIcon?: string
 
 	password?: boolean
 	number?: boolean
 	email?: boolean
-	
+
 	onChangeText?: (text: string) => void
 	leftIconOnPress?: () => void
 	rightIconOnPress?: () => void
 }
 
 interface State {
-
+	passwordShown: boolean
 }
 
 class Input extends React.PureComponent<Props, State> {
-	render(){
+	constructor(props: Props) {
+		super(props)
+
+		this.state = {
+			passwordShown: false,
+		}
+	}
+
+	onPasswordPress = () => {
+		this.setState({ passwordShown: !this.state.passwordShown })
+	}
+
+	render() {
 		let { containerStyle, style, inputStyle, onChangeText, placeholder, rightIcon, leftIcon, theme, ...inputProps } = this.props
 		return (
 			<View style={[styles.container, this.props.containerStyle]}>
-				<View style={[styles.inner, {backgroundColor: theme.colors.inputBackground, borderColor: theme.colors.inputBorder}, this.props.style]}>
+				<View
+					style={[
+						styles.inner,
+						{
+							backgroundColor: theme.colors.inputBackground,
+							borderColor: this.props.error ? theme.colors.error : theme.colors.inputBorder,
+						},
+						this.props.style,
+					]}
+				>
 					{leftIcon ? (
 						<Feather
 							name={leftIcon}
 							size={23}
 							color={theme.colors.halfContrast}
-							style={this.props.leftIconStyle}
+							style={[styles.leftIconStyle, this.props.leftIconStyle]}
 							onPress={this.props.leftIconOnPress}
 						/>
 					) : (
@@ -55,28 +78,36 @@ class Input extends React.PureComponent<Props, State> {
 						value={this.props.value}
 						placeholder={this.props.placeholder}
 						onChangeText={this.props.onChangeText}
-						style={[styles.input, {color: theme.colors.contrast}, this.props.inputStyle]}
+						style={[styles.input, { color: theme.colors.contrast }, this.props.inputStyle]}
 						placeholderTextColor={theme.colors.halfContrast}
 						keyboardAppearance={theme.dark ? 'dark' : 'default'}
-
-						secureTextEntry={this.props.password}
-						keyboardType={this.props.number ? 'number-pad' : (this.props.email ? 'email-address' : 'default')}
-
+						secureTextEntry={this.props.password && !this.state.passwordShown}
+						keyboardType={this.props.number ? 'number-pad' : this.props.email ? 'email-address' : 'default'}
 						{...inputProps}
 					/>
 
-					{rightIcon ? (
+					{this.props.password ? (
+						<IconButton
+							icon={this.state.passwordShown ? 'eye-off' : 'eye'}
+							size={23}
+							color={theme.colors.halfContrast}
+							style={[styles.rightIconStyle, this.props.rightIconStyle]}
+							onPress={this.onPasswordPress}
+						/>
+					) : rightIcon ? (
 						<Feather
 							name={rightIcon}
 							size={23}
 							color={theme.colors.halfContrast}
-							style={this.props.rightIconStyle}
+							style={[styles.rightIconStyle, this.props.rightIconStyle]}
 							onPress={this.props.rightIconOnPress}
 						/>
 					) : (
 						<></>
 					)}
 				</View>
+
+				{this.props.error ? <Text style={[styles.errorText, { color: theme.colors.error }]}>{this.props.error}</Text> : <></>}
 			</View>
 		)
 	}

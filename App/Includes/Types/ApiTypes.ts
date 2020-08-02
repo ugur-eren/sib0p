@@ -3,11 +3,19 @@ import CommentTypes from './CommentTypes'
 import UserTypes from './UserTypes'
 
 declare namespace ApiTypes {
-    type Init = { status: boolean }
+    type Init = {
+        status: boolean
+        error?: string
+    }
     export type Response = Promise<any | false>
 
 	export interface CheckConnectionResponse extends Init {
         connection: 'ok'
+    }
+
+    export interface LoginResponse extends Init {
+        token?: string
+        username?: string
     }
 
     export interface GetExploreResponse extends Init {
@@ -19,6 +27,7 @@ declare namespace ApiTypes {
         comments: CommentTypes.Comment[]
         currentTime: number
     }
+    
     export interface GetProfileResponse extends Init {
         user: UserTypes.Profile
     }

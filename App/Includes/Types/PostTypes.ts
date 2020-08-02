@@ -20,6 +20,7 @@ declare namespace PostTypes {
 		uri: string
 		type: 'image' | 'video' | 'poll'
 		ratio: number
+		thumbnail: string
 	}
 }
 

@@ -53,17 +53,21 @@ export default new (class Functions {
 
 	checkConnection = (): Response<ApiTypes.CheckConnectionResponse> => {
 		return this.get('checkConnection')
-    }
-    
-    getExplore = (params: Params): Response<ApiTypes.GetExploreResponse> => {
-        return this.post("GetExplore", params)
 	}
-	
+
+	login = (params: Params): Response<ApiTypes.LoginResponse> => {
+		return this.post('Login', params)
+	}
+
+	getExplore = (params: Params): Response<ApiTypes.GetExploreResponse> => {
+		return this.post('GetExplore', params)
+	}
+
 	getComments = (params: Params): Response<ApiTypes.GetCommentsResponse> => {
-        return this.post("GetComments", params)
+		return this.post('GetComments', params)
 	}
 
 	getProfile = (params: Params): Response<ApiTypes.GetProfileResponse> => {
-        return this.post("GetProfile", params)
+		return this.post('GetProfile', params)
 	}
 })()

@@ -1,4 +1,4 @@
-import { NavigationScreenProp, NavigationState, NavigationParams } from 'react-navigation'
+import { NavigationState, NavigationParams } from 'react-navigation'
 import { NavigationStackProp } from 'react-navigation-stack'
 
 declare namespace Types {
@@ -22,8 +22,8 @@ declare namespace Types {
 		theme: 'light' | 'dark'
 		selectedTheme: SupportedThemes
 		notification: boolean
-		language: 'en' | 'tr',
-		selectedLanguage: 'en' | 'tr' | 'system',
+		language: 'en' | 'tr'
+		selectedLanguage: 'en' | 'tr' | 'system'
 		user: ScreenPropsUser
 	}
 

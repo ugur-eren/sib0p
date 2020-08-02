@@ -41,7 +41,10 @@ class PostContent extends React.PureComponent<Props, State> {
 	}
 
 	_ImageLoading = (event: OnProgressEvent) => {
-		if (event.nativeEvent.loaded / event.nativeEvent.total > this.state.imageProgress + 0.1) {
+		if (this.props.post.uri === "https://sib0p.com/inc/imgs/posts/1596243706-1343-9-0.jpg"){
+			console.log(event.nativeEvent.loaded / event.nativeEvent.total)
+		}
+		if (event.nativeEvent.loaded / event.nativeEvent.total > this.state.imageProgress) {
 			this.setState({ imageProgress: event.nativeEvent.loaded / event.nativeEvent.total })
 		}
 	}
@@ -81,6 +84,10 @@ class PostContent extends React.PureComponent<Props, State> {
 								alignItems: 'center',
 							}}
 						>
+							<FastImage
+								style={{position: 'absolute', left: 0, top: 0, width: '100%', height: '100%'}}
+								source={{ uri: 'data:image/jpeg;base64,' + post.thumbnail}}
+							/>
 							<CircleProgress size={120} progress={this.state.imageProgress} color={theme.colors.main} showsText formatText={this._formatImageLoadingText} />
 						</View>
 					)}

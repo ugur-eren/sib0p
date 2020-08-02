@@ -4,6 +4,7 @@ import { Text, withTheme } from 'react-native-paper'
 import Types from '../../Includes/Types/Types'
 import CommentTypes from '../../Includes/Types/CommentTypes'
 import styles from './styles'
+import Functions from '../../Includes/Functions'
 
 interface Props {
     theme: Types.Theme
@@ -16,7 +17,7 @@ class FeaturedComment extends React.PureComponent<Props> {
             <View style={styles.comment}>
                 <Text style={styles.commentAuthor}>{this.props.comment.user.username}</Text>
                 <Text style={styles.commentText} numberOfLines={1}>
-                    {this.props.comment.content}
+                    {Functions.replaceUserTagWithPage(this.props.comment.content)}
                 </Text>
             </View>
         )

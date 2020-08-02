@@ -95,7 +95,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			let time = parseInt(date.getHours() + '' + date.getMinutes())
 			stateObject = {
 				...stateObject,
-				theme: time > 730 && time < 1730 ? 'dark' : 'light',
+				theme: time > 730 && time < 1730 ? 'light' : 'dark',
 			}
 		} else {
 			stateObject = {
@@ -140,11 +140,31 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	setTheme = (theme: Types.SupportedThemes, callback?: () => void) => {
 		Storage.set('theme', theme)
 
-		this.setState({ selectedTheme: theme, theme: theme === 'dark' || theme === 'light' ? theme : this.state.theme }, () => {
-			if (callback) {
-				callback()
+		let selectedTheme: 'dark' | 'light' = "light"
+
+		if (theme === 'system') {
+			let colorScheme = Appearance.getColorScheme()
+			if (!colorScheme) {
+				colorScheme = 'light'
 			}
-		})
+			selectedTheme = colorScheme
+		} else if (theme === 'timed') {
+			let date = new Date()
+			let time = parseInt(date.getHours() + '' + date.getMinutes())
+			selectedTheme = time > 730 && time < 1730 ? 'light' : 'dark'
+		} else {
+			selectedTheme = theme === 'dark' ? 'dark' : 'light'
+		}
+
+		if (this.state.selectedTheme !== theme && this.state.theme !== selectedTheme){
+			this.setState({ selectedTheme: theme, theme: selectedTheme }, () => {
+				if (callback) {
+					callback()
+				}
+			})
+		} else {
+			callback()
+		}
 	}
 
 	setIsVideoMuted = (isMuted: boolean) => {
