@@ -8,6 +8,10 @@ target 'sib0p' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
+
   target 'sib0pTests' do
     inherit! :complete
     # Pods for testing
