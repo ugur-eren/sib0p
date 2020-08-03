@@ -17,6 +17,7 @@ interface Props {
 	theme: Types.Theme
 	isVisible: boolean
 	currentTime: number
+	openModal: (post: PostTypes.Post) => void
 	noUser?: boolean
 	noUserTouchable?: boolean
 }
@@ -37,8 +38,10 @@ class Post extends React.PureComponent<Props, State> {
 				{!this.props.noUser ? (
 					<TopProfile
 						user={{ username: post.user.username, profilePhoto: post.user.profilePhoto, time: Functions.convertTime(post.time, this.props.currentTime), isFollowed: post.user.isFollowed }}
+						post={post}
 						navigation={this.props.navigation}
 						noUserTouchable={this.props.noUserTouchable}
+						openModal={this.props.openModal}
 					/>
 				) : (
 					<></>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, FlatList, RefreshControl, StyleProp, ViewStyle } from 'react-native'
 import { withTheme } from 'react-native-paper'
+import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
@@ -43,6 +44,7 @@ class Posts extends React.PureComponent<Props, State> {
 
 	private focusListener: any = null
 	private blurListener: any = null
+	private modalRef: any = null
 
 	componentDidMount() {
 		this.focusListener = this.props.navigation.addListener('didFocus', () => {
@@ -67,6 +69,7 @@ class Posts extends React.PureComponent<Props, State> {
 				isVisible={this.state.focused && this.state.visibleItem === item.id.toString()}
 				currentTime={this.props.currentTime}
 				noUserTouchable={this.props.noUserTouchable}
+				openModal={this.openModal}
 			/>
 		)
 	}
@@ -90,24 +93,36 @@ class Posts extends React.PureComponent<Props, State> {
 		})
 	}
 
+	_setModalizeRef = (ref: any) => {
+		this.modalRef = ref
+	}
+
+	openModal = (post: PostTypes.Post) => {
+		this.modalRef?.current?.open()
+	}
+
 	render() {
 		return (
-			<FlatList
-				ref={this.props._flatListRef}
-				data={this.props.posts}
-				keyExtractor={this._keyExtractor}
-				ItemSeparatorComponent={this._itemSeperatorComponent}
-				renderItem={this._renderItem}
-				extraData={this.state.visibleItem}
-				onViewableItemsChanged={this._viewableItemsChanged}
-				viewabilityConfig={this._viewabilityConfig}
-				removeClippedSubviews={false}
-				refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
-				onEndReached={this.props.getNextPage}
-				ListHeaderComponent={this.props.ListHeaderComponent}
-				style={this.props.style}
-				contentContainerStyle={this.props.contentContainerStyle}
-			/>
+			<>
+				<FlatList
+					ref={this.props._flatListRef}
+					data={this.props.posts}
+					keyExtractor={this._keyExtractor}
+					ItemSeparatorComponent={this._itemSeperatorComponent}
+					renderItem={this._renderItem}
+					extraData={this.state.visibleItem}
+					onViewableItemsChanged={this._viewableItemsChanged}
+					viewabilityConfig={this._viewabilityConfig}
+					removeClippedSubviews={false}
+					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
+					onEndReached={this.props.getNextPage}
+					ListHeaderComponent={this.props.ListHeaderComponent}
+					style={this.props.style}
+					contentContainerStyle={this.props.contentContainerStyle}
+				/>
+				
+				<Modalize ref={this._setModalizeRef}>...your content</Modalize>
+			</>
 		)
 	}
 }

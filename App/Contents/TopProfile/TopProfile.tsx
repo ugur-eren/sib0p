@@ -1,10 +1,12 @@
 import React from 'react'
-import { View } from 'react-native'
-import { Text, withTheme } from 'react-native-paper'
+import { View, Platform } from 'react-native'
+import { Text, IconButton, withTheme } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import UserTypes from '../../Includes/Types/UserTypes'
+import Feather from 'react-native-vector-icons/Feather'
 import Types from '../../Includes/Types/Types'
+import UserTypes from '../../Includes/Types/UserTypes'
+import PostTypes from '../../Includes/Types/PostTypes'
 import Timer from '../../Components/Timer/Timer'
 import styles from './styles'
 
@@ -12,6 +14,8 @@ interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
 	user: UserTypes.TopInfo
+	post?: PostTypes.Post
+	openModal?: (post: PostTypes.Post) => void
 	noUserTouchable?: boolean
 }
 
@@ -28,31 +32,42 @@ class Post extends React.PureComponent<Props, State> {
 		this.props.navigation.push('UserProfile', { username: this.props.user.username })
 	}
 
+	openModal = () => {
+		this.props.openModal(this.props.post)
+	}
+
 	render() {
 		let { user, theme, noUserTouchable } = this.props
 		let ContainerComponent = noUserTouchable ? TouchableWithoutFeedback : TouchableOpacity
 		return (
-			<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.container}>
-				<View style={styles.imageContainer}>
+			<View style={styles.container}>
+				<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.imageContainer}>
 					<FastImage source={{ uri: user.profilePhoto }} style={styles.image} />
+				</ContainerComponent>
+
+				<View style={styles.outerContent}>
+					<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.innerContent}>
+						<View style={styles.usernameContainer}>
+							<Text style={styles.username}>{user.username}</Text>
+						</View>
+
+						<Timer time={user.time} />
+					</ContainerComponent>
+					{noUserTouchable || user.isFollowed ? (
+						<></>
+					) : (
+						<View style={styles.followButton}>
+							<Text style={{ color: theme.colors.main }}>Takip Et</Text>
+						</View>
+					)}
 				</View>
 
-				<View style={styles.content}>
-					<View style={styles.usernameContainer}>
-						<Text style={styles.username}>{user.username}</Text>
-					</View>
-
-					<Timer time={user.time} />
-				</View>
-
-				{noUserTouchable || user.isFollowed ? (
-					<></>
+				{this.props.openModal ? (
+					<IconButton icon={Platform.OS === 'ios' ? 'more-horizontal' : 'more-vertical'} size={21} onPress={this.openModal} />
 				) : (
-					<View style={styles.followButton}>
-						<Text style={{ color: theme.colors.main }}>Takip Et</Text>
-					</View>
+					<></>
 				)}
-			</ContainerComponent>
+			</View>
 		)
 	}
 }

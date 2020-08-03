@@ -16,9 +16,13 @@ export default StyleSheet.create({
 		height: 50,
 		borderRadius: 50,
 	},
-	content: {
+	outerContent: {
 		flex: 1,
 		marginLeft: 10,
+		flexDirection: 'row',
+	},
+	innerContent: {
+		marginHorizontal: 10,
 		justifyContent: 'center',
 	},
 	usernameContainer: {

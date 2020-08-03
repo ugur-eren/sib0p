@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 
 export default StyleSheet.create({
 	container: {
@@ -10,9 +10,11 @@ export default StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingHorizontal: 12,
+		...Platform.OS === 'ios' ? { height: 49 } : {},
 	},
 	input: {
 		flex: 1,
+		height: '100%'
 	},
 	leftIconStyle: {
 		marginRight: 10,

@@ -131,7 +131,7 @@ class Login extends React.PureComponent<Props, State> {
 					<Button label='Login' loading={true} containerStyle={styles.buttonContainer} onPress={this._onLoginPress} />
 					<TouchableOpacity onPress={this.navigateToRegister}>
 						<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
-							Don't have an account? <Text style={{ color: theme.colors.main }}>{'\n\n'}Register</Text>
+							Don't have an account? <Text style={{ color: theme.colors.main, textAlign: 'center' }}>{'\n\n'}Register</Text>
 						</Text>
 					</TouchableOpacity>
 				</View>

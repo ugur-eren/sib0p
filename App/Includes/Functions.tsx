@@ -36,7 +36,7 @@ export default new (class Functions {
 	}
 
 	replaceUserTagWithPage = (text: string, navigation?: Types.Navigation) => {
-		let regex = /(\[correct:@[a-z0-9_.-]+\])/g
+		let regex = /(\[correct:@[a-zA-Z0-9_.-]+\])/g
 		let parts: any[] = text.split(regex)
 
 		for (var i = 1; i < parts.length; i += 2) {

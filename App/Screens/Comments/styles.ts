@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 
 const CommentStyles = StyleSheet.create({
 	container: {
@@ -33,6 +33,7 @@ const CommentsStyles = StyleSheet.create({
 		paddingHorizontal: 10,
 		marginLeft: 6,
 		flex: 1,
+		...Platform.OS === 'ios' ? { height: 49 } : {},
 	},
 })
 
