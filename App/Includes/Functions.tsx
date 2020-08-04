@@ -42,7 +42,7 @@ export default new (class Functions {
 		for (var i = 1; i < parts.length; i += 2) {
 			let username = parts[i].replace('[correct:@', '').replace(']', '')
 			parts[i] = (
-				<Text key={i} style={{ fontFamily: Config.fonts.semi }} onPress={!navigation ? undefined : () => navigation.navigate('UserProfile', { username: username })}>
+				<Text key={i} style={{ fontFamily: Config.fonts.semi }} onPress={!navigation ? undefined : () => navigation.navigate('Profile', { username: username })}>
 					@{username}
 				</Text>
 			)

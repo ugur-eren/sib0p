@@ -7,6 +7,7 @@ import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import Api from '../../Includes/Api'
 import styles from './styles'
+import Loader from './Loader'
 
 interface Props {
 	navigation: Types.Navigation
@@ -77,14 +78,20 @@ class Explore extends React.PureComponent<Props, State> {
 	render() {
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
-				<MainHeader />
-				<Posts
-					navigation={this.props.navigation}
-					refresh={this.refresh}
-					getNextPage={this.getNextPage}
-					posts={this.state.posts}
-					currentTime={this.state.currentTime}
-				/>
+				{this.state.loading ? (
+					<Loader theme={this.props.theme} />
+				) : (
+					<>
+						<MainHeader />
+						<Posts
+							navigation={this.props.navigation}
+							refresh={this.refresh}
+							getNextPage={this.getNextPage}
+							posts={this.state.posts}
+							currentTime={this.state.currentTime}
+						/>
+					</>
+				)}
 			</View>
 		)
 	}

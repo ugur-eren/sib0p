@@ -36,6 +36,7 @@
     "react-navigation-material-bottom-tabs": "1.0.0",
     "react-navigation-stack": "^2.8.2",
     "react-navigation-tabs": "^2.9.0",
+    "rn-placeholder": "^3.0.1",
     "v8-android-nointl": "^8.84.0"
   },
   "devDependencies": {

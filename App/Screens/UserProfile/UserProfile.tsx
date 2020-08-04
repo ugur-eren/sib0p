@@ -11,6 +11,7 @@ import styles from './styles'
 import Posts from '../../Contents/Posts/Posts'
 import Api from '../../Includes/Api'
 import PostTypes from '../../Includes/Types/PostTypes'
+import Loader from './Loader'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -41,17 +42,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 		}
 	}
 
-	async componentDidMount() {
-		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
-		let user = await Api.getProfile({ token: this.props.navigation.getScreenProps().user.token, username: username })
-		if (user && user.status) {
-			let posts = await Api.getExplore({ token: this.props.navigation.getScreenProps().user.token, last: 0, username: username })
-			if (posts && posts.status) {
-				this.setState({ loading: false, user: user.user, posts: posts.posts, currentTime: posts.currentTime })
-			} else {
-			}
-		} else {
-		}
+	componentDidMount() {
+		this.init()
 	}
 
 	init = async (refresh?: boolean, nextPage?: boolean) => {
@@ -115,6 +107,14 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 		stateObject = { ...stateObject, loading: false }
 		this.setState(stateObject)
+	}
+
+	getNextPage = () => {
+		return this.init(true, true)
+	}
+
+	refresh = () => {
+		return this.init(true)
 	}
 
 	handleFollowsPress = () => {
@@ -236,43 +236,13 @@ class UserProfile extends React.PureComponent<Props, State> {
 		)
 	}
 
-	getNextPage = async () => {
-		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
-		let posts = await Api.getExplore({
-			token: this.props.navigation.getScreenProps().user.token,
-			last: this.state.posts[this.state.posts.length - 1].time,
-			username: username,
-		})
-		if (posts && posts.status) {
-			this.setState({
-				user: this.state.user,
-				posts: [...this.state.posts, ...posts.posts],
-				currentTime: posts.currentTime,
-			})
-		} else {
-		}
-	}
-
-	refresh = async () => {
-		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
-		let user = await Api.getProfile({ token: this.props.navigation.getScreenProps().user.token, username: username })
-		if (user && user.status) {
-			let posts = await Api.getExplore({ token: this.props.navigation.getScreenProps().user.token, last: 0, username: username })
-			if (posts && posts.status) {
-				this.setState({ loading: false, user: user.user, posts: posts.posts, currentTime: posts.currentTime })
-			} else {
-			}
-		} else {
-		}
-	}
-
 	render() {
 		let { theme } = this.props
 
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				{this.state.loading ? (
-					<></>
+					<Loader theme={theme} />
 				) : (
 					<Posts
 						style={styles.scrollView}
