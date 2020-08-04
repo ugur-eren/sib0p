@@ -25,6 +25,7 @@ interface State {
 	user: UserTypes.Profile
 	posts: PostTypes.Post[]
 	currentTime: number
+	noUser: boolean
 }
 
 class UserProfile extends React.PureComponent<Props, State> {
@@ -36,22 +37,84 @@ class UserProfile extends React.PureComponent<Props, State> {
 			user: null,
 			posts: [],
 			currentTime: 0,
+			noUser: false,
 		}
 	}
 
-	private _flatListRef: any = null
-
 	async componentDidMount() {
 		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
-		let user = await Api.getProfile({ username: username })
+		let user = await Api.getProfile({ token: this.props.navigation.getScreenProps().user.token, username: username })
 		if (user && user.status) {
-			let posts = await Api.getExplore({ last: 0, username: username })
+			let posts = await Api.getExplore({ token: this.props.navigation.getScreenProps().user.token, last: 0, username: username })
 			if (posts && posts.status) {
 				this.setState({ loading: false, user: user.user, posts: posts.posts, currentTime: posts.currentTime })
 			} else {
 			}
 		} else {
 		}
+	}
+
+	init = async (refresh?: boolean, nextPage?: boolean) => {
+		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
+
+		if (!refresh && !this.state.loading) {
+			this.setState({ loading: true })
+		}
+
+		let isOkToContinue = false
+		let stateObject = {}
+
+		if (!nextPage) {
+			let user = await Api.getProfile({
+				token: this.props.navigation.getScreenProps().user.token,
+				username: username,
+			})
+			if (user) {
+				if (user.status) {
+					stateObject = { ...stateObject, user: user.user }
+				} else {
+					if (user.error === 'no_login') {
+						this.props.navigation.getScreenProps().logout(true)
+					} else {
+						if (user.error === 'no_user') {
+							stateObject = { ...stateObject, noUser: true }
+						} else if (user.error === 'wrong_username') {
+							this.props.navigation
+								.getScreenProps()
+								.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
+						}
+					}
+				}
+			} else {
+				this.props.navigation.getScreenProps().unknown_error()
+			}
+		}
+
+		let posts = await Api.getExplore({
+			token: this.props.navigation.getScreenProps().user.token,
+			last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
+			username: username,
+		})
+		if (posts) {
+			if (posts.status) {
+				stateObject = {
+					...stateObject,
+					posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
+					currentTime: posts.currentTime,
+				}
+			} else {
+				if (posts.error === 'no_login') {
+					this.props.navigation.getScreenProps().logout(true)
+				} else {
+					this.props.navigation.getScreenProps().unknown_error(posts.error)
+				}
+			}
+		} else {
+			this.props.navigation.getScreenProps().unknown_error()
+		}
+
+		stateObject = { ...stateObject, loading: false }
+		this.setState(stateObject)
 	}
 
 	handleFollowsPress = () => {
@@ -130,7 +193,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 						<Text>{user.fullName}</Text>
 					</View>
 
-					<TextButton label={isMyself ? 'Profili Düzenle' : 'Takip Et'} onPress={() => {}} />
+					{isMyself ? <></> : <TextButton label={'Takip Et'} onPress={() => {}} />}
 				</View>
 
 				{user.bio ? (
@@ -173,13 +236,13 @@ class UserProfile extends React.PureComponent<Props, State> {
 		)
 	}
 
-	_setFlatListRef = (ref: any) => {
-		this._flatListRef = ref
-	}
-
 	getNextPage = async () => {
 		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
-		let posts = await Api.getExplore({ last: this.state.posts[this.state.posts.length - 1].time, username: username })
+		let posts = await Api.getExplore({
+			token: this.props.navigation.getScreenProps().user.token,
+			last: this.state.posts[this.state.posts.length - 1].time,
+			username: username,
+		})
 		if (posts && posts.status) {
 			this.setState({
 				user: this.state.user,
@@ -192,9 +255,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 	refresh = async () => {
 		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
-		let user = await Api.getProfile({ username: username })
+		let user = await Api.getProfile({ token: this.props.navigation.getScreenProps().user.token, username: username })
 		if (user && user.status) {
-			let posts = await Api.getExplore({ last: 0, username: username })
+			let posts = await Api.getExplore({ token: this.props.navigation.getScreenProps().user.token, last: 0, username: username })
 			if (posts && posts.status) {
 				this.setState({ loading: false, user: user.user, posts: posts.posts, currentTime: posts.currentTime })
 			} else {
@@ -204,12 +267,6 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	render() {
-		if (this.props.navigation.getParam('scrollToTop')) {
-			this.props.navigation.setParams({ scrollToTop: false })
-			if (this._flatListRef) {
-				this._flatListRef.scrollToOffset({ animated: true, offset: 0 })
-			}
-		}
 		let { theme } = this.props
 
 		return (
@@ -218,7 +275,6 @@ class UserProfile extends React.PureComponent<Props, State> {
 					<></>
 				) : (
 					<Posts
-						_flatListRef={this._setFlatListRef}
 						style={styles.scrollView}
 						contentContainerStyle={styles.scrollViewContainer}
 						posts={this.state.posts}

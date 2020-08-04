@@ -10,6 +10,9 @@ declare namespace Types {
 		theme: Theme
 		user: ScreenPropsUser
 		selectedTheme: SupportedThemes
+		logout: (runtime?: boolean) => Promise<void>
+		unknown_error: (error?: string) => void
+		error: (error: string) => void
 
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void
 		setTheme: (theme: SupportedThemes, callback?: () => void) => void
@@ -19,12 +22,14 @@ declare namespace Types {
 	}
 
 	export interface AppState {
+		ready: boolean
 		theme: 'light' | 'dark'
 		selectedTheme: SupportedThemes
 		notification: boolean
 		language: 'en' | 'tr'
 		selectedLanguage: 'en' | 'tr' | 'system'
 		user: ScreenPropsUser
+		errorMessage: false | string
 	}
 
 	export interface ScreenPropsUser {

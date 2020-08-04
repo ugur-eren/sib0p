@@ -1,8 +1,10 @@
 import React from 'react'
-import { View, FlatList, RefreshControl, StyleProp, ViewStyle } from 'react-native'
-import { withTheme } from 'react-native-paper'
+import { View, FlatList, RefreshControl, Share, StyleProp, ViewStyle, Platform } from 'react-native'
+import { List, withTheme } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
+
+import Config from '../../Includes/Config'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import styles from './styles'
@@ -12,7 +14,6 @@ interface Props {
 	theme: Types.Theme
 	posts: PostTypes.Post[]
 	currentTime: number
-	_flatListRef: any
 	refresh: () => Promise<any>
 	getNextPage: () => Promise<any>
 	noUserTouchable?: boolean
@@ -45,6 +46,7 @@ class Posts extends React.PureComponent<Props, State> {
 	private focusListener: any = null
 	private blurListener: any = null
 	private modalRef: any = null
+	private activePost: PostTypes.Post = null
 
 	componentDidMount() {
 		this.focusListener = this.props.navigation.addListener('didFocus', () => {
@@ -98,14 +100,28 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	openModal = (post: PostTypes.Post) => {
-		this.modalRef?.current?.open()
+		this.activePost = post
+		this.modalRef?.open()
+	}
+
+	sharePost = () => {
+		Share.share({
+			message: 'sib0p\'da paylaşılan bu postu seveceğini düşünüyorum: ' + Config.siteUri + 'post/' + this.activePost.id,
+			url: Config.siteUri + 'post/' + this.activePost.id,
+			title: Config.siteUri + 'post/' + this.activePost.id,
+		})
+		this.modalRef?.close()
+	}
+
+	reportPost = () => {
+
+		this.modalRef?.close()
 	}
 
 	render() {
 		return (
 			<>
 				<FlatList
-					ref={this.props._flatListRef}
 					data={this.props.posts}
 					keyExtractor={this._keyExtractor}
 					ItemSeparatorComponent={this._itemSeperatorComponent}
@@ -113,7 +129,7 @@ class Posts extends React.PureComponent<Props, State> {
 					extraData={this.state.visibleItem}
 					onViewableItemsChanged={this._viewableItemsChanged}
 					viewabilityConfig={this._viewabilityConfig}
-					removeClippedSubviews={false}
+					removeClippedSubviews={Platform.OS === 'android'}
 					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
 					onEndReached={this.props.getNextPage}
 					ListHeaderComponent={this.props.ListHeaderComponent}
@@ -121,7 +137,23 @@ class Posts extends React.PureComponent<Props, State> {
 					contentContainerStyle={this.props.contentContainerStyle}
 				/>
 				
-				<Modalize ref={this._setModalizeRef}>...your content</Modalize>
+				<Modalize
+					ref={this._setModalizeRef}
+					adjustToContentHeight
+				>
+					<List.Section>
+						<List.Item
+							title="Paylaş"
+							onPress={this.sharePost}
+							left={(props) => <List.Icon {...props} style={{}} icon='share-2' />}
+						/>
+						<List.Item
+							title="Şikayet Et"
+							onPress={this.reportPost}
+							left={(props) => <List.Icon {...props} style={{}} icon='alert-circle' />}
+						/>
+					</List.Section>
+				</Modalize>
 			</>
 		)
 	}

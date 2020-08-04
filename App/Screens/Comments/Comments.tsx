@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList, SafeAreaView, TextInput } from 'react-native'
+import { View, FlatList, SafeAreaView, TextInput, RefreshControl } from 'react-native'
 import { Divider, withTheme } from 'react-native-paper'
 import Header from '../../Components/Header/Header'
 import TextButton from '../../Components/TextButton/TextButton'
@@ -17,6 +17,8 @@ interface Props {
 }
 
 interface State {
+	loading: boolean
+	refreshing: boolean
 	comments: CommentTypes.Comment[]
 	currentTime: number
 	commentInput: string
@@ -27,19 +29,66 @@ class Comments extends React.PureComponent<Props, State> {
 		super(props)
 
 		this.state = {
+			loading: false,
+			refreshing: false,
 			comments: [],
 			currentTime: 0,
 			commentInput: '',
 		}
 	}
 
-	private postId = this.props.navigation.getParam('post')
+	private postId: number = this.props.navigation.getParam('post')
+	private newPageActive: boolean = false
 
-	async componentDidMount(){
-		let comments = await Api.getComments({ post: this.postId, last: 0 })
-		if (comments && comments.status) {
-			this.setState({ comments: comments.comments, currentTime: comments.currentTime })
+	componentDidMount() {
+		this.init()
+	}
+
+	init = async (refresh?: boolean, nextPage?: boolean) => {
+		if (!refresh && !this.state.loading) {
+			this.setState({ loading: true })
+		}
+		let isOk = false
+		let comments = await Api.getComments({ token: this.props.navigation.getScreenProps().user.token, post: this.postId, last: nextPage ? this.state.comments[this.state.comments.length - 1].time : 0 })
+		if (comments) {
+			if (comments.status) {
+				isOk = true
+				this.setState({ comments: nextPage ? [...this.state.comments, ...comments.comments] : comments.comments, currentTime: comments.currentTime })
+			} else {
+				if (comments.error === 'no_login') {
+					this.props.navigation.getScreenProps().logout(true)
+				} else {
+					this.props.navigation
+						.getScreenProps()
+						.error(
+							comments.error === 'noPostData'
+								? 'Gönderi bilgisi gönderilemedi. Lütfen daha sonra tekrar deneyiniz.'
+								: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' + comments.error
+						)
+				}
+			}
 		} else {
+			this.props.navigation.getScreenProps().unknown_error()
+		}
+
+		if (isOk) {
+			this.setState({ loading: false, refreshing: false })
+		}
+	}
+
+	refresh = () => {
+		this.setState({ refreshing: true }, () => {
+			this.init(true)
+		})
+	}
+
+	getNextPage = async () => {
+		if (!this.newPageActive) {
+			this.newPageActive = true
+
+			this.init(true, true)
+
+			this.newPageActive = false
 		}
 	}
 
@@ -65,7 +114,14 @@ class Comments extends React.PureComponent<Props, State> {
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<Header title='Yorumlar' />
 
-				<FlatList data={this.state.comments} keyExtractor={this._keyExtractor} ItemSeparatorComponent={this._itemSeperator} renderItem={this._renderItem} />
+				<FlatList
+					data={this.state.comments}
+					keyExtractor={this._keyExtractor}
+					ItemSeparatorComponent={this._itemSeperator}
+					renderItem={this._renderItem}
+					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
+					onEndReached={this.getNextPage}
+				/>
 
 				<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
 					<TextInput

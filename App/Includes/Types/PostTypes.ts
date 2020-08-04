@@ -21,6 +21,7 @@ declare namespace PostTypes {
 		type: 'image' | 'video' | 'poll'
 		ratio: number
 		thumbnail: string
+		poster?: string
 	}
 }
 

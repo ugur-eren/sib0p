@@ -25,9 +25,9 @@ class Comment extends React.PureComponent<Props, State> {
 	}
 
 	render() {
-		let { comment, navigation } = this.props
+		let { comment, navigation, theme } = this.props
 		return (
-			<View style={styles.container}>
+			<View style={[styles.container, {backgroundColor: theme.colors.surface}]}>
 				<TopProfile user={{ username: comment.user.username, profilePhoto: comment.user.profilePhoto, time: Functions.convertTime(comment.time, this.props.currentTime), isFollowed: comment.user.isFollowed }} navigation={navigation} />
 
 				<Text style={styles.content}>{Functions.replaceUserTagWithPage(comment.content, navigation)}</Text>

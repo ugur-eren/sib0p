@@ -105,14 +105,6 @@ const bottomStack = createMaterialBottomTabNavigator(
 		shifting: true,
 		defaultNavigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 			activeColor: navigation.getScreenProps().theme.colors.main,
-
-			tabBarOnPress: ({ navigation, defaultHandler }: { navigation: Types.Navigation; defaultHandler: any }) => {
-				if (lastFocusedRoute === navigation.state.key) {
-					navigation.setParams({ scrollToTop: true })
-				}
-				lastFocusedRoute = navigation.state.key
-				defaultHandler()
-			},
 		})) as any,
 	}
 )

@@ -1,16 +1,18 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Text, withTheme } from 'react-native-paper'
+import FastImage from 'react-native-fast-image'
+import Feather from 'react-native-vector-icons/Feather'
 import Config from '../../Includes/Config'
+import Functions from '../../Includes/Functions'
 import Types from '../../Includes/Types/Types'
 import NotificationTypes from '../../Includes/Types/NotificationTypes'
 import styles from './styles'
-import FastImage from 'react-native-fast-image'
-import Feather from 'react-native-vector-icons/Feather'
 
 interface Props {
 	theme: Types.Theme
 	notification: NotificationTypes.Notification
+	currentTime: number
 	goToPost: (post: string) => void
 }
 
@@ -26,13 +28,13 @@ class Notification extends React.PureComponent<Props, State> {
 		let { notification, theme } = this.props
 
 		return (
-			<View style={{ flexDirection: 'row', padding: 10 }}>
-				<FastImage source={{ uri: notification.user.profilePhoto }} style={{ width: 50, height: 50, borderRadius: 50 }} />
-				<View style={{ marginLeft: 10, flex: 1, justifyContent: 'center' }}>
-					<Text style={{}} numberOfLines={1}>
+			<View style={[styles.notification, { backgroundColor: theme.colors.surface }]}>
+				<FastImage source={{ uri: notification.user.profilePhoto }} style={styles.userPhoto} />
+				<View style={styles.inner}>
+					<Text numberOfLines={1}>
 						<Text style={{ fontFamily: Config.fonts.semi }}>{notification.user.username}</Text>
 						{'   '}
-						<Text style={{}}>
+						<Text>
 							{notification.type === 'comment'
 								? 'Senin gönderine yorum yaptı'
 								: notification.type === 'commentlike'
@@ -49,8 +51,8 @@ class Notification extends React.PureComponent<Props, State> {
 						</Text>
 					</Text>
 					{notification.content ? <Text>{notification.content}</Text> : <></>}
-					<Text style={{}}>
-						<Feather name='clock' style={{}} /> <Text style={{}}>{notification.time}</Text>
+					<Text>
+						<Feather name='clock' /> <Text>{Functions.convertTime(notification.time, this.props.currentTime)}</Text>
 					</Text>
 				</View>
 			</View>

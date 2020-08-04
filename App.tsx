@@ -2,19 +2,21 @@ import 'react-native-gesture-handler'
 
 import React from 'react'
 import { View, StatusBar, Appearance } from 'react-native'
-import { Provider as PaperProvider } from 'react-native-paper'
+import { Provider as PaperProvider, Portal, Snackbar, Text } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 import { NavigationActions } from 'react-navigation'
 import AppRouter from './App/router'
 import Storage from './App/Includes/Storage'
 import Theme from './App/Includes/Theme/Theme'
 import Types from './App/Includes/Types/Types'
+import Api from './App/Includes/Api'
 
 export default class App extends React.PureComponent<{}, Types.AppState> {
 	constructor(props: {}) {
 		super(props)
 
 		this.state = {
+			ready: false,
 			theme: 'dark',
 			selectedTheme: 'dark',
 			notification: true,
@@ -25,6 +27,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				username: null,
 				token: null,
 			},
+			errorMessage: false,
 		}
 	}
 
@@ -37,7 +40,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			username: '',
 		})
 		let allSettings: any = {}
-		let stateObject: any = {}
+		let stateObject: any = {
+			ready: true,
+		}
 
 		if (!settings) {
 			allSettings = {
@@ -116,7 +121,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 
 		this.setState(stateObject, () => {
-			if (!this.state.user.active){
+			if (!this.state.user.active) {
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
 			}
 		})
@@ -140,7 +145,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	setTheme = (theme: Types.SupportedThemes, callback?: () => void) => {
 		Storage.set('theme', theme)
 
-		let selectedTheme: 'dark' | 'light' = "light"
+		let selectedTheme: 'dark' | 'light' = 'light'
 
 		if (theme === 'system') {
 			let colorScheme = Appearance.getColorScheme()
@@ -156,7 +161,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			selectedTheme = theme === 'dark' ? 'dark' : 'light'
 		}
 
-		if (this.state.selectedTheme !== theme && this.state.theme !== selectedTheme){
+		if (this.state.selectedTheme !== theme && this.state.theme !== selectedTheme) {
 			this.setState({ selectedTheme: theme, theme: selectedTheme }, () => {
 				if (callback) {
 					callback()
@@ -172,6 +177,51 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	}
 
 	getIsVideoMuted = () => this.isVideoMuted
+
+	logout = async (runtime?: boolean) => {
+		let isSet = await Storage.setMultiple({
+			token: '',
+			username: '',
+		})
+		if (isSet) {
+			this.setState({
+				user: {
+					active: false,
+					token: '',
+					username: '',
+				},
+			})
+
+			let response = await Api.logout({ token: this.state.user.token })
+			if (response && response.status) {
+			} else {
+				this._navigationRef.dispatch(
+					NavigationActions.navigate({
+						routeName: 'authStack',
+						params: {
+							showMessage: runtime ? 'no_login' : undefined,
+						},
+					})
+				)
+			}
+		}
+	}
+
+	unknown_error = (error?: string) => {
+		if (error) {
+			this.setState({ errorMessage: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' + error })
+		} else {
+			this.setState({ errorMessage: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' })
+		}
+	}
+
+	error = (error: string) => {
+		this.setState({ errorMessage: error })
+	}
+
+	onSnackbarDismiss = () => {
+		this.setState({ errorMessage: false })
+	}
 
 	render() {
 		return (
@@ -190,23 +240,36 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					}}
 					theme={Theme[this.state.theme]}
 				>
-					<AppRouter
-						ref={this._setNavigationRef}
-						theme={this.state.theme}
-						screenProps={
-							{
-								theme: Theme[this.state.theme],
-								user: this.state.user,
-								selectedTheme: this.state.selectedTheme,
+					{this.state.ready ? (
+						<AppRouter
+							ref={this._setNavigationRef}
+							theme={this.state.theme}
+							screenProps={
+								{
+									theme: Theme[this.state.theme],
+									user: this.state.user,
+									selectedTheme: this.state.selectedTheme,
+									logout: this.logout,
+									unknown_error: this.unknown_error,
+									error: this.error,
 
-								setUserData: this.setUserData,
-								setTheme: this.setTheme,
-								setIsVideoMuted: this.setIsVideoMuted,
+									setUserData: this.setUserData,
+									setTheme: this.setTheme,
+									setIsVideoMuted: this.setIsVideoMuted,
 
-								getIsVideoMuted: this.getIsVideoMuted,
-							} as Types.ScreenProps
-						}
-					/>
+									getIsVideoMuted: this.getIsVideoMuted,
+								} as Types.ScreenProps
+							}
+						/>
+					) : (
+						<></>
+					)}
+
+					<Portal>
+						<Snackbar visible={!!this.state.errorMessage} onDismiss={this.onSnackbarDismiss}>
+							<Text style={{ color: Theme[this.state.theme].colors.contrast }}>{this.state.errorMessage}</Text>
+						</Snackbar>
+					</Portal>
 				</PaperProvider>
 			</View>
 		)

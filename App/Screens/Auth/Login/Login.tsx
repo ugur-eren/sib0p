@@ -58,14 +58,11 @@ class Login extends React.PureComponent<Props, State> {
 		let login = await Api.login({ username: username, password: password })
 
 		if (!login) {
-			console.log(login)
-			return
+			return this.props.navigation.getScreenProps().unknown_error()
 		}
-
 		if (login.status) {
-			if (!login.token && !login.username) {
-				console.log(login)
-				return
+			if (!login.token || !login.username) {
+				return this.props.navigation.getScreenProps().unknown_error('Giriş bilgileri alınamadı. Lütfen daha sonra tekrar deneyiniz.')
 			}
 
 			await Storage.setMultiple({
@@ -76,11 +73,21 @@ class Login extends React.PureComponent<Props, State> {
 			this.props.navigation.getScreenProps().setUserData({
 				active: true,
 				token: login.token,
-				username: login.username
+				username: login.username,
 			})
-			this.props.navigation.navigate("mainStack")
+			this.props.navigation.navigate('mainStack')
 		} else {
-			console.log(login.error)
+			this.props.navigation
+				.getScreenProps()
+				.error(
+					login.error === 'wrong_username'
+						? 'Lütfen kullanıcı adınızın sadece ingilizce karakterler, sayı, nokta ve çizgilerden oluştuğundan emin olunuz.'
+						: login.error === 'no_user'
+						? 'Böyle bir kullanıcı bulunamadı. Lütfen kullanıcı adınızı kontrol ediniz.'
+						: login.error === 'wrong_password'
+						? 'Yanlış Parola girdiniz. Lütfen parolanızı kontrol ediniz.'
+						: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' + login.error
+				)
 		}
 	}
 

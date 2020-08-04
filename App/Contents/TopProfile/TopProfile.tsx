@@ -3,7 +3,6 @@ import { View, Platform } from 'react-native'
 import { Text, IconButton, withTheme } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import Feather from 'react-native-vector-icons/Feather'
 import Types from '../../Includes/Types/Types'
 import UserTypes from '../../Includes/Types/UserTypes'
 import PostTypes from '../../Includes/Types/PostTypes'
@@ -63,7 +62,12 @@ class Post extends React.PureComponent<Props, State> {
 				</View>
 
 				{this.props.openModal ? (
-					<IconButton icon={Platform.OS === 'ios' ? 'more-horizontal' : 'more-vertical'} size={21} onPress={this.openModal} />
+					<IconButton
+						style={{ right: -10 }}
+						icon={Platform.OS === 'ios' ? 'more-horizontal' : 'more-vertical'}
+						size={21}
+						onPress={this.openModal}
+					/>
 				) : (
 					<></>
 				)}

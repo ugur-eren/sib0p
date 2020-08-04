@@ -39,10 +39,10 @@ export default new (class Functions {
 				},
 				body: joinedBody,
 			})
-				.then((response) => response.json())
+				.then((response) => response.text())
 				.then((data) => {
 					console.log(method, data)
-					resolve(data)
+					resolve(JSON.parse(data))
 				})
 				.catch((err) => {
 					console.log('api error', this.uri + method + '.php', err)
@@ -59,6 +59,10 @@ export default new (class Functions {
 		return this.post('Login', params)
 	}
 
+	logout = (params: Params): Response<ApiTypes.LogoutResponse> => {
+		return this.post('Logout', params)
+	}
+
 	getExplore = (params: Params): Response<ApiTypes.GetExploreResponse> => {
 		return this.post('GetExplore', params)
 	}
@@ -69,5 +73,9 @@ export default new (class Functions {
 
 	getProfile = (params: Params): Response<ApiTypes.GetProfileResponse> => {
 		return this.post('GetProfile', params)
+	}
+
+	getNotifications = (params: Params): Response<ApiTypes.GetNotificationsResponse> => {
+		return this.post('GetNotifications', params)
 	}
 })()
