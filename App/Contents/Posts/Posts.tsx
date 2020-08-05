@@ -143,7 +143,7 @@ class Posts extends React.PureComponent<Props, State> {
 					contentContainerStyle={this.props.contentContainerStyle}
 				/>
 
-				<Modalize ref={this._setModalizeRef} adjustToContentHeight>
+				<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{backgroundColor: this.props.theme.colors.surface}}>
 					<List.Section>
 						<List.Item title='Paylaş' onPress={this.sharePost} left={(props) => <List.Icon {...props} style={{}} icon='share-2' />} />
 						<List.Item

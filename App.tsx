@@ -5,6 +5,7 @@ import { View, StatusBar, Appearance } from 'react-native'
 import { Provider as PaperProvider, Portal, Snackbar, Text } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 import { NavigationActions } from 'react-navigation'
+import SplashScreen from 'react-native-splash-screen'
 import AppRouter from './App/router'
 import Storage from './App/Includes/Storage'
 import Theme from './App/Includes/Theme/Theme'
@@ -121,6 +122,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 
 		this.setState(stateObject, () => {
+			SplashScreen.hide();
 			if (!this.state.user.active) {
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
 			}
