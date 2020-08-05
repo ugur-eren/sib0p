@@ -1,12 +1,16 @@
 import React from 'react'
-import { View, RefreshControl } from 'react-native'
-import { withTheme, Divider } from 'react-native-paper'
+import { View, RefreshControl, Dimensions } from 'react-native'
+import { Text, Divider, withTheme } from 'react-native-paper'
 import { FlatList } from 'react-native-gesture-handler'
+import FastImage from 'react-native-fast-image'
 import Types from '../../Includes/Types/Types'
 import NotificationTypes from '../../Includes/Types/NotificationTypes'
 import styles from './styles'
 import Notification from './Notification'
 import Api from '../../Includes/Api'
+import Loader from './Loader'
+import EmptyList from '../../Components/EmptyList/EmptyList'
+import Config from '../../Includes/Config'
 
 interface Props {
 	navigation: Types.Navigation
@@ -42,7 +46,7 @@ class Notifications extends React.PureComponent<Props, State> {
 		}
 		let notifs = await Api.getNotifications({
 			token: this.props.navigation.getScreenProps().user.token,
-			last: nextPage ? this.state.notifications[this.state.notifications.length - 1].time : 0,
+			last: nextPage ? this.state.notifications[this.state.notifications.length - 1].id : 0,
 		})
 		let stateObject = {}
 
@@ -82,20 +86,30 @@ class Notifications extends React.PureComponent<Props, State> {
 	_renderItem = ({ item }: { item: NotificationTypes.Notification }) => (
 		<Notification notification={item} goToPost={this.goToPost} currentTime={this.state.currentTime} />
 	)
-	_keyExtractor = (item: NotificationTypes.Notification) => item.id.toString()
+	_keyExtractor = (item: NotificationTypes.Notification, index: number) => index.toString()
 	_itemSeperatorComponent = () => <Divider />
+	_emptyComponent = () => (
+		<EmptyList image={require('../../Assets/Images/no-notifications.png')} title='Son 3 gün içinde okunmamış bildiriminiz bulunmamaktadır' />
+	)
 
 	render() {
+		let { theme } = this.props
+
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
-				<FlatList
-					data={this.state.notifications}
-					renderItem={this._renderItem}
-					keyExtractor={this._keyExtractor}
-					ItemSeparatorComponent={this._itemSeperatorComponent}
-					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
-					onEndReached={this.getNextPage}
-				/>
+				{this.state.loading ? (
+					<Loader theme={theme} />
+				) : (
+					<FlatList
+						data={this.state.notifications}
+						renderItem={this._renderItem}
+						keyExtractor={this._keyExtractor}
+						ItemSeparatorComponent={this._itemSeperatorComponent}
+						refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
+						onEndReached={this.getNextPage}
+						ListEmptyComponent={this._emptyComponent}
+					/>
+				)}
 			</View>
 		)
 	}

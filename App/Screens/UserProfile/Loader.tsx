@@ -9,43 +9,43 @@ const Loader = (props: { theme: Types.Theme }) => (
 			<PlaceholderLine height={60} />
 		</Placeholder>
 
-		<Placeholder Animation={Fade} style={{ opacity: 0.3, marginBottom: -240 }}>
+		<Placeholder Animation={Fade} style={styles.background}>
 			<PlaceholderLine height={200} />
 		</Placeholder>
 
 		<Placeholder Animation={Fade}>
-			<View style={{ flexDirection: 'row' }}>
-				<PlaceholderMedia isRound size={100} style={{ marginLeft: 10 }} />
-				<View style={{ flex: 1 }}>
-					<PlaceholderLine style={{ top: 50, marginLeft: 10 }} width={30} />
-					<PlaceholderLine style={{ top: 50, marginLeft: 10 }} width={50} />
+			<View style={styles.ppContainer}>
+				<PlaceholderMedia isRound size={100} style={styles.pp} />
+				<View style={styles.container}>
+					<PlaceholderLine style={styles.unm} width={30} />
+					<PlaceholderLine style={styles.unm} width={50} />
 				</View>
 			</View>
 
-			<View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+			<View style={styles.bio}>
 				<PlaceholderLine />
 				<PlaceholderLine />
 			</View>
 		</Placeholder>
 
 		<Placeholder Animation={Fade}>
-			<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-				<View style={{ flex: 1, alignItems: 'center' }}>
+			<View style={styles.info}>
+				<View style={styles.data}>
 					<PlaceholderLine width={20} />
 					<PlaceholderLine width={15} />
 				</View>
-				<View style={{ flex: 1, alignItems: 'center' }}>
+				<View style={styles.data}>
 					<PlaceholderLine width={20} />
 					<PlaceholderLine width={15} />
 				</View>
-				<View style={{ flex: 1, alignItems: 'center' }}>
+				<View style={styles.data}>
 					<PlaceholderLine width={20} />
 					<PlaceholderLine width={15} />
 				</View>
 			</View>
 		</Placeholder>
 
-        <View style={{marginTop: 30}} />
+		<View style={{ marginTop: 30 }} />
 
 		<Placeholder
 			Animation={Fade}
@@ -80,6 +80,32 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		marginBottom: -120,
+	},
+	background: {
+		opacity: 0.3,
+		marginBottom: -240,
+	},
+	ppContainer: {
+		flexDirection: 'row',
+	},
+	pp: {
+		marginLeft: 10,
+	},
+	unm: {
+		top: 50,
+		marginLeft: 10,
+	},
+	bio: {
+		paddingHorizontal: 20,
+		marginTop: 10,
+	},
+	info: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+	data: {
+		flex: 1,
+		alignItems: 'center',
 	},
 	paddingHorizontal: {
 		paddingHorizontal: 20,

@@ -29,25 +29,33 @@ class Notification extends React.PureComponent<Props, State> {
 
 		return (
 			<View style={[styles.notification, { backgroundColor: theme.colors.surface }]}>
-				<FastImage source={{ uri: notification.user.profilePhoto }} style={styles.userPhoto} />
+				{notification.type === 'warning' ? (
+					<Feather name='alert-circle' size={46} color={theme.colors.main} />
+				) : (
+					<FastImage source={{ uri: notification.user.profilePhoto }} style={styles.userPhoto} />
+				)}
 				<View style={styles.inner}>
 					<Text numberOfLines={1}>
 						<Text style={{ fontFamily: Config.fonts.semi }}>{notification.user.username}</Text>
 						{'   '}
 						<Text>
 							{notification.type === 'comment'
-								? 'Senin gönderine yorum yaptı'
-								: notification.type === 'commentlike'
-								? 'Senin yorumunu beğendi'
+								? 'senin gönderine yorum yaptı'
+								: notification.type === 'comment_like'
+								? 'senin yorumunu beğendi'
 								: notification.type === 'follow'
-								? 'Seni takip etmeye başladı'
+								? 'seni takip etmeye başladı'
 								: notification.type === 'like'
-								? 'Senin gönderini beğendi'
-								: notification.type === 'commenttag'
-								? 'Seni bir yorumda etiketledi'
+								? 'senin gönderini beğendi'
+								: notification.type === 'commtag'
+								? 'seni bir yorumda etiketledi'
 								: notification.type === 'posttag'
-								? 'Seni bir gönderide etiketledi'
-								: ''}
+								? 'seni bir gönderide etiketledi'
+								: notification.type === 'unfollow'
+								? 'seni takipten çıkardı'
+								: notification.type === 'warning'
+								? 'Bir uyarı aldınız: '
+								: 'senin gönderini beğendi'}
 						</Text>
 					</Text>
 					{notification.content ? <Text>{notification.content}</Text> : <></>}

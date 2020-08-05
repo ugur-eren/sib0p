@@ -5,7 +5,7 @@ declare namespace NotificationTypes {
 		id: number
 		user: UserTypes.TopContent
 		time: number
-		type: 'comment' | 'like' | 'commentlike' | 'follow' | 'commenttag' | 'posttag' | 'warning'
+		type: 'comment' | 'like' | 'comment_like' | 'follow' | 'unfollow' | 'commtag' | 'posttag' | 'warning'
 		post?: string
 		content?: string
 	}
