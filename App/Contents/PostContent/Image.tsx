@@ -1,10 +1,11 @@
 import React from 'react'
 import { View, Dimensions, StyleProp, ImageStyle } from 'react-native'
+import { withTheme } from 'react-native-paper'
 import FastImage, { OnProgressEvent } from 'react-native-fast-image'
 import { Circle as CircleProgress } from 'react-native-progress'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
-import { withTheme } from 'react-native-paper'
+import styles from './styles'
 
 interface Props {
 	theme: Types.Theme
@@ -59,28 +60,14 @@ class Image extends React.PureComponent<Props, State> {
 				{this.state.imageProgress == 1 ? (
 					<></>
 				) : (
-					<View
-						style={{
-							backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .8)',
-							position: 'absolute',
-							left: 0,
-							top: 0,
-							width: '100%',
-							height: '100%',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}
-					>
-						<FastImage
-							style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%' }}
-							source={{ uri: 'data:image/jpeg;base64,' + post.thumbnail }}
-						/>
+					<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .8)' }]}>
+						<FastImage style={styles.loader} source={{ uri: 'data:image/jpeg;base64,' + post.thumbnail }} />
 						<CircleProgress
 							size={120}
 							progress={this.state.imageProgress}
 							color={theme.colors.main}
-							showsText
 							formatText={this._formatImageLoadingText}
+							showsText
 						/>
 					</View>
 				)}

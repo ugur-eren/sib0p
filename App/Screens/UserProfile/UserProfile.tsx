@@ -12,6 +12,7 @@ import Posts from '../../Contents/Posts/Posts'
 import Api from '../../Includes/Api'
 import PostTypes from '../../Includes/Types/PostTypes'
 import Loader from './Loader'
+import EmptyList from '../../Components/EmptyList/EmptyList'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -236,6 +237,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 		)
 	}
 
+	_emptyComponent = () => <EmptyList image={require('../../Assets/Images/no-posts.png')} title='Hiç post bulunamadı' />
+
 	render() {
 		let { theme } = this.props
 
@@ -253,6 +256,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 						navigation={this.props.navigation}
 						refresh={this.refresh}
 						ListHeaderComponent={this._renderHeader}
+						ListEmptyComponent={this._emptyComponent}
 						noUserTouchable
 					/>
 				)}

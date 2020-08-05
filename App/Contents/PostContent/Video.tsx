@@ -7,6 +7,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import ActivityIndicator from '../../Components/ActivityIndicator/ActivityIndicator'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
+import styles from './styles'
 
 interface Props {
 	theme: Types.Theme
@@ -81,34 +82,14 @@ class Video extends React.PureComponent<Props, State> {
 				{this.state.ready && !this.state.error ? (
 					<></>
 				) : (
-					<View
-						style={{
-							backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)',
-							position: 'absolute',
-							left: 0,
-							top: 0,
-							width: '100%',
-							height: '100%',
-							alignItems: 'center',
-							justifyContent: 'center',
-						}}
-					>
+					<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
 						<ActivityIndicator size={36} />
 					</View>
 				)}
 				{this.state.error ? (
 					<TouchableOpacity
 						onPress={this.tryAgain}
-						style={{
-							backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)',
-							position: 'absolute',
-							left: 0,
-							top: 0,
-							width: '100%',
-							height: '100%',
-							alignItems: 'center',
-							justifyContent: 'center',
-						}}
+						style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}
 					>
 						<Text>Video yüklenemedi. Tekrar denemek için dokunun.</Text>
 					</TouchableOpacity>
@@ -116,23 +97,8 @@ class Video extends React.PureComponent<Props, State> {
 					<></>
 				)}
 				{this.state.muted ? (
-					<View
-						style={{
-							position: 'absolute',
-							top: 10,
-							right: 10,
-						}}
-					>
-						<Feather
-							name='volume-x'
-							size={24}
-							color={'white'}
-							style={{
-								textShadowColor: 'rgba(0, 0, 0, 1)',
-								textShadowOffset: { width: 0, height: 0 },
-								textShadowRadius: 10,
-							}}
-						/>
+					<View style={styles.mutedContainer}>
+						<Feather name='volume-x' size={24} color={'white'} style={styles.muted} />
 					</View>
 				) : (
 					<></>

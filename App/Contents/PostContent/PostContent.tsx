@@ -38,7 +38,7 @@ class PostContent extends React.PureComponent<Props, State> {
 			return <Video navigation={navigation} post={post} isVisible={isVisible} style={this.props.style} />
 		}
 		if (post.type === 'poll') {
-			return <FastImage source={{ uri: post.uri }} style={[this.props.style, { height: this.width / post.ratio }]} />
+			return <></>
 		}
 	}
 }

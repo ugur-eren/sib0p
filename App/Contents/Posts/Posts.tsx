@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList, RefreshControl, Share, StyleProp, ViewStyle, Platform } from 'react-native'
+import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle } from 'react-native'
 import { List, withTheme } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
@@ -18,6 +18,7 @@ interface Props {
 	getNextPage: () => Promise<any>
 	noUserTouchable?: boolean
 	ListHeaderComponent?: () => JSX.Element
+	ListEmptyComponent?: () => JSX.Element
 	style?: StyleProp<ViewStyle>
 	contentContainerStyle?: StyleProp<ViewStyle>
 }
@@ -26,6 +27,7 @@ interface State {
 	visibleItem: string
 	refreshing: boolean
 	focused: boolean
+	activePost: PostTypes.Post
 }
 
 class Posts extends React.PureComponent<Props, State> {
@@ -36,6 +38,7 @@ class Posts extends React.PureComponent<Props, State> {
 			visibleItem: '',
 			refreshing: false,
 			focused: true,
+			activePost: null
 		}
 	}
 
@@ -46,7 +49,6 @@ class Posts extends React.PureComponent<Props, State> {
 	private focusListener: any = null
 	private blurListener: any = null
 	private modalRef: any = null
-	private activePost: PostTypes.Post = null
 
 	componentDidMount() {
 		this.focusListener = this.props.navigation.addListener('didFocus', () => {
@@ -100,21 +102,24 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	openModal = (post: PostTypes.Post) => {
-		this.activePost = post
+		this.setState({activePost: post})
 		this.modalRef?.open()
 	}
 
 	sharePost = () => {
 		Share.share({
-			message: 'sib0p\'da paylaşılan bu postu seveceğini düşünüyorum: ' + Config.siteUri + 'post/' + this.activePost.id,
-			url: Config.siteUri + 'post/' + this.activePost.id,
-			title: Config.siteUri + 'post/' + this.activePost.id,
+			message: "sib0p'da paylaşılan bu postu seveceğini düşünüyorum: " + Config.siteUri + 'post/' + this.state.activePost.id,
+			url: Config.siteUri + 'post/' + this.state.activePost.id,
+			title: Config.siteUri + 'post/' + this.state.activePost.id,
 		})
 		this.modalRef?.close()
 	}
 
 	reportPost = () => {
+		this.modalRef?.close()
+	}
 
+	deletePost = () => {
 		this.modalRef?.close()
 	}
 
@@ -133,25 +138,28 @@ class Posts extends React.PureComponent<Props, State> {
 					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
 					onEndReached={this.props.getNextPage}
 					ListHeaderComponent={this.props.ListHeaderComponent}
+					ListEmptyComponent={this.props.ListEmptyComponent}
 					style={this.props.style}
 					contentContainerStyle={this.props.contentContainerStyle}
 				/>
-				
-				<Modalize
-					ref={this._setModalizeRef}
-					adjustToContentHeight
-				>
+
+				<Modalize ref={this._setModalizeRef} adjustToContentHeight>
 					<List.Section>
+						<List.Item title='Paylaş' onPress={this.sharePost} left={(props) => <List.Icon {...props} style={{}} icon='share-2' />} />
 						<List.Item
-							title="Paylaş"
-							onPress={this.sharePost}
-							left={(props) => <List.Icon {...props} style={{}} icon='share-2' />}
-						/>
-						<List.Item
-							title="Şikayet Et"
+							title='Şikayet Et'
 							onPress={this.reportPost}
 							left={(props) => <List.Icon {...props} style={{}} icon='alert-circle' />}
 						/>
+						{this.state.activePost?.isMine ? (
+							<List.Item
+								title='Sil'
+								onPress={this.deletePost}
+								left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />}
+							/>
+						) : (
+							<></>
+						)}
 					</List.Section>
 				</Modalize>
 			</>

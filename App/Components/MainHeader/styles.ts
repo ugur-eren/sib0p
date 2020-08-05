@@ -1,8 +1,11 @@
 import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
-	post: {
-		width: '100%',
-		marginTop: 10,
+	logoContainer: {
+		flex: 1,
+		paddingVertical: 12,
+	},
+	logo: {
+		flex: 1,
 	},
 })

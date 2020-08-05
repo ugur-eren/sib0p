@@ -14,4 +14,13 @@ export default StyleSheet.create({
         alignItems: 'center',
 		width: '100%',
 	},
+	backButton: {
+		marginRight: 20
+	},
+	leftPlus: {
+		left: 5
+	},
+	leftMinus: {
+		left: -15
+	}
 })

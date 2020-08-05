@@ -4,6 +4,8 @@ import Config from '../../Includes/Config'
 export default StyleSheet.create({
 	emptyContainer: {
 		width: Dimensions.get('window').width,
+		marginTop: 10,
+		marginBottom: 20,
 	},
 	emptyImageFix: {
 		paddingBottom: '100%',

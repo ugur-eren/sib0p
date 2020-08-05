@@ -14,6 +14,7 @@ declare namespace PostTypes {
 		hasDisliked: boolean
 		commentsCount: number
 		featuredComments: CommentTypes.Comment[]
+		isMine: boolean
 	}
 	
 	export interface PostData {

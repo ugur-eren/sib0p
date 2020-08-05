@@ -1,16 +1,13 @@
 import React from 'react'
-import { View, RefreshControl, Dimensions } from 'react-native'
-import { Text, Divider, withTheme } from 'react-native-paper'
-import { FlatList } from 'react-native-gesture-handler'
-import FastImage from 'react-native-fast-image'
+import { View, RefreshControl, FlatList } from 'react-native'
+import { Divider, withTheme } from 'react-native-paper'
+import EmptyList from '../../Components/EmptyList/EmptyList'
+import Api from '../../Includes/Api'
+import Notification from './Notification'
+import Loader from './Loader'
 import Types from '../../Includes/Types/Types'
 import NotificationTypes from '../../Includes/Types/NotificationTypes'
 import styles from './styles'
-import Notification from './Notification'
-import Api from '../../Includes/Api'
-import Loader from './Loader'
-import EmptyList from '../../Components/EmptyList/EmptyList'
-import Config from '../../Includes/Config'
 
 interface Props {
 	navigation: Types.Navigation
