@@ -17,7 +17,7 @@ class FeaturedComment extends React.PureComponent<Props> {
             <View style={styles.comment}>
                 <Text style={styles.commentAuthor}>{this.props.comment.user.username}</Text>
                 <Text style={styles.commentText} numberOfLines={1}>
-                    {Functions.replaceUserTagWithPage(this.props.comment.content)}
+                    {Functions.replaceTags(this.props.comment.content)}
                 </Text>
             </View>
         )

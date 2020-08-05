@@ -3,6 +3,7 @@ import { View, FlatList, SafeAreaView, TextInput, RefreshControl } from 'react-n
 import { Divider, withTheme } from 'react-native-paper'
 import Header from '../../Components/Header/Header'
 import TextButton from '../../Components/TextButton/TextButton'
+import EmptyList from '../../Components/EmptyList/EmptyList'
 import Types from '../../Includes/Types/Types'
 import CommentTypes from '../../Includes/Types/CommentTypes'
 import Api from '../../Includes/Api'
@@ -49,11 +50,18 @@ class Comments extends React.PureComponent<Props, State> {
 			this.setState({ loading: true })
 		}
 		let isOk = false
-		let comments = await Api.getComments({ token: this.props.navigation.getScreenProps().user.token, post: this.postId, last: nextPage ? this.state.comments[this.state.comments.length - 1].time : 0 })
+		let comments = await Api.getComments({
+			token: this.props.navigation.getScreenProps().user.token,
+			post: this.postId,
+			last: nextPage ? this.state.comments[this.state.comments.length - 1].time : 0,
+		})
 		if (comments) {
 			if (comments.status) {
 				isOk = true
-				this.setState({ comments: nextPage ? [...this.state.comments, ...comments.comments] : comments.comments, currentTime: comments.currentTime })
+				this.setState({
+					comments: nextPage ? [...this.state.comments, ...comments.comments] : comments.comments,
+					currentTime: comments.currentTime,
+				})
 			} else {
 				if (comments.error === 'no_login') {
 					this.props.navigation.getScreenProps().logout(true)
@@ -107,6 +115,7 @@ class Comments extends React.PureComponent<Props, State> {
 	_renderItem = ({ item }) => <Comment navigation={this.props.navigation} comment={item} currentTime={this.state.currentTime} />
 	_itemSeperator = () => <Divider style={styles.itemSeperator} />
 	_keyExtractor = (item: CommentTypes.Comment) => item.id
+	_emptyComponent = () => <EmptyList image={require('../../Assets/Images/no-comments.png')} title='Bu gönderiye hiç yorum yapılmamış.' />
 
 	render() {
 		let { theme } = this.props
@@ -120,6 +129,7 @@ class Comments extends React.PureComponent<Props, State> {
 					ItemSeparatorComponent={this._itemSeperator}
 					renderItem={this._renderItem}
 					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
+					ListEmptyComponent={this._emptyComponent}
 					onEndReached={this.getNextPage}
 				/>
 

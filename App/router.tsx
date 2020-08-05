@@ -21,6 +21,7 @@ import UserProfile from './Screens/UserProfile/UserProfile'
 import FollowsList from './Screens/FollowsList/FollowsList'
 import Settings from './Screens/Settings/Settings'
 import Search from './Screens/Search/Search'
+import SinglePost from './Screens/SinglePost/SinglePost'
 
 const passwordRecoveryStack = createSwitchNavigator(
 	{
@@ -138,6 +139,9 @@ const mainStack = createStackNavigator(
 		Search: {
 			screen: Search,
 		},
+		SinglePost: {
+			screen: SinglePost,
+		}
 	},
 	{
 		defaultNavigationOptions: {

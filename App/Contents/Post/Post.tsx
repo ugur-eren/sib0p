@@ -1,5 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
+import { WebView } from 'react-native-webview'
 import { Text, Divider, withTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import PostContainer from '../PostContainer/PostContainer'
@@ -20,6 +21,7 @@ interface Props {
 	openModal: (post: PostTypes.Post) => void
 	noUser?: boolean
 	noUserTouchable?: boolean
+	commentsVisible?: boolean
 }
 
 interface State {}
@@ -32,12 +34,17 @@ class Post extends React.PureComponent<Props, State> {
 	}
 
 	render() {
-		let { post, theme } = this.props
+		let { post, theme, navigation } = this.props
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
 				{!this.props.noUser ? (
 					<TopProfile
-						user={{ username: post.user.username, profilePhoto: post.user.profilePhoto, time: Functions.convertTime(post.time, this.props.currentTime), isFollowed: post.user.isFollowed }}
+						user={{
+							username: post.user.username,
+							profilePhoto: post.user.profilePhoto,
+							time: Functions.convertTime(post.time, this.props.currentTime),
+							isFollowed: post.user.isFollowed,
+						}}
 						post={post}
 						navigation={this.props.navigation}
 						noUserTouchable={this.props.noUserTouchable}
@@ -47,9 +54,13 @@ class Post extends React.PureComponent<Props, State> {
 					<></>
 				)}
 
-				{post.description ? <Text style={styles.description}>{post.description}</Text> : <></>}
+				{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
 
-				{post.postData.length > 0 ? <PostContainer postData={post.postData} navigation={this.props.navigation} isVisible={this.props.isVisible} /> : <></>}
+				{post.postData.length > 0 ? (
+					<PostContainer postData={post.postData} navigation={this.props.navigation} isVisible={this.props.isVisible} />
+				) : (
+					<></>
+				)}
 
 				<View style={styles.bottomContainer}>
 					<View style={styles.buttons}>
@@ -69,7 +80,9 @@ class Post extends React.PureComponent<Props, State> {
 					</View>
 				</View>
 
-				{post.commentsCount > 0 ? (
+				{this.props.commentsVisible ? (
+					<></>
+				) : (
 					<>
 						<Divider style={styles.bottomDivider} />
 						<TouchableOpacity
@@ -78,11 +91,13 @@ class Post extends React.PureComponent<Props, State> {
 								this.props.navigation.push('Comments', { post: post.id })
 							}}
 						>
-							<FeaturedComments comments={post.featuredComments} />
+							{post.commentsCount > 0 ? (
+								<FeaturedComments comments={post.featuredComments} />
+							) : (
+								<Text style={styles.noComments}>Hiç yorum yok</Text>
+							)}
 						</TouchableOpacity>
 					</>
-				) : (
-					<></>
 				)}
 			</View>
 		)

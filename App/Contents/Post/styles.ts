@@ -34,4 +34,7 @@ export default StyleSheet.create({
 		flex: 1,
 		marginBottom: 10,
 	},
+	noComments: {
+		paddingHorizontal: 10
+	}
 })
