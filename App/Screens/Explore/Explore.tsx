@@ -10,7 +10,9 @@ import styles from './styles'
 import Loader from './Loader'
 
 interface Props {
-	navigation: Types.Navigation
+	navigation: Types.Navigation<{
+		type: 'explore' | 'follows'
+	}>
 	theme: Types.Theme
 }
 
@@ -32,6 +34,7 @@ class Explore extends React.PureComponent<Props, State> {
 	}
 
 	private newPageActive: boolean = false
+	private pageType = this.props.navigation.getParam("type")
 
 	async componentDidMount() {
 		this.init()
@@ -44,6 +47,7 @@ class Explore extends React.PureComponent<Props, State> {
 		let posts = await Api.getExplore({
 			token: this.props.navigation.getScreenProps().user.token,
 			last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
+			type: this.pageType
 		})
 
 		let stateObject = {}

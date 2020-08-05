@@ -69,6 +69,9 @@ const bottomStack = createMaterialBottomTabNavigator(
 				tabBarIcon: tabBarIcon('compass'),
 				title: 'Keşfet',
 			},
+			params: {
+				type: 'explore'
+			}
 		},
 		Follows: {
 			screen: Explore,
@@ -76,6 +79,9 @@ const bottomStack = createMaterialBottomTabNavigator(
 				tabBarIcon: tabBarIcon('users'),
 				title: 'Takip',
 			},
+			params: {
+				type: 'follows'
+			}
 		},
 		ShareInitiator: {
 			screen: ShareInitiator,
