@@ -52,7 +52,7 @@ export default new (class Functions {
 	}
 
 	checkConnection = (): Response<ApiTypes.CheckConnectionResponse> => {
-		return this.get('checkConnection')
+		return this.get('CheckConnection')
 	}
 
 	login = (params: Params): Response<ApiTypes.LoginResponse> => {

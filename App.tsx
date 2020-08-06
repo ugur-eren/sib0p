@@ -35,6 +35,17 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	}
 
 	async componentDidMount() {
+		this.init()
+	}
+
+	init = async () => {
+		let connected = await Api.checkConnection()
+		if (!connected || !connected.status){
+			return this.setState({ready: true}, () => {
+				SplashScreen.hide()
+				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+			})
+		}
 		let settings = await Storage.getMultipleWithDefault({
 			theme: 'system',
 			notification: 'true',
@@ -127,6 +138,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			SplashScreen.hide()
 			if (!this.state.user.active) {
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
+			} else {
+				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'mainStack' }))
 			}
 		})
 	}
@@ -268,6 +281,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 									error: this.error,
 
 									sharePost: this.sharePost,
+									restart: this.init,
 
 									setUserData: this.setUserData,
 									setTheme: this.setTheme,

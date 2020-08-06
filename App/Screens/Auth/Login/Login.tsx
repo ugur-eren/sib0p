@@ -114,14 +114,14 @@ class Login extends React.PureComponent<Props, State> {
 
 				<View style={styles.centerContainer}>
 					<Input
-						placeholder='Username'
+						placeholder='Kullanıcı Adı'
 						leftIcon='user'
 						value={this.state.username}
 						onChangeText={this._onUsernameChange}
 						error={this.state.usernameError}
 					/>
 					<Input
-						placeholder='Password'
+						placeholder='Parola'
 						leftIcon='lock'
 						password
 						value={this.state.password}
@@ -130,15 +130,15 @@ class Login extends React.PureComponent<Props, State> {
 					/>
 
 					<TouchableOpacity onPress={this.navigateToPasswordRecovery}>
-						<Text style={[styles.centerText, { color: theme.colors.contrast }]}>Forgot your password?</Text>
+						<Text style={[styles.centerText, { color: theme.colors.contrast }]}>Şifreni mi unuttun?</Text>
 					</TouchableOpacity>
 				</View>
 
 				<View style={styles.bottomContainer}>
-					<Button label='Login' loading={true} containerStyle={styles.buttonContainer} onPress={this._onLoginPress} />
+					<Button label='Giriş Yap' loading={true} containerStyle={styles.buttonContainer} onPress={this._onLoginPress} />
 					<TouchableOpacity onPress={this.navigateToRegister}>
 						<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
-							Don't have an account? <Text style={{ color: theme.colors.main, textAlign: 'center' }}>{'\n\n'}Register</Text>
+							Henüz bir hesabın yok mu? <Text style={{ color: theme.colors.main, textAlign: 'center' }}>{'\n\n'}Kayıt Ol</Text>
 						</Text>
 					</TouchableOpacity>
 				</View>

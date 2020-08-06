@@ -15,6 +15,7 @@ declare namespace Types {
 		error: (error: string) => void
 
 		sharePost: (message: string, tags: string[], images: string[]) => void
+		restart: () => any
 
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void
 		setTheme: (theme: SupportedThemes, callback?: () => void) => void

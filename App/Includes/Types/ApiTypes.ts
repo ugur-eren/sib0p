@@ -8,11 +8,8 @@ declare namespace ApiTypes {
 		status: boolean
 		error?: string
 	}
-	export type Response = Promise<any | false>
 
-	export interface CheckConnectionResponse extends Init {
-		connection: 'ok'
-	}
+	export interface CheckConnectionResponse extends Init {}
 
 	export interface LoginResponse extends Init {
 		token?: string

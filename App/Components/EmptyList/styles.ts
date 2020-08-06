@@ -21,5 +21,6 @@ export default StyleSheet.create({
 		fontFamily: Config.fonts.semi,
 		textAlign: 'center',
 		fontSize: 16,
+		paddingHorizontal: 20
 	},
 })

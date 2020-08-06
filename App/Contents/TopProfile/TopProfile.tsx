@@ -28,7 +28,7 @@ class Post extends React.PureComponent<Props, State> {
 	}
 
 	handleProfilePress = () => {
-		this.props.navigation.push('UserProfile', { username: "genesis" })
+		this.props.navigation.push('UserProfile', { username: this.props.user.username })
 	}
 
 	openModal = () => {

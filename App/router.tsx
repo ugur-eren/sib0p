@@ -6,10 +6,14 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 import Feather from 'react-native-vector-icons/Feather'
 import Types from './Includes/Types/Types'
 
+import NoConnection from './Screens/NoConnection/NoConnection'
+
 import Login from './Screens/Auth/Login/Login'
 import Register from './Screens/Auth/Register/Register'
+import PasswordRecoveryTemp from './Screens/Auth/PasswordRecovery/PasswordRecoveryTemp'
 import PasswordRecoveryFirst from './Screens/Auth/PasswordRecovery/PasswordRecoveryFirst'
 import PasswordRecoverySecond from './Screens/Auth/PasswordRecovery/PasswordRecoverySecond'
+
 
 import ShareInitiator from './Screens/ShareInitiator/ShareInitiator'
 import Share from './Screens/Share/Share'
@@ -48,7 +52,8 @@ const authStack = createStackNavigator(
 			screen: Register,
 		},
 		PasswordRecovery: {
-			screen: passwordRecoveryStack,
+			screen: PasswordRecoveryTemp,
+			// screen: passwordRecoveryStack,
 		},
 	},
 	{
@@ -159,12 +164,15 @@ const rootStack = createSwitchNavigator(
 		authStack: {
 			screen: authStack,
 		},
+		NoConnection: {
+			screen: NoConnection
+		},
 	},
 	{
 		defaultNavigationOptions: {
 			headerShown: false,
 		},
-		initialRouteName: 'mainStack',
+		initialRouteName: 'NoConnection',
 	}
 )
 
