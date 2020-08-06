@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, View } from 'react-native'
+import { Dimensions, View, SafeAreaView, ViewBase } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import { Bar as ProgressBar } from 'react-native-progress'
 import Types from './Types/Types'
@@ -19,7 +19,7 @@ class PostSharer extends React.PureComponent<Props, State> {
 		super(props)
 
 		this.state = {
-			active: true,
+			active: false,
 			progress: 10,
 		}
 
@@ -38,9 +38,11 @@ class PostSharer extends React.PureComponent<Props, State> {
 
 		if (this.state.active) {
 			return (
-				<View style={{ width: '100%', height: 8, borderTopWidth: 1, borderBottomWidth: 1, borderColor: theme.colors.main }}>
-					<View style={{ height: '100%', width: '10%', backgroundColor: theme.colors.main }}></View>
-				</View>
+				<SafeAreaView style={{backgroundColor: theme.colors.primary}}>
+					<View style={{ width: '100%', height: 8, borderTopWidth: 1, borderBottomWidth: 1, borderColor: theme.colors.main }}>
+						<View style={{ height: '100%', width: '10%', backgroundColor: theme.colors.main }}></View>
+					</View>
+				</SafeAreaView>
 			)
 		} else {
 			return <></>

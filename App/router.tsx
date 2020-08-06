@@ -169,12 +169,3 @@ const rootStack = createSwitchNavigator(
 )
 
 export default createAppContainer(rootStack)
-
-/* import Test from './Screens/Test/Test'
-export default createAppContainer(createStackNavigator({
-	Test: Test
-}, {
-	defaultNavigationOptions: {
-		headerShown: false
-	}
-})) */

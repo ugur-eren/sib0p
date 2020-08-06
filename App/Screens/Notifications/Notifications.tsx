@@ -2,6 +2,7 @@ import React from 'react'
 import { View, RefreshControl, FlatList } from 'react-native'
 import { Divider, withTheme } from 'react-native-paper'
 import EmptyList from '../../Components/EmptyList/EmptyList'
+import MainHeader from '../../Components/MainHeader/MainHeader'
 import Api from '../../Includes/Api'
 import Notification from './Notification'
 import Loader from './Loader'
@@ -94,6 +95,8 @@ class Notifications extends React.PureComponent<Props, State> {
 
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
+				<MainHeader />
+
 				{this.state.loading ? (
 					<Loader theme={theme} />
 				) : (
