@@ -14,6 +14,8 @@ declare namespace Types {
 		unknown_error: (error?: string) => void
 		error: (error: string) => void
 
+		sharePost: (message: string, tags: string[], images: string[]) => void
+
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void
 		setTheme: (theme: SupportedThemes, callback?: () => void) => void
 		setIsVideoMuted: (isMuted: boolean) => void
@@ -30,6 +32,7 @@ declare namespace Types {
 		selectedLanguage: 'en' | 'tr' | 'system'
 		user: ScreenPropsUser
 		errorMessage: false | string
+		postSharing: boolean
 	}
 
 	export interface ScreenPropsUser {

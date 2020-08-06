@@ -6,6 +6,7 @@ import { Provider as PaperProvider, Portal, Snackbar, Text } from 'react-native-
 import Feather from 'react-native-vector-icons/Feather'
 import { NavigationActions } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
+import PostSharer from './App/Includes/PostSharer'
 import AppRouter from './App/router'
 import Storage from './App/Includes/Storage'
 import Theme from './App/Includes/Theme/Theme'
@@ -29,6 +30,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				token: null,
 			},
 			errorMessage: false,
+			postSharing: false,
 		}
 	}
 
@@ -122,7 +124,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 
 		this.setState(stateObject, () => {
-			SplashScreen.hide();
+			SplashScreen.hide()
 			if (!this.state.user.active) {
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
 			}
@@ -131,6 +133,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 	private isVideoMuted: boolean = false
 	private _navigationRef: any = null
+	private sharePostRef: any = null
 
 	_setNavigationRef = (ref: any) => {
 		this._navigationRef = ref
@@ -225,6 +228,14 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		this.setState({ errorMessage: false })
 	}
 
+	setSharePost = (ref: any) => {
+		this.sharePostRef = ref
+	}
+
+	sharePost = (message: string, tags: string[], images: string[]) => {
+		this.sharePostRef.sharePost(message, tags, images)
+	}
+
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -242,6 +253,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					}}
 					theme={Theme[this.state.theme]}
 				>
+					<PostSharer sharePost={this.setSharePost} />
 					{this.state.ready ? (
 						<AppRouter
 							ref={this._setNavigationRef}
@@ -254,6 +266,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 									logout: this.logout,
 									unknown_error: this.unknown_error,
 									error: this.error,
+
+									sharePost: this.sharePost,
 
 									setUserData: this.setUserData,
 									setTheme: this.setTheme,

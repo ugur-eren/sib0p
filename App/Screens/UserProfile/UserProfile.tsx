@@ -207,7 +207,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 				<View style={[styles.centerContainer, { backgroundColor: theme.colors.surface }]}>
 					<View style={styles.postsCount}>
-						<Text>Postlar</Text>
+						<Text>Gönderiler</Text>
 						<Text style={styles.centerText}>{user.postsCount}</Text>
 					</View>
 

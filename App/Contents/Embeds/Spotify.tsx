@@ -25,7 +25,6 @@ class Spotify extends React.PureComponent<Props, State> {
 	private webViewRef: any = null
 
 	spotifyStateChange = async (event: WebViewNavigation) => {
-		console.log(event.url)
 		if (event.url.startsWith('spotify://')) {
 			let supported = await Linking.canOpenURL(event.url)
 			if (supported) {

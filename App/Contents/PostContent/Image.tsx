@@ -31,10 +31,7 @@ class Image extends React.PureComponent<Props, State> {
 	private width = Dimensions.get('window').width
 
 	_ImageLoading = (event: OnProgressEvent) => {
-		if (this.props.post.uri === 'https://sib0p.com/inc/imgs/posts/1596243706-1343-9-0.jpg') {
-			console.log(event.nativeEvent.loaded / event.nativeEvent.total)
-		}
-		if (event.nativeEvent.loaded / event.nativeEvent.total > this.state.imageProgress) {
+		if (event.nativeEvent.loaded / event.nativeEvent.total > this.state.imageProgress + 0.1) {
 			this.setState({ imageProgress: event.nativeEvent.loaded / event.nativeEvent.total })
 		}
 	}
@@ -68,6 +65,7 @@ class Image extends React.PureComponent<Props, State> {
 							color={theme.colors.main}
 							formatText={this._formatImageLoadingText}
 							showsText
+							animated
 						/>
 					</View>
 				)}

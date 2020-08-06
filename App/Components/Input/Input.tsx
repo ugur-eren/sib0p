@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, TextInput, StyleProp, ViewStyle, TextStyle } from 'react-native'
+import { View, TextInput, StyleProp, ViewStyle, TextStyle, TextInputProps } from 'react-native'
 import { IconButton, Text } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 
@@ -7,7 +7,7 @@ import styles from './styles'
 import { withTheme } from 'react-native-paper'
 import Types from '../../Includes/Types/Types'
 
-interface Props {
+interface Props extends TextInputProps {
 	theme: Types.Theme
 
 	containerStyle?: StyleProp<ViewStyle>
@@ -22,6 +22,7 @@ interface Props {
 	leftIcon?: string
 	rightIcon?: string
 
+	multiline?: boolean
 	password?: boolean
 	number?: boolean
 	email?: boolean
@@ -49,7 +50,7 @@ class Input extends React.PureComponent<Props, State> {
 	}
 
 	render() {
-		let { containerStyle, style, inputStyle, onChangeText, placeholder, rightIcon, leftIcon, theme, ...inputProps } = this.props
+		let { containerStyle, style, inputStyle, onChangeText, placeholder, rightIcon, leftIcon, theme, multiline, ...inputProps } = this.props
 		return (
 			<View style={[styles.container, this.props.containerStyle]}>
 				<View
@@ -59,6 +60,7 @@ class Input extends React.PureComponent<Props, State> {
 							backgroundColor: theme.colors.inputBackground,
 							borderColor: this.props.error ? theme.colors.error : theme.colors.inputBorder,
 						},
+						multiline && { alignItems: 'flex-start' },
 						this.props.style,
 					]}
 				>
@@ -67,7 +69,7 @@ class Input extends React.PureComponent<Props, State> {
 							name={leftIcon}
 							size={23}
 							color={theme.colors.halfContrast}
-							style={[styles.leftIconStyle, this.props.leftIconStyle]}
+							style={[styles.leftIconStyle, this.props.leftIconStyle, multiline && { top: 10 }]}
 							onPress={this.props.leftIconOnPress}
 						/>
 					) : (
@@ -78,7 +80,13 @@ class Input extends React.PureComponent<Props, State> {
 						value={this.props.value}
 						placeholder={this.props.placeholder}
 						onChangeText={this.props.onChangeText}
-						style={[styles.input, { color: theme.colors.contrast }, this.props.inputStyle]}
+						style={[
+							styles.input,
+							{ color: theme.colors.contrast },
+							multiline && { minHeight: 100, textAlignVertical: 'top' },
+							this.props.inputStyle,
+						]}
+						multiline={multiline}
 						placeholderTextColor={theme.colors.halfContrast}
 						keyboardAppearance={theme.dark ? 'dark' : 'default'}
 						secureTextEntry={this.props.password && !this.state.passwordShown}
@@ -91,7 +99,7 @@ class Input extends React.PureComponent<Props, State> {
 							icon={this.state.passwordShown ? 'eye-off' : 'eye'}
 							size={23}
 							color={theme.colors.halfContrast}
-							style={[styles.rightIconStyle, this.props.rightIconStyle]}
+							style={[styles.rightIconStyle, this.props.rightIconStyle, multiline && { top: 10 }]}
 							onPress={this.onPasswordPress}
 						/>
 					) : rightIcon ? (
@@ -99,7 +107,7 @@ class Input extends React.PureComponent<Props, State> {
 							name={rightIcon}
 							size={23}
 							color={theme.colors.halfContrast}
-							style={[styles.rightIconStyle, this.props.rightIconStyle]}
+							style={[styles.rightIconStyle, this.props.rightIconStyle, multiline && { top: 10 }]}
 							onPress={this.props.rightIconOnPress}
 						/>
 					) : (
