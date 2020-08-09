@@ -38,7 +38,7 @@ class Posts extends React.PureComponent<Props, State> {
 			visibleItem: '',
 			refreshing: false,
 			focused: true,
-			activePost: null
+			activePost: null,
 		}
 	}
 
@@ -82,8 +82,6 @@ class Posts extends React.PureComponent<Props, State> {
 	_keyExtractor = (item: PostTypes.Post) => item.id
 
 	_viewableItemsChanged = ({ viewableItems }: { viewableItems: Array<{ index: number; isViewable: boolean; item: PostTypes.Post; key: any }> }) => {
-		console.log(viewableItems)
-		
 		if (viewableItems.length > 0) {
 			this.setState({ visibleItem: viewableItems[0].key })
 		} else {
@@ -103,7 +101,7 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	openModal = (post: PostTypes.Post) => {
-		this.setState({activePost: post})
+		this.setState({ activePost: post })
 		this.modalRef?.open()
 	}
 
@@ -145,7 +143,7 @@ class Posts extends React.PureComponent<Props, State> {
 					contentContainerStyle={this.props.contentContainerStyle}
 				/>
 
-				<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{backgroundColor: this.props.theme.colors.surface}}>
+				<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>
 					<List.Section>
 						<List.Item title='Paylaş' onPress={this.sharePost} left={(props) => <List.Icon {...props} style={{}} icon='share-2' />} />
 						<List.Item
@@ -154,11 +152,7 @@ class Posts extends React.PureComponent<Props, State> {
 							left={(props) => <List.Icon {...props} style={{}} icon='alert-circle' />}
 						/>
 						{this.state.activePost?.isMine ? (
-							<List.Item
-								title='Sil'
-								onPress={this.deletePost}
-								left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />}
-							/>
+							<List.Item title='Sil' onPress={this.deletePost} left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />} />
 						) : (
 							<></>
 						)}

@@ -1,7 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { WebView } from 'react-native-webview'
-import { Text, Divider, withTheme } from 'react-native-paper'
+import { Text, Divider, useTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import PostContainer from '../PostContainer/PostContainer'
 import TopProfile from '../TopProfile/TopProfile'
@@ -15,7 +14,6 @@ import FeaturedComments from '../FeaturedComments/FeaturedComments'
 interface Props {
 	navigation: Types.Navigation
 	post: PostTypes.Post
-	theme: Types.Theme
 	isVisible: boolean
 	currentTime: number
 	openModal: (post: PostTypes.Post) => void
@@ -24,87 +22,69 @@ interface Props {
 	commentsVisible?: boolean
 }
 
-interface State {}
+const Post = (props: Props) => {
+	const theme: Types.Theme = useTheme() as any
 
-class Post extends React.PureComponent<Props, State> {
-	constructor(props: Props) {
-		super(props)
-
-		this.state = {}
+	const _navigateToComments = () => {
+		props.navigation.push('Comments', { post: post.id })
 	}
 
-	render() {
-		console.log("isVisible", this.props.isVisible)
-		let { post, theme, navigation } = this.props
-		return (
-			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-				{!this.props.noUser ? (
-					<TopProfile
-						user={{
-							username: post.user.username,
-							profilePhoto: post.user.profilePhoto,
-							time: Functions.convertTime(post.time, this.props.currentTime),
-							tags: post.user.tags,
-							isFollowed: post.user.isFollowed,
-						}}
-						post={post}
-						navigation={this.props.navigation}
-						noUserTouchable={this.props.noUserTouchable}
-						openModal={this.props.openModal}
-					/>
-				) : (
-					<></>
-				)}
+	let { post, navigation } = props
 
-				{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
+	return (
+		<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+			{!props.noUser ? (
+				<TopProfile
+					user={{
+						username: post.user.username,
+						profilePhoto: post.user.profilePhoto,
+						time: Functions.convertTime(post.time, props.currentTime),
+						tags: post.user.tags,
+						isFollowed: post.user.isFollowed,
+					}}
+					post={post}
+					navigation={navigation}
+					noUserTouchable={props.noUserTouchable}
+					openModal={props.openModal}
+				/>
+			) : (
+				<></>
+			)}
 
-				{post.postData.length > 0 ? (
-					<PostContainer postData={post.postData} navigation={this.props.navigation} isVisible={this.props.isVisible} />
-				) : (
-					<></>
-				)}
+			{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
 
-				<View style={styles.bottomContainer}>
-					<View style={styles.buttons}>
-						<LikeButton type='like' active={post.hasLiked} count={post.likesCount} onPress={() => {}} />
-						<LikeButton type='dislike' active={post.hasDisliked} count={post.dislikesCount} onPress={() => {}} />
-						<LikeButton type='resib' active={post.hasResibed} count={post.dislikesCount} onPress={() => {}} />
-					</View>
+			{post.postData.length > 0 ? <PostContainer postData={post.postData} navigation={navigation} isVisible={props.isVisible} /> : <></>}
 
-					<View style={styles.commentsButton}>
-						<TouchableOpacity
-							onPress={() => {
-								this.props.navigation.push('Comments', { post: post.id })
-							}}
-							style={styles.commentsButtonInner}
-						>
-							<Text>{post.commentsCount} Yorum</Text>
-						</TouchableOpacity>
-					</View>
+			<View style={styles.bottomContainer}>
+				<View style={styles.buttons}>
+					<LikeButton type='like' active={post.hasLiked} count={post.likesCount} onPress={() => {}} />
+					<LikeButton type='dislike' active={post.hasDisliked} count={post.dislikesCount} onPress={() => {}} />
+					<LikeButton type='resib' active={post.hasResibed} count={post.dislikesCount} onPress={() => {}} />
 				</View>
 
-				{this.props.commentsVisible ? (
-					<></>
-				) : (
-					<>
-						<Divider style={styles.bottomDivider} />
-						<TouchableOpacity
-							style={styles.commentsContainer}
-							onPress={() => {
-								this.props.navigation.push('Comments', { post: post.id })
-							}}
-						>
-							{post.commentsCount > 0 ? (
-								<FeaturedComments comments={post.featuredComments} />
-							) : (
-								<Text style={styles.noComments}>Hiç yorum yok</Text>
-							)}
-						</TouchableOpacity>
-					</>
-				)}
+				<View style={styles.commentsButton}>
+					<TouchableOpacity onPress={_navigateToComments} style={styles.commentsButtonInner}>
+						<Text>{post.commentsCount} Yorum</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
-		)
-	}
+
+			{props.commentsVisible ? (
+				<></>
+			) : (
+				<>
+					<Divider style={styles.bottomDivider} />
+					<TouchableOpacity style={styles.commentsContainer} onPress={_navigateToComments}>
+						{post.commentsCount > 0 ? (
+							<FeaturedComments comments={post.featuredComments} />
+						) : (
+							<Text style={styles.noComments}>Hiç yorum yok</Text>
+						)}
+					</TouchableOpacity>
+				</>
+			)}
+		</View>
+	)
 }
 
-export default withTheme(Post)
+export default React.memo(Post)

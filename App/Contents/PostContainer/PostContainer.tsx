@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Dimensions } from 'react-native'
-import { withTheme, useTheme } from 'react-native-paper'
+import { useTheme } from 'react-native-paper'
 import PostContent from '../PostContent/PostContent'
 import PostTypes from '../../Includes/Types/PostTypes'
 import Types from '../../Includes/Types/Types'
@@ -22,19 +22,15 @@ const PostContainer = (props: Props) => {
 
 	let { postData } = props
 
-	const renderCarouselItem = ({ item, index }: { item: PostTypes.PostData; index: number }) => {
-		console.log('carousel', props.isVisible && index === activeSlide)
-
-		return (
-			<PostContent
-				key={item.uri}
-				post={item}
-				style={styles.post}
-				navigation={props.navigation}
-				isVisible={props.isVisible && index === activeSlide}
-			/>
-		)
-	}
+	const renderCarouselItem = ({ item, index }: { item: PostTypes.PostData; index: number }) => (
+		<PostContent
+			key={item.uri}
+			post={item}
+			style={styles.post}
+			navigation={props.navigation}
+			isVisible={props.isVisible && index === activeSlide}
+		/>
+	)
 
 	const onCarouselSnap = (index: number) => {
 		setActiveSlide(index)

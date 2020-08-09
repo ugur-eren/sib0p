@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Dimensions, StyleProp, ImageStyle } from 'react-native'
-import { Text, withTheme } from 'react-native-paper'
+import { Text, useTheme } from 'react-native-paper'
 import { TouchableWithoutFeedback, TouchableOpacity } from 'react-native-gesture-handler'
 import RNVideo from 'react-native-video'
 import Feather from 'react-native-vector-icons/Feather'
@@ -10,106 +10,84 @@ import PostTypes from '../../Includes/Types/PostTypes'
 import styles from './styles'
 
 interface Props {
-	theme: Types.Theme
 	navigation: Types.Navigation
 	post: PostTypes.PostData
 	isVisible: boolean
 	style?: StyleProp<ImageStyle>
 }
 
-interface State {
-	renderVideo: boolean
-	ready: boolean
-	error: boolean
-	muted: boolean
-}
+const Video = (props: Props) => {
+	const theme: Types.Theme = useTheme() as any
+	const [renderVideo, setRenderVideo] = useState(true)
+	const [ready, setReady] = useState(false)
+	const [error, setError] = useState(false)
+	const [muted, setMuted] = useState(props.navigation.getScreenProps().getIsVideoMuted())
 
-class Video extends React.PureComponent<Props, State> {
-	constructor(props: Props) {
-		super(props)
+	const width = Dimensions.get('window').width
 
-		this.state = {
-			renderVideo: true,
-			ready: false,
-			error: false,
-			muted: props.navigation.getScreenProps().getIsVideoMuted(),
-		}
+	const _toggleMuteVideo = () => {
+		props.navigation.getScreenProps().setIsVideoMuted(!props.navigation.getScreenProps().getIsVideoMuted())
+		setMuted(props.navigation.getScreenProps().getIsVideoMuted())
 	}
 
-	private width = Dimensions.get('window').width
-
-	toggleMuteVideo = () => {
-		this.props.navigation.getScreenProps().setIsVideoMuted(!this.props.navigation.getScreenProps().getIsVideoMuted())
-		this.setState({ muted: this.props.navigation.getScreenProps().getIsVideoMuted() })
-	}
-
-	videoError = (err) => {
+	const _videoError = (err: any) => {
 		if (err & err.error) {
-			this.setState({ error: true })
+			setError(true)
 		}
 	}
 
-	videoReady = () => {
-		this.setState({ ready: true })
+	const _videoReady = () => {
+		setReady(true)
 	}
 
-	tryAgain = () => {
-		this.setState({ renderVideo: false }, () => {
-			this.setState({ renderVideo: true, ready: false, error: false })
-		})
+	const _tryAgain = () => {
+		setRenderVideo(false)
+		setRenderVideo(true)
+		setReady(false)
+		setError(false)
 	}
 
-	render() {
-		let { post, theme } = this.props
+	return (
+		<TouchableWithoutFeedback onPress={_toggleMuteVideo}>
+			{renderVideo ? (
+				<RNVideo
+					source={{ uri: props.post.uri }}
+					style={[props.style, { height: width / props.post.ratio, aspectRatio: props.post.ratio }]}
+					paused={!props.isVisible}
+					repeat={true}
+					muted={muted}
+					poster={props.post.poster}
+					resizeMode='contain'
+					onReadyForDisplay={_videoReady}
+					onError={_videoError}
+				/>
+			) : (
+				<></>
+			)}
 
-		if (post.uri === 'http://192.168.1.26/inc/vids/1596923006-1048-96-1.mp4'){
-			console.log(this.props.isVisible, this.state.ready)
-		}
-
-		return (
-			<TouchableWithoutFeedback onPress={this.toggleMuteVideo}>
-				{this.state.renderVideo ? (
-					<RNVideo
-						source={{ uri: post.uri }}
-						style={[this.props.style, { height: this.width / post.ratio, aspectRatio: post.ratio }]}
-						paused={!this.props.isVisible}
-						repeat={true}
-						muted={this.state.muted}
-						poster={post.poster}
-						resizeMode='contain'
-						onReadyForDisplay={this.videoReady}
-						onError={this.videoError}
-					/>
-				) : (
-					<></>
-				)}
-				{this.state.ready && !this.state.error ? (
-					<></>
-				) : (
-					<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
-						<ActivityIndicator size={36} />
-					</View>
-				)}
-				{this.state.error ? (
-					<TouchableOpacity
-						onPress={this.tryAgain}
-						style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}
-					>
-						<Text>Video yüklenemedi. Tekrar denemek için dokunun.</Text>
+			{error ? (
+				<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
+					<TouchableOpacity onPress={_tryAgain} style={styles.errorTouchable}>
+						<Text style={styles.errorText}>Video yüklenemedi{'\n'}Tekrar denemek için dokunun</Text>
 					</TouchableOpacity>
-				) : (
-					<></>
-				)}
-				{this.state.muted ? (
-					<View style={styles.mutedContainer}>
-						<Feather name='volume-x' size={24} color={'white'} style={styles.muted} />
-					</View>
-				) : (
-					<></>
-				)}
-			</TouchableWithoutFeedback>
-		)
-	}
+				</View>
+			) : !ready ? (
+				<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
+					<ActivityIndicator size={36} />
+				</View>
+			) : (
+				<></>
+			)}
+
+			{muted ? (
+				<View style={styles.mutedContainer}>
+					<Feather name='volume-x' size={24} color={'white'} style={styles.muted} />
+				</View>
+			) : (
+				<></>
+			)}
+		</TouchableWithoutFeedback>
+	)
 }
 
-export default withTheme(Video)
+export default React.memo(Video)

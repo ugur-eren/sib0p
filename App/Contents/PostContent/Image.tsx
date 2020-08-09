@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Dimensions, StyleProp, ImageStyle } from 'react-native'
-import { withTheme } from 'react-native-paper'
+import { useTheme } from 'react-native-paper'
 import FastImage, { OnProgressEvent } from 'react-native-fast-image'
 import { Circle as CircleProgress } from 'react-native-progress'
 import Types from '../../Includes/Types/Types'
@@ -8,70 +8,57 @@ import PostTypes from '../../Includes/Types/PostTypes'
 import styles from './styles'
 
 interface Props {
-	theme: Types.Theme
 	navigation: Types.Navigation
 	post: PostTypes.PostData
 	isVisible: boolean
 	style?: StyleProp<ImageStyle>
 }
 
-interface State {
-	imageProgress: number
-}
+const Image = (props: Props) => {
+	const theme: Types.Theme = useTheme() as any
+	const [imageProgress, setImageProgress] = useState(0)
 
-class Image extends React.PureComponent<Props, State> {
-	constructor(props: Props) {
-		super(props)
+	const width = Dimensions.get('window').width
 
-		this.state = {
-			imageProgress: 0,
+	const _ImageLoading = (event: OnProgressEvent) => {
+		if (event.nativeEvent.loaded / event.nativeEvent.total > imageProgress + 0.1) {
+			setImageProgress(event.nativeEvent.loaded / event.nativeEvent.total)
 		}
 	}
 
-	private width = Dimensions.get('window').width
-
-	_ImageLoading = (event: OnProgressEvent) => {
-		if (event.nativeEvent.loaded / event.nativeEvent.total > this.state.imageProgress + 0.1) {
-			this.setState({ imageProgress: event.nativeEvent.loaded / event.nativeEvent.total })
-		}
+	const _formatImageLoadingText = () => {
+		return Math.round(imageProgress * 100) + ' %'
 	}
 
-	_formatImageLoadingText = () => {
-		return Math.round(this.state.imageProgress * 100) + ' %'
+	const _ImageLoadEnd = () => {
+		setImageProgress(1)
 	}
 
-	_ImageLoadEnd = () => {
-		this.setState({ imageProgress: 1 })
-	}
-
-	render() {
-		let { post, theme } = this.props
-		return (
-			<View>
-				<FastImage
-					source={{ uri: post.uri }}
-					style={[this.props.style, { height: this.width / post.ratio }]}
-					onProgress={this._ImageLoading}
-					onLoadEnd={this._ImageLoadEnd}
-				/>
-				{this.state.imageProgress == 1 ? (
-					<></>
-				) : (
-					<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .8)' }]}>
-						<FastImage style={styles.loader} source={{ uri: 'data:image/jpeg;base64,' + post.thumbnail }} />
-						<CircleProgress
-							size={120}
-							progress={this.state.imageProgress}
-							color={theme.colors.main}
-							formatText={this._formatImageLoadingText}
-							showsText
-							animated
-						/>
-					</View>
-				)}
-			</View>
-		)
-	}
+	return (
+		<View>
+			<FastImage
+				source={{ uri: props.post.uri }}
+				style={[props.style, { height: width / props.post.ratio }]}
+				onProgress={_ImageLoading}
+				onLoadEnd={_ImageLoadEnd}
+			/>
+			{imageProgress == 1 ? (
+				<></>
+			) : (
+				<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .8)' }]}>
+					<FastImage style={styles.loader} source={{ uri: 'data:image/jpeg;base64,' + props.post.thumbnail }} />
+					<CircleProgress
+						size={120}
+						progress={imageProgress}
+						color={theme.colors.main}
+						formatText={_formatImageLoadingText}
+						showsText
+						animated
+					/>
+				</View>
+			)}
+		</View>
+	)
 }
 
-export default withTheme(Image)
+export default React.memo(Image)

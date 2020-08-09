@@ -24,4 +24,12 @@ export default StyleSheet.create({
 		textShadowOffset: { width: 0, height: 0 },
 		textShadowRadius: 10,
 	},
+	errorTouchable: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	errorText: {
+		textAlign: 'center',
+	},
 })
