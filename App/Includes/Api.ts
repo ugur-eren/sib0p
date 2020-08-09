@@ -80,6 +80,10 @@ export default new (class Functions {
 		return this.post('GetNotifications', params)
 	}
 
+	getRelations = (params: Params): Response<ApiTypes.GetRelationsResponse> => {
+		return this.post('GetRelations', params)
+	}
+
 	sharePost = (
 		params: Params,
 		onUploadProgress: (progressEvent: { loaded: number; total: number }) => void

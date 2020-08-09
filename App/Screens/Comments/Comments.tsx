@@ -62,6 +62,7 @@ class Comments extends React.PureComponent<Props, State> {
 					comments: nextPage ? [...this.state.comments, ...comments.comments] : comments.comments,
 					currentTime: comments.currentTime,
 				})
+				this.props.navigation.getScreenProps().setCurrentTime(comments.currentTime)
 			} else {
 				if (comments.error === 'no_login') {
 					this.props.navigation.getScreenProps().logout(true)

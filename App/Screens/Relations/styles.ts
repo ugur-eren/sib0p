@@ -7,13 +7,12 @@ const RelationsStyle = StyleSheet.create({
 	},
 	listContainer: {
 		flex: 1,
-		padding: 10,
 	},
 })
 
 const RelationStyles = StyleSheet.create({
 	container: {
-		paddingVertical: 10,
+		padding: 10,
 		flexDirection: 'row',
 	},
 	touchableContainer: {

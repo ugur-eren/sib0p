@@ -14,6 +14,7 @@ import Api from '../../Includes/Api'
 import PostTypes from '../../Includes/Types/PostTypes'
 import Loader from './Loader'
 import EmptyList from '../../Components/EmptyList/EmptyList'
+import Header from '../../Components/Header/Header'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -55,56 +56,73 @@ class UserProfile extends React.PureComponent<Props, State> {
 			this.setState({ loading: true })
 		}
 
-		let isOkToContinue = false
-		let stateObject = {}
+		let stateObject: any = {}
 
-		if (!nextPage) {
-			let user = await Api.getProfile({
+		let totalCache = this.props.navigation.getScreenProps().DataCache()
+		let cache = totalCache.profiles[username]
+		if (!refresh && !nextPage && cache && cache.data) {
+			await new Promise((resolve) => setTimeout(() => resolve(), 10))
+			stateObject = { ...stateObject, user: cache.data, loading: false }
+		}
+		if (!refresh && !nextPage && cache && cache.posts) {
+			await new Promise((resolve) => setTimeout(() => resolve(), 10))
+			stateObject = { ...stateObject, posts: cache.posts, loading: false }
+		}
+		if (!refresh && !nextPage && cache && totalCache.currentTime) {
+			stateObject = { ...stateObject, currentTime: totalCache.currentTime }
+		}
+		if (refresh || nextPage || !cache || !cache.data || !cache.posts || !totalCache.currentTime) {
+			if (refresh || (!nextPage && (!cache || !cache.data))) {
+				let user = await Api.getProfile({
+					token: this.props.navigation.getScreenProps().user.token,
+					username: username,
+				})
+				if (user) {
+					if (user.status) {
+						stateObject = { ...stateObject, user: user.user }
+						this.props.navigation.getScreenProps().setProfileDataCache(user.user)
+					} else {
+						if (user.error === 'no_login') {
+							this.props.navigation.getScreenProps().logout(true)
+						} else {
+							if (user.error === 'no_user') {
+								stateObject = { ...stateObject, noUser: true }
+							} else if (user.error === 'wrong_username') {
+								this.props.navigation
+									.getScreenProps()
+									.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
+							}
+						}
+					}
+				} else {
+					this.props.navigation.getScreenProps().unknown_error()
+				}
+			}
+
+			let posts = await Api.getExplore({
 				token: this.props.navigation.getScreenProps().user.token,
+				last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
 				username: username,
 			})
-			if (user) {
-				if (user.status) {
-					stateObject = { ...stateObject, user: user.user }
+			if (posts) {
+				if (posts.status) {
+					stateObject = {
+						...stateObject,
+						posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
+						currentTime: posts.currentTime,
+					}
+					this.props.navigation.getScreenProps().setProfileDataCache(stateObject.user, posts.posts)
+					this.props.navigation.getScreenProps().setCurrentTime(posts.currentTime)
 				} else {
-					if (user.error === 'no_login') {
+					if (posts.error === 'no_login') {
 						this.props.navigation.getScreenProps().logout(true)
 					} else {
-						if (user.error === 'no_user') {
-							stateObject = { ...stateObject, noUser: true }
-						} else if (user.error === 'wrong_username') {
-							this.props.navigation
-								.getScreenProps()
-								.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
-						}
+						this.props.navigation.getScreenProps().unknown_error(posts.error)
 					}
 				}
 			} else {
 				this.props.navigation.getScreenProps().unknown_error()
 			}
-		}
-
-		let posts = await Api.getExplore({
-			token: this.props.navigation.getScreenProps().user.token,
-			last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
-			username: username,
-		})
-		if (posts) {
-			if (posts.status) {
-				stateObject = {
-					...stateObject,
-					posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
-					currentTime: posts.currentTime,
-				}
-			} else {
-				if (posts.error === 'no_login') {
-					this.props.navigation.getScreenProps().logout(true)
-				} else {
-					this.props.navigation.getScreenProps().unknown_error(posts.error)
-				}
-			}
-		} else {
-			this.props.navigation.getScreenProps().unknown_error()
 		}
 
 		stateObject = { ...stateObject, loading: false }
@@ -120,55 +138,11 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	handleFollowsPress = () => {
-		this.props.navigation.navigate('Relations', {
-			follows: [
-				{
-					username: 'demirbas',
-					profilePhoto: 'https://sib0p.com/inc/imgs/pps/1590017493-1057.jpg',
-					fullName: 'Ömer Demirbaş',
-					isFollowed: false,
-				},
-				{
-					username: 'TrueTiem',
-					profilePhoto: 'https://sib0p.com/inc/imgs/pps/1590195009-1048.jpg',
-					fullName: 'Uğur Eren',
-					isFollowed: false,
-				},
-				{
-					username: 'berat',
-					profilePhoto: 'https://sib0p.com/inc/imgs/pps/1589744671-940.jpg',
-					fullName: 'berat kaya',
-					isFollowed: true,
-				},
-			] as UserTypes.Follows[],
-			type: 'follows',
-		})
+		this.props.navigation.push('Relations', { type: 'follows', username: this.state.user.username })
 	}
 
 	handleFollowersPress = () => {
-		this.props.navigation.navigate('Relations', {
-			follows: [
-				{
-					username: 'demirbas',
-					profilePhoto: 'https://sib0p.com/inc/imgs/pps/1590017493-1057.jpg',
-					fullName: 'Ömer Demirbaş',
-					isFollowed: false,
-				},
-				{
-					username: 'TrueTiem',
-					profilePhoto: 'https://sib0p.com/inc/imgs/pps/1590195009-1048.jpg',
-					fullName: 'Uğur Eren',
-					isFollowed: false,
-				},
-				{
-					username: 'berat',
-					profilePhoto: 'https://sib0p.com/inc/imgs/pps/1589744671-940.jpg',
-					fullName: 'berat kaya',
-					isFollowed: true,
-				},
-			] as UserTypes.Follows[],
-			type: 'followers',
-		})
+		this.props.navigation.push('Relations', { type: 'followers', username: this.state.user.username })
 	}
 
 	onSettingsPress = () => {
@@ -263,6 +237,11 @@ class UserProfile extends React.PureComponent<Props, State> {
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				{this.state.loading ? (
 					<Loader theme={theme} />
+				) : this.state.noUser ? (
+					<>
+						<Header title='Bulunamadı' />
+						<EmptyList image={require('../../Assets/Images/no-comments.png')} title='Bu kullanıcı bulunamadı.' />
+					</>
 				) : (
 					<Posts
 						style={styles.scrollView}

@@ -64,20 +64,17 @@ class Posts extends React.PureComponent<Props, State> {
 		if (this.blurListener) this.blurListener.remove()
 	}
 
-	_renderItem = ({ item }: { item: PostTypes.Post }) => {
-		console.log(this.state.focused && this.state.visibleItem === item.id.toString())
-		return (
-			<Post
-				key={item.id.toString()}
-				post={item}
-				navigation={this.props.navigation}
-				isVisible={this.state.focused && this.state.visibleItem === item.id.toString()}
-				currentTime={this.props.currentTime}
-				noUserTouchable={this.props.noUserTouchable}
-				openModal={this.openModal}
-			/>
-		)
-	}
+	_renderItem = ({ item }: { item: PostTypes.Post }) => (
+		<Post
+			key={item.id.toString()}
+			post={item}
+			navigation={this.props.navigation}
+			isVisible={this.state.focused && this.state.visibleItem === item.id.toString()}
+			currentTime={this.props.currentTime}
+			noUserTouchable={this.props.noUserTouchable}
+			openModal={this.openModal}
+		/>
+	)
 	_itemSeperatorComponent = () => <View style={styles.itemSeperator}></View>
 	_keyExtractor = (item: PostTypes.Post) => item.id
 
@@ -123,7 +120,6 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	render() {
-		console.log(this.state.visibleItem)
 		return (
 			<>
 				<FlatList

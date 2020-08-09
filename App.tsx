@@ -13,6 +13,8 @@ import Storage from './App/Includes/Storage'
 import Theme from './App/Includes/Theme/Theme'
 import Types from './App/Includes/Types/Types'
 import Api from './App/Includes/Api'
+import UserTypes from './App/Includes/Types/UserTypes'
+import PostTypes from './App/Includes/Types/PostTypes'
 
 export default class App extends React.PureComponent<{}, Types.AppState> {
 	constructor(props: {}) {
@@ -25,7 +27,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		})
 		OneSignal.inFocusDisplaying(2)
 
-		if (Platform.OS == 'ios'){
+		if (Platform.OS == 'ios') {
 			OneSignal.promptForPushNotificationsWithUserResponse()
 		}
 
@@ -44,6 +46,19 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			errorMessage: false,
 			postSharing: false,
 		}
+	}
+
+	public DataCache: {
+		profiles: {
+			[key: string]: {
+				data?: UserTypes.Profile
+				posts?: PostTypes.Post[]
+			}
+		},
+		currentTime: number
+	} = {
+		profiles: {},
+		currentTime: 0
 	}
 
 	async componentDidMount() {
@@ -264,6 +279,27 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	}
 	isSharePostActive = () => this.sharePostRef.isPostActive()
 
+	getDataCache = () => this.DataCache
+	setProfileDataCache = (data: UserTypes.Profile, posts?: PostTypes.Post[]) => {
+		this.DataCache = {
+			...this.DataCache,
+			profiles: {
+				...this.DataCache.profiles,
+				[data.username]: {
+					...(this.DataCache.profiles[data.username] ? this.DataCache.profiles[data.username] : {}),
+					data: data,
+					...(posts ? {posts: posts} : {}),
+				},
+			},
+		}
+	}
+	setCurrentTime = (currentTime: number) => {
+		this.DataCache = {
+			...this.DataCache,
+			currentTime: currentTime
+		}
+	}
+
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -304,6 +340,10 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 									setIsVideoMuted: this.setIsVideoMuted,
 
 									getIsVideoMuted: this.getIsVideoMuted,
+
+									DataCache: this.getDataCache,
+									setProfileDataCache: this.setProfileDataCache,
+									setCurrentTime: this.setCurrentTime
 								} as Types.ScreenProps
 							}
 						/>

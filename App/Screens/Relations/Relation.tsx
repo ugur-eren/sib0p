@@ -1,9 +1,7 @@
 import React from 'react'
 import { View, Image } from 'react-native'
-import { Text, withTheme } from 'react-native-paper'
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
-import Config from '../../Includes/Config'
-import Header from '../../Components/Header/Header'
+import { Text } from 'react-native-paper'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import TextButton from '../../Components/TextButton/TextButton'
 import UserTypes from '../../Includes/Types/UserTypes'
 import Types from '../../Includes/Types/Types'
@@ -11,42 +9,30 @@ import { RelationStyles as styles } from './styles'
 
 interface Props {
 	navigation: Types.Navigation
-	theme: Types.Theme
-	user: UserTypes.Follows
+	user: UserTypes.Relations
 }
 
-interface State {}
-
-class Relation extends React.PureComponent<Props, State> {
-	constructor(props: Props) {
-		super(props)
-
-		this.state = {}
+const Relation = (props: Props) => {
+	const _handleProfilePress = () => {
+		props.navigation.push('UserProfile', { username: props.user.username })
 	}
 
-	handleProfilePress = () => {
-		this.props.navigation.push('UserProfile', { username: this.props.user.username })
-	}
+	return (
+		<View style={styles.container}>
+			<TouchableOpacity containerStyle={styles.touchableContainer} style={styles.touchable} onPress={_handleProfilePress}>
+				<View style={styles.imageContainer}>
+					<Image source={{ uri: props.user.profilePhoto }} style={styles.image} />
+				</View>
 
-	render() {
-		let { user, navigation } = this.props
-		return (
-			<View style={styles.container}>
-				<TouchableOpacity containerStyle={styles.touchableContainer} style={styles.touchable} onPress={this.handleProfilePress}>
-					<View style={styles.imageContainer}>
-						<Image source={{ uri: user.profilePhoto }} style={styles.image} />
-					</View>
+				<View>
+					<Text style={styles.username}>{props.user.username}</Text>
+					<Text>{props.user.fullName}</Text>
+				</View>
+			</TouchableOpacity>
 
-					<View>
-						<Text style={styles.username}>{user.username}</Text>
-						<Text>{user.fullName}</Text>
-					</View>
-				</TouchableOpacity>
-
-				<TextButton label={user.isFollowed ? 'Takipten Çık' : 'Takip Et'} onPress={() => {}} />
-			</View>
-		)
-	}
+			<TextButton label={props.user.isFollowed ? 'Takipten Çık' : 'Takip Et'} onPress={() => {}} />
+		</View>
+	)
 }
 
-export default withTheme(Relation)
+export default React.memo(Relation)

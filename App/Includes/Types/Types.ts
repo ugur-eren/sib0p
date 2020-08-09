@@ -1,5 +1,7 @@
 import { NavigationState, NavigationParams } from 'react-navigation'
 import { NavigationStackProp } from 'react-navigation-stack'
+import UserTypes from './UserTypes'
+import PostTypes from './PostTypes'
 
 declare namespace Types {
 	export interface Navigation<Params = NavigationParams, State = NavigationState> extends NavigationStackProp<State, Params> {
@@ -23,6 +25,18 @@ declare namespace Types {
 		setIsVideoMuted: (isMuted: boolean) => void
 
 		getIsVideoMuted: () => boolean
+
+		DataCache: () => {
+			profiles: {
+				[key: string]: {
+					data: UserTypes.Profile
+					posts?: PostTypes.Post[]
+				}
+			},
+			currentTime: number
+		}
+		setProfileDataCache: (data: UserTypes.Profile, posts?: PostTypes.Post[]) => void
+		setCurrentTime: (currentTime: number) => void
 	}
 
 	export interface AppState {

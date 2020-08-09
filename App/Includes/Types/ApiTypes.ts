@@ -38,6 +38,10 @@ declare namespace ApiTypes {
 		currentTime: number
 	}
 
+	export interface GetRelationsResponse extends Init {
+		relations: UserTypes.Relations[]
+	}
+
 	export interface SharePostResponse extends Init {
 		notifications: NotificationTypes.Notification[]
 		currentTime: number

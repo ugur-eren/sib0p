@@ -55,6 +55,7 @@ class Explore extends React.PureComponent<Props, State> {
 		if (posts) {
 			if (posts.status) {
 				stateObject = { posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts, currentTime: posts.currentTime }
+				this.props.navigation.getScreenProps().setCurrentTime(posts.currentTime)
 			} else {
 				if (posts.error === 'no_login') {
 					this.props.navigation.getScreenProps().logout(true)

@@ -54,6 +54,7 @@ class Notifications extends React.PureComponent<Props, State> {
 					notifications: nextPage ? [...this.state.notifications, ...notifs.notifications] : notifs.notifications,
 					currentTime: notifs.currentTime,
 				}
+				this.props.navigation.getScreenProps().setCurrentTime(notifs.currentTime)
 			} else {
 				if (notifs.error === 'no_login') {
 					this.props.navigation.getScreenProps().logout(true)

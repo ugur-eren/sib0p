@@ -21,11 +21,12 @@ declare namespace UserTypes {
 		followersCount: number
 	}
 
-	export interface Follows {
+	export interface Relations {
 		username: string
 		fullName: string
 		profilePhoto: string
-		isFollowed: boolean
+		tags: UserTagTypes.Tag[]
+		isFollowed?: boolean
 	}
 
 	export interface TopContent {
