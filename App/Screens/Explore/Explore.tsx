@@ -63,7 +63,7 @@ class Explore extends React.PureComponent<Props, State> {
 				}
 			}
 		} else {
-			this.props.navigation.getScreenProps().unknown_error()
+			return this.props.navigation.getScreenProps().unknown_error()
 		}
 
 		stateObject = { ...stateObject, loading: false }

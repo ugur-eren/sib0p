@@ -1,13 +1,12 @@
 import React from 'react'
-import { View, ScrollView, Alert } from 'react-native'
+import { View, ScrollView, Alert, TouchableOpacity } from 'react-native'
 import { Text, Divider, Surface, TouchableRipple, withTheme, Snackbar, IconButton, Portal, Dialog, Paragraph, Button } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-crop-picker'
 import FastImage from 'react-native-fast-image'
-import RNFS from 'react-native-fs'
+import Video from 'react-native-video'
 import Header from '../../Components/Header/Header'
 import Input from '../../Components/Input/Input'
-import Config from '../../Includes/Config'
 import Permissions from '../../Includes/Permissions'
 import Types from '../../Includes/Types/Types'
 import styles from './styles'
@@ -21,11 +20,12 @@ interface State {
 	loading: boolean
 	filePermission: boolean | 'unavailable' | 'blocked'
 	error: false | string
+	showTypeSelector: boolean
 	sharePostDialog: boolean
 	message: string
 	tagsText: string
 	tags: string[]
-	images: string[]
+	images: { type: 'image' | 'video'; content: string }[]
 }
 
 class Share extends React.PureComponent<Props, State> {
@@ -36,6 +36,7 @@ class Share extends React.PureComponent<Props, State> {
 			loading: true,
 			filePermission: null,
 			error: false,
+			showTypeSelector: false,
 			sharePostDialog: false,
 			message: '',
 			tagsText: '',
@@ -43,8 +44,6 @@ class Share extends React.PureComponent<Props, State> {
 			images: [],
 		}
 	}
-
-	// await RNFS.readFile(images.path, 'base64')
 
 	async componentDidMount() {
 		let filePerm = await Permissions.requestFile()
@@ -54,14 +53,30 @@ class Share extends React.PureComponent<Props, State> {
 		this.setState({ loading: false, filePermission: filePerm })
 	}
 
-	addNewMedia = () => {
+	hideTypeSelector = () => {
+		this.setState({ showTypeSelector: false })
+	}
+	addNewMediaSelector = () => {
+		this.setState({ showTypeSelector: true })
+	}
+	selectImage = () => {
+		this.hideTypeSelector()
+		this.addNewMedia('image')
+	}
+	selectVideo = () => {
+		this.hideTypeSelector()
+		this.addNewMedia('video')
+	}
+
+	addNewMedia = (type: 'image' | 'video') => {
 		ImagePicker.openPicker({
+			mediaType: type === 'image' ? 'photo' : 'video',
 			multiple: false,
 			width: 600,
 			height: 800,
-			cropping: true,
-			forceJpg: true,
-			freeStyleCropEnabled: true,
+			cropping: type === 'image',
+			forceJpg: type === 'image',
+			freeStyleCropEnabled: type === 'image',
 			compressImageMaxWidth: 1080,
 			compressImageMaxHeight: 1080,
 			compressImageQuality: 0.75,
@@ -72,10 +87,16 @@ class Share extends React.PureComponent<Props, State> {
 		}).then(async (images) => {
 			if (images) {
 				if (images instanceof Array) {
-					let imagePaths = images.map((im) => im.path)
+					if (images.filter((im) => im.size > 20971520).length > 0) {
+						return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
+					}
+					let imagePaths = images.map((im) => ({ type: type, content: im.path }))
 					this.setState({ images: [...imagePaths, ...this.state.images] })
 				} else {
-					this.setState({ images: [images.path, ...this.state.images] })
+					if (images.size > 20971520) {
+						return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
+					}
+					this.setState({ images: [{ type: type, content: images.path }, ...this.state.images] })
 				}
 			}
 		})
@@ -121,7 +142,6 @@ class Share extends React.PureComponent<Props, State> {
 	}
 
 	removeTag = (index: number) => {
-		console.log(index)
 		let tags = [...this.state.tags]
 		tags.splice(index, 1)
 		this.setState({ tags: tags })
@@ -130,26 +150,6 @@ class Share extends React.PureComponent<Props, State> {
 	onSubmit = () => {
 		if (this.state.message || this.state.images.length > 0) {
 			this.setState({ sharePostDialog: true })
-			return
-
-			Alert.alert(
-				'Paylaş',
-				'Gönderinizi paylaşmak istediğinize emin misiniz?',
-				[
-					{ text: 'İptal', style: 'cancel' },
-					{
-						text: 'Paylaş',
-						onPress: async () => {
-							await new Promise((resolve) => {
-								setTimeout(() => {
-									resolve()
-								}, 2500)
-							})
-						},
-					},
-				],
-				{ cancelable: false }
-			)
 		} else {
 			this.setState({ error: 'En az bir medya seçmeli ya da mesaj yazmalısınız.' })
 		}
@@ -160,16 +160,29 @@ class Share extends React.PureComponent<Props, State> {
 	}
 
 	sharePost = () => {
+		if (this.props.navigation.getScreenProps().isSharePostActive()) {
+			return Alert.alert(
+				'Hata!',
+				'Şu an paylaşılmakta olan bir gönderiniz mevcut. Yeni bir gönderi paylaşmadan önce yüklemenin tamamlanmasını bekleyiniz.',
+				[{ style: 'cancel', text: 'Tamam' }]
+			)
+		}
+		this.setState({ sharePostDialog: false })
 		this.props.navigation.getScreenProps().sharePost(this.state.message, this.state.tags, this.state.images)
+		this.props.navigation.goBack()
 	}
 
 	_renderImages = () => this.state.images.map(this._renderImage)
-	_renderImage = (image: string, index: number) => (
+	_renderImage = (image: { type: 'image' | 'video'; content: string }, index: number) => (
 		<Surface style={[styles.imageContainer, index % 2 === 1 && { marginRight: 20 }]}>
 			<View style={styles.imageContainerInner}>
 				<View style={styles.imageFix} />
 
-				<FastImage source={{ uri: image }} style={styles.imageInner} />
+				{image.type === 'image' ? (
+					<FastImage source={{ uri: image.content }} style={styles.imageInner} />
+				) : (
+					<Video source={{ uri: image.content }} style={styles.imageInner} repeat={true} muted={true} resizeMode='cover' />
+				)}
 			</View>
 			<IconButton
 				onPress={() => this.removeImage(index)}
@@ -243,7 +256,7 @@ class Share extends React.PureComponent<Props, State> {
 								<View style={styles.imageContainerInner}>
 									<View style={styles.imageFix} />
 
-									<TouchableRipple style={styles.imageInner} onPress={this.addNewMedia}>
+									<TouchableRipple style={styles.imageInner} onPress={this.addNewMediaSelector}>
 										<>
 											<Feather name='plus' size={64} />
 											<View style={styles.imageTouchableFix} />
@@ -263,6 +276,33 @@ class Share extends React.PureComponent<Props, State> {
 						<Text style={[styles.submitText, { color: this.props.theme.colors.main }]}>Paylaş</Text>
 					</>
 				</TouchableRipple>
+
+				{this.state.showTypeSelector ? (
+					<View style={[styles.selectorContainer, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .5)' }]}>
+						<TouchableOpacity style={styles.selectorContainer} onPress={this.hideTypeSelector} />
+
+						<View style={styles.selectorInner}>
+							<TouchableRipple
+								onPress={this.selectImage}
+								style={[styles.selectorOption, { backgroundColor: theme.colors.primary, marginRight: 2 }]}
+							>
+								<>
+									<Feather name='image' size={24} color={theme.colors.contrast} />
+									<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Resim</Text>
+								</>
+							</TouchableRipple>
+
+							<TouchableRipple onPress={this.selectVideo} style={[styles.selectorOption, { backgroundColor: theme.colors.primary }]}>
+								<>
+									<Feather name='video' size={24} color={theme.colors.contrast} />
+									<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Video</Text>
+								</>
+							</TouchableRipple>
+						</View>
+					</View>
+				) : (
+					<></>
+				)}
 
 				<Portal>
 					<Dialog visible={this.state.sharePostDialog} onDismiss={this.hidePostDialog}>

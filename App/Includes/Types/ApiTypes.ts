@@ -8,6 +8,7 @@ declare namespace ApiTypes {
 		status: boolean
 		error?: string
 	}
+	export type Response = Promise<any | false>
 
 	export interface CheckConnectionResponse extends Init {}
 
@@ -33,6 +34,11 @@ declare namespace ApiTypes {
 	}
 
 	export interface GetNotificationsResponse extends Init {
+		notifications: NotificationTypes.Notification[]
+		currentTime: number
+	}
+
+	export interface SharePostResponse extends Init {
 		notifications: NotificationTypes.Notification[]
 		currentTime: number
 	}

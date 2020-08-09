@@ -12,6 +12,7 @@ declare namespace PostTypes {
 		dislikesCount: number
 		hasLiked: boolean
 		hasDisliked: boolean
+		hasResibed: boolean
 		commentsCount: number
 		featuredComments: CommentTypes.Comment[]
 		isMine: boolean

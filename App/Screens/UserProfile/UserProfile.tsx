@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { Text, withTheme, Divider } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import FastImage from 'react-native-fast-image'
+import Feather from 'react-native-vector-icons/Feather'
 import TextButton from '../../Components/TextButton/TextButton'
 import TransparentHeader from '../../Components/TransparentHeader/TransparentHeader'
 import Types from '../../Includes/Types/Types'
@@ -174,6 +175,20 @@ class UserProfile extends React.PureComponent<Props, State> {
 		this.props.navigation.navigate('Settings')
 	}
 
+	_renderUserTagsContainer = () =>
+		this.state.user.tags.length > 0 ? (
+			<View style={[styles.userTagsContainer, { backgroundColor: this.props.theme.colors.surface }]}>{this._renderUserTags()}</View>
+		) : (
+			<></>
+		)
+	_renderUserTags = () => this.state.user.tags.map(this._renderUserTag)
+	_renderUserTag = (tag) => (
+		<View key={tag.id.toString()} style={styles.userTag}>
+			<Feather name={tag.icon} color={tag.color} style={styles.userTagIcon} size={16} />
+			<Text>{tag.name}</Text>
+		</View>
+	)
+
 	_renderHeader = () => {
 		let { theme, navigation } = this.props
 		let myself = navigation.getScreenProps().user
@@ -204,6 +219,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 				) : (
 					<></>
 				)}
+
+				{this._renderUserTagsContainer()}
 
 				<View style={[styles.centerContainer, { backgroundColor: theme.colors.surface }]}>
 					<View style={styles.postsCount}>

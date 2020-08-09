@@ -34,6 +34,7 @@ class Post extends React.PureComponent<Props, State> {
 	}
 
 	render() {
+		console.log("isVisible", this.props.isVisible)
 		let { post, theme, navigation } = this.props
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
@@ -43,6 +44,7 @@ class Post extends React.PureComponent<Props, State> {
 							username: post.user.username,
 							profilePhoto: post.user.profilePhoto,
 							time: Functions.convertTime(post.time, this.props.currentTime),
+							tags: post.user.tags,
 							isFollowed: post.user.isFollowed,
 						}}
 						post={post}
@@ -66,6 +68,7 @@ class Post extends React.PureComponent<Props, State> {
 					<View style={styles.buttons}>
 						<LikeButton type='like' active={post.hasLiked} count={post.likesCount} onPress={() => {}} />
 						<LikeButton type='dislike' active={post.hasDisliked} count={post.dislikesCount} onPress={() => {}} />
+						<LikeButton type='resib' active={post.hasResibed} count={post.dislikesCount} onPress={() => {}} />
 					</View>
 
 					<View style={styles.commentsButton}>

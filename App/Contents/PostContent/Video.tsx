@@ -62,6 +62,10 @@ class Video extends React.PureComponent<Props, State> {
 	render() {
 		let { post, theme } = this.props
 
+		if (post.uri === 'http://192.168.1.26/inc/vids/1596923006-1048-96-1.mp4'){
+			console.log(this.props.isVisible, this.state.ready)
+		}
+
 		return (
 			<TouchableWithoutFeedback onPress={this.toggleMuteVideo}>
 				{this.state.renderVideo ? (

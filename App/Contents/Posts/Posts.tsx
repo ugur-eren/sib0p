@@ -65,9 +65,10 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	_renderItem = ({ item }: { item: PostTypes.Post }) => {
+		console.log(this.state.focused && this.state.visibleItem === item.id.toString())
 		return (
 			<Post
-				key={item.id}
+				key={item.id.toString()}
 				post={item}
 				navigation={this.props.navigation}
 				isVisible={this.state.focused && this.state.visibleItem === item.id.toString()}
@@ -77,12 +78,12 @@ class Posts extends React.PureComponent<Props, State> {
 			/>
 		)
 	}
-
 	_itemSeperatorComponent = () => <View style={styles.itemSeperator}></View>
-
 	_keyExtractor = (item: PostTypes.Post) => item.id
 
 	_viewableItemsChanged = ({ viewableItems }: { viewableItems: Array<{ index: number; isViewable: boolean; item: PostTypes.Post; key: any }> }) => {
+		console.log(viewableItems)
+		
 		if (viewableItems.length > 0) {
 			this.setState({ visibleItem: viewableItems[0].key })
 		} else {
@@ -124,6 +125,7 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	render() {
+		console.log(this.state.visibleItem)
 		return (
 			<>
 				<FlatList

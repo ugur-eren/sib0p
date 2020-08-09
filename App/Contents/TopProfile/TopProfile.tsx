@@ -3,11 +3,13 @@ import { View, Platform } from 'react-native'
 import { Text, IconButton, withTheme } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import Feather from 'react-native-vector-icons/Feather'
 import Types from '../../Includes/Types/Types'
 import UserTypes from '../../Includes/Types/UserTypes'
 import PostTypes from '../../Includes/Types/PostTypes'
 import Timer from '../../Components/Timer/Timer'
 import styles from './styles'
+import UserTagTypes from '../../Includes/Types/UserTagTypes'
 
 interface Props {
 	navigation: Types.Navigation
@@ -35,6 +37,9 @@ class Post extends React.PureComponent<Props, State> {
 		this.props.openModal(this.props.post)
 	}
 
+	_renderUserTags = () => this.props.user.tags.map(this._renderUserTag)
+	_renderUserTag = (tag: UserTagTypes.Tag) => <Feather key={tag.id.toString()} name={tag.icon} size={16} color={tag.color} style={styles.usertag} />
+
 	render() {
 		let { user, theme, noUserTouchable } = this.props
 		let ContainerComponent = noUserTouchable ? TouchableWithoutFeedback : TouchableOpacity
@@ -48,6 +53,7 @@ class Post extends React.PureComponent<Props, State> {
 					<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.innerContent}>
 						<View style={styles.usernameContainer}>
 							<Text style={styles.username}>{user.username}</Text>
+							{this._renderUserTags()}
 						</View>
 
 						<Timer time={user.time} />

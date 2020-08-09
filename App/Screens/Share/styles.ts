@@ -9,10 +9,10 @@ export default StyleSheet.create({
 		paddingVertical: 10,
 		paddingHorizontal: 20,
 		marginBottom: 20,
-    },
-    noBottomContent: {
-        marginBottom: 0
-    },
+	},
+	noBottomContent: {
+		marginBottom: 0,
+	},
 	topContainer: {
 		width: '100%',
 		paddingVertical: 10,
@@ -117,5 +117,35 @@ export default StyleSheet.create({
 	submitText: {
 		fontFamily: Config.fonts.semi,
 		fontSize: 16,
+	},
+	selectorContainer: {
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		width: '100%',
+		height: '100%',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	selectorInner: {
+		flexDirection: 'row',
+	},
+	selectorOption: {
+		padding: 50,
+		alignItems: 'center',
+		justifyContent: 'center',
+		
+		elevation: 2,
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 1,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 1.41,
+	},
+	selectorOptionItem: {
+		marginTop: 10,
+		fontFamily: Config.fonts.semi,
 	},
 })

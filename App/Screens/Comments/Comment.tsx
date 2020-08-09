@@ -5,12 +5,12 @@ import TopProfile from '../../Contents/TopProfile/TopProfile'
 import LikeButton from '../../Components/LikeButton/LikeButton'
 import Types from '../../Includes/Types/Types'
 import CommentTypes from '../../Includes/Types/CommentTypes'
-import {CommentStyles as styles} from './styles'
+import { CommentStyles as styles } from './styles'
 import Functions from '../../Includes/Functions'
 
 interface Props {
-    navigation: Types.Navigation
-    theme: Types.Theme
+	navigation: Types.Navigation
+	theme: Types.Theme
 	comment: CommentTypes.Comment
 	currentTime: number
 }
@@ -27,14 +27,35 @@ class Comment extends React.PureComponent<Props, State> {
 	render() {
 		let { comment, navigation, theme } = this.props
 		return (
-			<View style={[styles.container, {backgroundColor: theme.colors.surface}]}>
-				<TopProfile user={{ username: comment.user.username, profilePhoto: comment.user.profilePhoto, time: Functions.convertTime(comment.time, this.props.currentTime), isFollowed: comment.user.isFollowed }} navigation={navigation} />
+			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+				<TopProfile
+					user={{
+						username: comment.user.username,
+						profilePhoto: comment.user.profilePhoto,
+						time: Functions.convertTime(comment.time, this.props.currentTime),
+						tags: comment.user.tags,
+						isFollowed: comment.user.isFollowed,
+					}}
+					navigation={navigation}
+				/>
 
 				<Text style={styles.content}>{Functions.replaceTags(comment.content, navigation, true)}</Text>
 
 				<View style={styles.buttonsContainer}>
-					<LikeButton type='like' active={comment.hasLiked} count={comment.likesCount} onPress={() => {}} containerStyle={styles.likeButton} />
-					<LikeButton type='dislike' active={comment.hasDisliked} count={comment.dislikesCount} onPress={() => {}} containerStyle={styles.likeButton} />
+					<LikeButton
+						type='like'
+						active={comment.hasLiked}
+						count={comment.likesCount}
+						onPress={() => {}}
+						containerStyle={styles.likeButton}
+					/>
+					<LikeButton
+						type='dislike'
+						active={comment.hasDisliked}
+						count={comment.dislikesCount}
+						onPress={() => {}}
+						containerStyle={styles.likeButton}
+					/>
 				</View>
 			</View>
 		)

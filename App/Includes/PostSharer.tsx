@@ -1,13 +1,13 @@
 import React from 'react'
-import { Dimensions, View, SafeAreaView, ViewBase } from 'react-native'
+import { View, SafeAreaView, LayoutAnimation, Platform, UIManager, Alert } from 'react-native'
 import { withTheme } from 'react-native-paper'
-import { Bar as ProgressBar } from 'react-native-progress'
 import RNFS from 'react-native-fs'
 import Types from './Types/Types'
-import { all } from 'core-js/fn/promise'
+import Api from './Api'
 
 interface Props {
 	theme: Types.Theme
+	token: string
 	sharePost: (props: any) => void
 }
 
@@ -20,6 +20,12 @@ class PostSharer extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
+		if (Platform.OS === 'android') {
+			if (UIManager.setLayoutAnimationEnabledExperimental) {
+				UIManager.setLayoutAnimationEnabledExperimental(true)
+			}
+		}
+
 		this.state = {
 			active: false,
 			progress: 0,
@@ -27,25 +33,73 @@ class PostSharer extends React.PureComponent<Props, State> {
 
 		props.sharePost({
 			sharePost: this.sharePost,
+			isPostActive: this.isPostActive,
 		})
 	}
+	private isActive = false
 
-	sharePost = async (message: string, tags: string[], images: string[]) => {
-		this.setState({ active: true, progress: 0 })
+	sharePost = async (message: string, tags: string[], images: { type: 'image' | 'video'; content: string }[]) => {
+		this.isActive = true
+
+		LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))
+		this.setState({ active: true, progress: 5 })
 
 		let allImages = []
 		if (images && images.length > 0) {
+			let i = 0
 			for (let image of images) {
+				i++
 				try {
-					let imageFile = await RNFS.readFile(image, 'base64')
-
-					allImages.push(imageFile)
+					let imageFile = await RNFS.readFile(image.content, 'base64')
+					allImages.push({ type: image.type, content: imageFile })
 				} catch (e) {
 					if (__DEV__) console.log('image read error', e)
 				}
+
+				LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))
+				this.setState({ progress: 55 / (images.length / i) })
 			}
+		} else {
+			LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))
+			this.setState({ progress: 55 })
 		}
+
+		let onUploadProgress = async (progress: { loaded: number; total: number }) => {
+			let percent = Math.round((progress.loaded * 100) / progress.total)
+
+			LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))
+			this.setState({ progress: 55 + percent * 0.4 })
+		}
+
+		let sharePost = await Api.sharePost(
+			{
+				message: message,
+				tags: JSON.stringify(tags),
+				images: JSON.stringify(allImages),
+				token: this.props.token,
+			},
+			onUploadProgress
+		)
+		if (sharePost) {
+			if (sharePost.status) {
+				Alert.alert('Başarılı!', 'Gönderiniz başarıyla paylaşıldı.', [{ style: 'cancel', text: 'Tamam' }])
+			} else {
+				Alert.alert('Hata!', 'Gönderiniz paylaşırken bilinmeyen bir sorun oluştu. Lütfen daha sonra tekrar deneyiniz.', [
+					{ style: 'cancel', text: 'Tamam' },
+				])
+			}
+		} else {
+			Alert.alert('Hata!', 'Gönderiniz paylaşırken bilinmeyen bir sorun oluştu. Lütfen daha sonra tekrar deneyiniz.', [
+				{ style: 'cancel', text: 'Tamam' },
+			])
+		}
+
+		LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))
+		this.setState({ active: false, progress: 0 })
+		this.isActive = false
 	}
+
+	isPostActive = () => this.isActive
 
 	render() {
 		let { theme } = this.props
@@ -54,7 +108,7 @@ class PostSharer extends React.PureComponent<Props, State> {
 			return (
 				<SafeAreaView style={{ backgroundColor: theme.colors.primary }}>
 					<View style={{ width: '100%', height: 3 }}>
-						<View style={{ height: '100%', width: '10%', backgroundColor: theme.colors.main }}></View>
+						<View style={{ height: '100%', width: this.state.progress + '%', backgroundColor: theme.colors.main }}></View>
 					</View>
 				</SafeAreaView>
 			)

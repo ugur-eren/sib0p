@@ -14,7 +14,8 @@ declare namespace Types {
 		unknown_error: (error?: string) => void
 		error: (error: string) => void
 
-		sharePost: (message: string, tags: string[], images: string[]) => void
+		sharePost: (message: string, tags: string[], images: { type: 'image' | 'video'; content: string }[]) => void
+		isSharePostActive: () => boolean
 		restart: () => any
 
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void

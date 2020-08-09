@@ -27,9 +27,13 @@ export default StyleSheet.create({
 	},
 	usernameContainer: {
 		flexDirection: 'row',
+		alignItems: 'center',
 	},
 	username: {
 		fontFamily: Config.fonts.semi,
+	},
+	usertag: {
+		marginLeft: 5,
 	},
 	followButton: {
 		alignItems: 'center',

@@ -46,8 +46,7 @@ export default StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: 10,
-		marginTop: 0.5,
-		marginBottom: 0.5,
+		marginVertical: 0.5,
 	},
 	postsCount: {
 		flex: 1,
@@ -70,5 +69,17 @@ export default StyleSheet.create({
 	postsDivider: {
 		width: '100%',
 		marginVertical: 10,
+	},
+	userTagsContainer: {
+		marginVertical: 0.5,
+		padding: 10,
+	},
+	userTag: {
+		flexDirection: 'row',
+		marginBottom: 5,
+		alignItems: 'center',
+	},
+	userTagIcon: {
+		marginRight: 10,
 	},
 })

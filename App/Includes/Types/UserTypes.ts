@@ -1,8 +1,11 @@
+import UserTagTypes from "./UserTagTypes";
+
 declare namespace UserTypes {
 	export interface TopInfo {
 		username: string
 		profilePhoto: string
 		time: string
+		tags: UserTagTypes.Tag[]
 		isFollowed?: boolean
 	}
 
@@ -12,6 +15,7 @@ declare namespace UserTypes {
 		bio: string
 		profilePhoto: string
 		backgroundPhoto: string
+		tags: UserTagTypes.Tag[]
 		postsCount: number
 		followsCount: number
 		followersCount: number
@@ -27,6 +31,7 @@ declare namespace UserTypes {
 	export interface TopContent {
 		username: string
 		profilePhoto: string
+		tags: UserTagTypes.Tag[]
 		isFollowed?: boolean
 	}
 }

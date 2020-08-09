@@ -6,7 +6,7 @@ import styles from './styles'
 
 interface Props {
 	theme: Types.Theme
-	type: 'like' | 'dislike'
+	type: 'like' | 'dislike' | 'resib'
 	active: boolean
 	count: number
 
@@ -22,7 +22,7 @@ class LikeButton extends React.PureComponent<Props, State> {
 		return (
 			<View style={[styles.container, this.props.containerStyle]}>
 				<IconButton
-					icon={this.props.type == 'like' ? 'thumbs-up' : 'thumbs-down'}
+					icon={this.props.type == 'like' ? 'thumbs-up' : this.props.type == 'dislike' ? 'thumbs-down' : 'git-pull-request'}
 					color={this.props.active ? this.props.theme.colors.success : this.props.theme.colors.contrast}
 					onPress={() => {}}
 					size={22}

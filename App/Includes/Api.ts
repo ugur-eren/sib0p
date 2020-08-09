@@ -1,3 +1,4 @@
+import axios from 'axios'
 import Config from '../Includes/Config'
 import ApiTypes from './Types/ApiTypes'
 
@@ -77,5 +78,34 @@ export default new (class Functions {
 
 	getNotifications = (params: Params): Response<ApiTypes.GetNotificationsResponse> => {
 		return this.post('GetNotifications', params)
+	}
+
+	sharePost = (
+		params: Params,
+		onUploadProgress: (progressEvent: { loaded: number; total: number }) => void
+	): Response<ApiTypes.SharePostResponse> => {
+		let formBody: string[] = []
+		for (var property in params) {
+			formBody.push(encodeURIComponent(property) + '=' + encodeURIComponent(params[property]))
+		}
+		let joinedBody = formBody.join('&')
+
+		return new Promise((resolve) => {
+			axios
+				.post(this.uri + 'SharePost' + '.php', joinedBody, {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+					onUploadProgress: onUploadProgress,
+				})
+				.then((res) => {
+					console.log('sharePost', res.data)
+					resolve(res.data instanceof Object ? res.data : false)
+				})
+				.catch((err) => {
+					console.log('api error', 'sharePost', err)
+					resolve(false)
+				})
+		})
 	}
 })()

@@ -1,11 +1,12 @@
 import 'react-native-gesture-handler'
 
 import React from 'react'
-import { View, StatusBar, Appearance } from 'react-native'
+import { View, StatusBar, Appearance, Platform, Alert } from 'react-native'
 import { Provider as PaperProvider, Portal, Snackbar, Text } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 import { NavigationActions } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
+import OneSignal from 'react-native-onesignal'
 import PostSharer from './App/Includes/PostSharer'
 import AppRouter from './App/router'
 import Storage from './App/Includes/Storage'
@@ -16,6 +17,17 @@ import Api from './App/Includes/Api'
 export default class App extends React.PureComponent<{}, Types.AppState> {
 	constructor(props: {}) {
 		super(props)
+
+		OneSignal.init('043f271a-41cf-438f-b28d-6baab28e1e3b', {
+			kOSSettingsKeyAutoPrompt: false,
+			kOSSettingsKeyInAppLaunchURL: false,
+			kOSSettingsKeyInFocusDisplayOption: 2,
+		})
+		OneSignal.inFocusDisplaying(2)
+
+		if (Platform.OS == 'ios'){
+			OneSignal.promptForPushNotificationsWithUserResponse()
+		}
 
 		this.state = {
 			ready: false,
@@ -40,8 +52,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 	init = async () => {
 		let connected = await Api.checkConnection()
-		if (!connected || !connected.status){
-			return this.setState({ready: true}, () => {
+		if (!connected || !connected.status) {
+			return this.setState({ ready: true }, () => {
 				SplashScreen.hide()
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
 			})
@@ -186,7 +198,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				}
 			})
 		} else {
-			callback()
+			if (callback) {
+				callback()
+			}
 		}
 	}
 
@@ -229,7 +243,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		if (error) {
 			this.setState({ errorMessage: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' + error })
 		} else {
-			this.setState({ errorMessage: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' })
+			Alert.alert('Hata!', 'Maalesef, Bilinmeyen bir hata ile karşılaştık. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.')
 		}
 	}
 
@@ -245,9 +259,10 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		this.sharePostRef = ref
 	}
 
-	sharePost = (message: string, tags: string[], images: string[]) => {
+	sharePost = (message: string, tags: string[], images: { type: 'image' | 'video'; content: string }[]) => {
 		this.sharePostRef.sharePost(message, tags, images)
 	}
+	isSharePostActive = () => this.sharePostRef.isPostActive()
 
 	render() {
 		return (
@@ -266,7 +281,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					}}
 					theme={Theme[this.state.theme]}
 				>
-					<PostSharer sharePost={this.setSharePost} />
+					<PostSharer sharePost={this.setSharePost} token={this.state.user.token} />
 					{this.state.ready ? (
 						<AppRouter
 							ref={this._setNavigationRef}
@@ -281,6 +296,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 									error: this.error,
 
 									sharePost: this.sharePost,
+									isSharePostActive: this.isSharePostActive,
 									restart: this.init,
 
 									setUserData: this.setUserData,
