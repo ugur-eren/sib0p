@@ -1,11 +1,20 @@
 import { Platform } from 'react-native'
-import { request, PERMISSIONS, RESULTS } from 'react-native-permissions'
-
-// PERMISSIONS.IOS.MEDIA_LIBRARY
-// PERMISSIONS.IOS.PHOTO_LIBRARY
+import { request, openSettings, PERMISSIONS, RESULTS } from 'react-native-permissions'
 
 export default new (class Permissions {
-	requestFile = async (askTimes: number = 0, type: 'read' | 'write' = 'read'): Promise<boolean | typeof RESULTS.UNAVAILABLE | typeof RESULTS.BLOCKED> => {
+	openSettings = async () => {
+		try {
+			openSettings()
+			return true
+		} catch (e) {
+			return false
+		}
+	}
+
+	requestFile = async (
+		askTimes: number = 0,
+		type: 'read' | 'write' = 'read'
+	): Promise<boolean | typeof RESULTS.UNAVAILABLE | typeof RESULTS.BLOCKED> => {
 		if (askTimes < 2) {
 			let response = await request(
 				type === 'read'
@@ -13,7 +22,7 @@ export default new (class Permissions {
 						? PERMISSIONS.IOS.PHOTO_LIBRARY
 						: PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE
 					: Platform.OS === 'ios'
-					? PERMISSIONS.IOS.MEDIA_LIBRARY
+					? PERMISSIONS.IOS.PHOTO_LIBRARY
 					: PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
 			)
 

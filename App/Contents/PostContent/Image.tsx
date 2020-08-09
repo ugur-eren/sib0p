@@ -46,7 +46,7 @@ const Image = (props: Props) => {
 				<></>
 			) : (
 				<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .8)' }]}>
-					<FastImage style={styles.loader} source={{ uri: 'data:image/jpeg;base64,' + props.post.thumbnail }} />
+					<FastImage style={styles.loader} source={{ uri: props.post.thumbnail }} />
 					<CircleProgress
 						size={120}
 						progress={imageProgress}

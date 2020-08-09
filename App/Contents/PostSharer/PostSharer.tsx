@@ -2,8 +2,8 @@ import React from 'react'
 import { View, SafeAreaView, LayoutAnimation, Platform, UIManager, Alert } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import RNFS from 'react-native-fs'
-import Types from './Types/Types'
-import Api from './Api'
+import Types from '../../Includes/Types/Types'
+import Api from '../../Includes/Api'
 
 interface Props {
 	theme: Types.Theme

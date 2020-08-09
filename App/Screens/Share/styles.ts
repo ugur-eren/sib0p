@@ -134,7 +134,7 @@ export default StyleSheet.create({
 		padding: 50,
 		alignItems: 'center',
 		justifyContent: 'center',
-		
+
 		elevation: 2,
 		shadowColor: '#000',
 		shadowOffset: {
@@ -147,5 +147,17 @@ export default StyleSheet.create({
 	selectorOptionItem: {
 		marginTop: 10,
 		fontFamily: Config.fonts.semi,
+	},
+	loading: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	buttonContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingBottom: 20,
 	},
 })

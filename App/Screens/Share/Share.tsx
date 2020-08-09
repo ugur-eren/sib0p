@@ -1,12 +1,26 @@
 import React from 'react'
 import { View, ScrollView, Alert, TouchableOpacity } from 'react-native'
-import { Text, Divider, Surface, TouchableRipple, withTheme, Snackbar, IconButton, Portal, Dialog, Paragraph, Button } from 'react-native-paper'
+import {
+	Text,
+	Divider,
+	Surface,
+	TouchableRipple,
+	withTheme,
+	Snackbar,
+	IconButton,
+	Portal,
+	Dialog,
+	Paragraph,
+	Button,
+	ActivityIndicator,
+} from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-crop-picker'
 import FastImage from 'react-native-fast-image'
 import Video from 'react-native-video'
 import Header from '../../Components/Header/Header'
 import Input from '../../Components/Input/Input'
+import EmptyList from '../../Components/EmptyList/EmptyList'
 import Permissions from '../../Includes/Permissions'
 import Types from '../../Includes/Types/Types'
 import styles from './styles'
@@ -44,13 +58,20 @@ class Share extends React.PureComponent<Props, State> {
 			images: [],
 		}
 	}
+	private focusListener: any = null
 
 	async componentDidMount() {
 		let filePerm = await Permissions.requestFile()
-
-		if (filePerm === true) {
-		}
 		this.setState({ loading: false, filePermission: filePerm })
+
+		this.focusListener = this.props.navigation.addListener('didFocus', async () => {
+			let filePerm = await Permissions.requestFile()
+			this.setState({ loading: false, filePermission: filePerm })
+		})
+	}
+
+	componentWillUnmount() {
+		if (this.focusListener) this.focusListener.remove()
 	}
 
 	hideTypeSelector = () => {
@@ -91,12 +112,12 @@ class Share extends React.PureComponent<Props, State> {
 						return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
 					}
 					let imagePaths = images.map((im) => ({ type: type, content: im.path }))
-					this.setState({ images: [...imagePaths, ...this.state.images] })
+					this.setState({ images: [...this.state.images, ...imagePaths] })
 				} else {
 					if (images.size > 20971520) {
 						return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
 					}
-					this.setState({ images: [{ type: type, content: images.path }, ...this.state.images] })
+					this.setState({ images: [...this.state.images, { type: type, content: images.path }] })
 				}
 			}
 		})
@@ -116,7 +137,7 @@ class Share extends React.PureComponent<Props, State> {
 		this.setState({ message: text })
 	}
 	onTagsTextChange = (text: string, submit?: boolean) => {
-		text = text.replace('#', '').replace(/[^a-zA-Z0-9ğüşçıİ]/g, '')
+		text = text.replace('#', '').replace(/[^a-zA-Z0-9ğöüşçıİ ]/g, '')
 		let tags = []
 		let tagsText = ''
 
@@ -148,6 +169,7 @@ class Share extends React.PureComponent<Props, State> {
 	}
 
 	onSubmit = () => {
+		this.onTagsSubmit()
 		if (this.state.message || this.state.images.length > 0) {
 			this.setState({ sharePostDialog: true })
 		} else {
@@ -174,7 +196,7 @@ class Share extends React.PureComponent<Props, State> {
 
 	_renderImages = () => this.state.images.map(this._renderImage)
 	_renderImage = (image: { type: 'image' | 'video'; content: string }, index: number) => (
-		<Surface style={[styles.imageContainer, index % 2 === 1 && { marginRight: 20 }]}>
+		<Surface key={image.content} style={[styles.imageContainer, index % 2 === 1 && { marginRight: 20 }]}>
 			<View style={styles.imageContainerInner}>
 				<View style={styles.imageFix} />
 
@@ -192,138 +214,184 @@ class Share extends React.PureComponent<Props, State> {
 		</Surface>
 	)
 
+	tryPermissionAgain = async () => {
+		if (this.state.filePermission === 'blocked') {
+			if (!(await Permissions.openSettings())) {
+				this.setState({ error: 'İzin ayarları açılırken bir sorun oluştu.' })
+			}
+		} else {
+			let filePerm = await Permissions.requestFile()
+			this.setState({ filePermission: filePerm })
+		}
+	}
+
 	render() {
 		let { theme } = this.props
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<Header title='Gönderi Paylaş' />
-				<ScrollView>
-					<View style={[styles.content, { backgroundColor: theme.colors.surface }]}>
-						<View style={styles.topContainer}>
-							<View style={styles.topInner}>
-								<Feather name='edit-3' size={24} style={styles.topIcon} />
-								<Text style={styles.topTitle}>Detay</Text>
-							</View>
-							<Divider style={styles.divider} />
-						</View>
 
-						<View>
-							<Input
-								value={this.state.message}
-								onChangeText={this.onMessageChange}
-								placeholder='Mesaj'
-								leftIcon='message-square'
-								multiline
-							/>
-							<Input
-								value={this.state.tagsText}
-								onChangeText={this.onTagsTextChange}
-								onSubmitEditing={this.onTagsSubmit}
-								placeholder='Etiketler'
-								leftIcon='hash'
-							/>
-							<View style={styles.tags}>
-								{this.state.tags.map((tag, index) => (
-									<Text
-										style={[
-											styles.tag,
-											{
-												backgroundColor: this.props.theme.colors.inputBackground,
-												borderColor: this.props.theme.colors.inputBorder,
-											},
-										]}
-										onPress={() => this.removeTag(index)}
-									>
-										<Text style={styles.tagHash}># </Text>
-										{tag}
-									</Text>
-								))}
-							</View>
-						</View>
+				{this.state.filePermission === null ? (
+					<View style={styles.loading}>
+						<ActivityIndicator size='large' color={theme.colors.main} />
 					</View>
+				) : this.state.filePermission !== true ? (
+					<ScrollView style={{ backgroundColor: theme.colors.background }}>
+						<EmptyList
+							image={require('../../Assets/Images/error.png')}
+							title={
+								this.state.filePermission === 'unavailable'
+									? 'Devam edebilmeniz için dosya izinine ihtiyacımız var. \n Fakat cihazınız dosya izinlerini desteklememektedir. \n Bunun bir hata olduğunu düşünüyorsanız bizimle iletişime geçiniz.'
+									: 'Devam edebilmeniz için dosya izinine ihtiyacımız var. \n\n Dosya izinlerini sadece gönderi içeriği için kullanmaktayız.'
+							}
+						/>
 
-					<View style={[styles.content, styles.noBottomContent, { backgroundColor: theme.colors.surface }]}>
-						<View style={styles.topContainer}>
-							<View style={styles.topInner}>
-								<Feather name='image' size={24} style={styles.topIcon} />
-								<Text style={styles.topTitle}>Medya</Text>
+						{this.state.filePermission !== 'unavailable' ? (
+							<View style={styles.buttonContainer}>
+								<Button mode='contained' onPress={this.tryPermissionAgain} loading={this.state.loading}>
+									{this.state.filePermission === 'blocked' ? 'Uygulama Ayarlarını Aç' : 'Tekrar Dene'}
+								</Button>
 							</View>
-							<Divider style={styles.divider} />
-						</View>
+						) : (
+							<></>
+						)}
+					</ScrollView>
+				) : (
+					<>
+						<ScrollView>
+							<View style={[styles.content, { backgroundColor: theme.colors.surface }]}>
+								<View style={styles.topContainer}>
+									<View style={styles.topInner}>
+										<Feather name='edit-3' size={24} style={styles.topIcon} />
+										<Text style={styles.topTitle}>Detay</Text>
+									</View>
+									<Divider style={styles.divider} />
+								</View>
 
-						<View style={styles.images}>
-							<Surface style={[styles.imageContainer, { marginRight: 20 }]}>
-								<View style={styles.imageContainerInner}>
-									<View style={styles.imageFix} />
+								<View>
+									<Input
+										value={this.state.message}
+										onChangeText={this.onMessageChange}
+										placeholder='Mesaj'
+										leftIcon='message-square'
+										multiline
+									/>
+									<Input
+										value={this.state.tagsText}
+										onChangeText={this.onTagsTextChange}
+										onSubmitEditing={this.onTagsSubmit}
+										onBlur={this.onTagsSubmit}
+										placeholder='Etiketler'
+										leftIcon='hash'
+									/>
+									<View style={styles.tags}>
+										{this.state.tags.map((tag, index) => (
+											<Text
+												key={tag}
+												style={[
+													styles.tag,
+													{
+														backgroundColor: this.props.theme.colors.inputBackground,
+														borderColor: this.props.theme.colors.inputBorder,
+													},
+												]}
+												onPress={() => this.removeTag(index)}
+											>
+												<Text style={styles.tagHash}># </Text>
+												{tag}
+											</Text>
+										))}
+									</View>
+								</View>
+							</View>
 
-									<TouchableRipple style={styles.imageInner} onPress={this.addNewMediaSelector}>
+							<View style={[styles.content, styles.noBottomContent, { backgroundColor: theme.colors.surface }]}>
+								<View style={styles.topContainer}>
+									<View style={styles.topInner}>
+										<Feather name='image' size={24} style={styles.topIcon} />
+										<Text style={styles.topTitle}>Medya</Text>
+									</View>
+									<Divider style={styles.divider} />
+								</View>
+
+								<View style={styles.images}>
+									<Surface style={[styles.imageContainer, { marginRight: 20 }]}>
+										<View style={styles.imageContainerInner}>
+											<View style={styles.imageFix} />
+
+											<TouchableRipple style={styles.imageInner} onPress={this.addNewMediaSelector}>
+												<>
+													<Feather name='plus' size={64} />
+													<View style={styles.imageTouchableFix} />
+												</>
+											</TouchableRipple>
+										</View>
+									</Surface>
+
+									{this._renderImages()}
+								</View>
+							</View>
+						</ScrollView>
+
+						<TouchableRipple onPress={this.onSubmit} style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}>
+							<>
+								<Feather name='upload' size={24} color={this.props.theme.colors.main} style={styles.submitIcon} />
+								<Text style={[styles.submitText, { color: this.props.theme.colors.main }]}>Paylaş</Text>
+							</>
+						</TouchableRipple>
+
+						{this.state.showTypeSelector ? (
+							<View style={[styles.selectorContainer, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .5)' }]}>
+								<TouchableOpacity style={styles.selectorContainer} onPress={this.hideTypeSelector} />
+
+								<View style={styles.selectorInner}>
+									<TouchableRipple
+										onPress={this.selectImage}
+										style={[styles.selectorOption, { backgroundColor: theme.colors.primary, marginRight: 2 }]}
+									>
 										<>
-											<Feather name='plus' size={64} />
-											<View style={styles.imageTouchableFix} />
+											<Feather name='image' size={24} color={theme.colors.contrast} />
+											<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Resim</Text>
+										</>
+									</TouchableRipple>
+
+									<TouchableRipple
+										onPress={this.selectVideo}
+										style={[styles.selectorOption, { backgroundColor: theme.colors.primary }]}
+									>
+										<>
+											<Feather name='video' size={24} color={theme.colors.contrast} />
+											<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Video</Text>
 										</>
 									</TouchableRipple>
 								</View>
-							</Surface>
+							</View>
+						) : (
+							<></>
+						)}
 
-							{this._renderImages()}
-						</View>
-					</View>
-				</ScrollView>
+						<Portal>
+							<Dialog visible={this.state.sharePostDialog} onDismiss={this.hidePostDialog}>
+								<Dialog.Title>Paylaş</Dialog.Title>
+								<Dialog.Content>
+									<Paragraph>Gönderinizi paylaşmak istediğinize emin misiniz?</Paragraph>
+								</Dialog.Content>
+								<Dialog.Actions>
+									<Button onPress={this.sharePost} color={theme.colors.main} style={{ marginRight: 15 }}>
+										Paylaş
+									</Button>
+									<Button onPress={this.hidePostDialog} color={theme.colors.contrast}>
+										İptal
+									</Button>
+								</Dialog.Actions>
+							</Dialog>
+						</Portal>
 
-				<TouchableRipple onPress={this.onSubmit} style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}>
-					<>
-						<Feather name='upload' size={24} color={this.props.theme.colors.main} style={styles.submitIcon} />
-						<Text style={[styles.submitText, { color: this.props.theme.colors.main }]}>Paylaş</Text>
+						<Snackbar visible={!!this.state.error} onDismiss={this.onErrorDismiss}>
+							<Text style={{ color: theme.colors.contrast }}>{this.state.error}</Text>
+						</Snackbar>
 					</>
-				</TouchableRipple>
-
-				{this.state.showTypeSelector ? (
-					<View style={[styles.selectorContainer, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .5)' }]}>
-						<TouchableOpacity style={styles.selectorContainer} onPress={this.hideTypeSelector} />
-
-						<View style={styles.selectorInner}>
-							<TouchableRipple
-								onPress={this.selectImage}
-								style={[styles.selectorOption, { backgroundColor: theme.colors.primary, marginRight: 2 }]}
-							>
-								<>
-									<Feather name='image' size={24} color={theme.colors.contrast} />
-									<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Resim</Text>
-								</>
-							</TouchableRipple>
-
-							<TouchableRipple onPress={this.selectVideo} style={[styles.selectorOption, { backgroundColor: theme.colors.primary }]}>
-								<>
-									<Feather name='video' size={24} color={theme.colors.contrast} />
-									<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Video</Text>
-								</>
-							</TouchableRipple>
-						</View>
-					</View>
-				) : (
-					<></>
 				)}
-
-				<Portal>
-					<Dialog visible={this.state.sharePostDialog} onDismiss={this.hidePostDialog}>
-						<Dialog.Title>Paylaş</Dialog.Title>
-						<Dialog.Content>
-							<Paragraph>Gönderinizi paylaşmak istediğinize emin misiniz?</Paragraph>
-						</Dialog.Content>
-						<Dialog.Actions>
-							<Button onPress={this.sharePost} color={theme.colors.main} style={{ marginRight: 15 }}>
-								Paylaş
-							</Button>
-							<Button onPress={this.hidePostDialog} color={theme.colors.contrast}>
-								İptal
-							</Button>
-						</Dialog.Actions>
-					</Dialog>
-				</Portal>
-
-				<Snackbar visible={!!this.state.error} onDismiss={this.onErrorDismiss}>
-					<Text style={{ color: theme.colors.contrast }}>{this.state.error}</Text>
-				</Snackbar>
 			</View>
 		)
 	}
