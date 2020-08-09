@@ -8,8 +8,8 @@ import CommentTypes from '../../Includes/Types/CommentTypes'
 import UserTypes from '../../Includes/Types/UserTypes'
 import Header from '../../Components/Header/Header'
 import { FlatList } from 'react-native-gesture-handler'
-import FollowsListItem from './FollowsListItem'
-import { FollowsListStyles as styles } from './styles'
+import Relation from './Relation'
+import { RelationsStyle as styles } from './styles'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -21,7 +21,7 @@ interface Props {
 
 interface State {}
 
-class FollowsList extends React.PureComponent<Props, State> {
+class Relations extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
@@ -31,7 +31,7 @@ class FollowsList extends React.PureComponent<Props, State> {
 	private follows = this.props.navigation.getParam('follows')
 	private type = this.props.navigation.getParam('type')
 
-	_renderItem = ({ item }) => <FollowsListItem navigation={this.props.navigation} user={item} />
+	_renderItem = ({ item }) => <Relation navigation={this.props.navigation} user={item} />
 	_itemSeperator = () => <Divider />
 	_keyExtractor = (item: UserTypes.Follows) => item.username
 
@@ -49,4 +49,4 @@ class FollowsList extends React.PureComponent<Props, State> {
 	}
 }
 
-export default withTheme(FollowsList)
+export default withTheme(Relations)

@@ -22,7 +22,7 @@ import Explore from './Screens/Explore/Explore'
 import Notifications from './Screens/Notifications/Notifications'
 import Comments from './Screens/Comments/Comments'
 import UserProfile from './Screens/UserProfile/UserProfile'
-import FollowsList from './Screens/FollowsList/FollowsList'
+import Relations from './Screens/Relations/Relations'
 import Settings from './Screens/Settings/Settings'
 import Search from './Screens/Search/Search'
 import SinglePost from './Screens/SinglePost/SinglePost'
@@ -132,8 +132,8 @@ const mainStack = createStackNavigator(
 		UserProfile: {
 			screen: UserProfile,
 		},
-		FollowsList: {
-			screen: FollowsList,
+		Relations: {
+			screen: Relations,
 		},
 		Settings: {
 			screen: Settings,

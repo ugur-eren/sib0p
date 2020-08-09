@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native'
 import Config from '../../Includes/Config'
 
-const FollowsListStyles = StyleSheet.create({
+const RelationsStyle = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
@@ -11,7 +11,7 @@ const FollowsListStyles = StyleSheet.create({
 	},
 })
 
-const FollowsListItemStyles = StyleSheet.create({
+const RelationStyles = StyleSheet.create({
 	container: {
 		paddingVertical: 10,
 		flexDirection: 'row',
@@ -40,4 +40,4 @@ const FollowsListItemStyles = StyleSheet.create({
 	},
 })
 
-export { FollowsListStyles, FollowsListItemStyles }
+export { RelationsStyle, RelationStyles }

@@ -120,7 +120,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	handleFollowsPress = () => {
-		this.props.navigation.navigate('FollowsList', {
+		this.props.navigation.navigate('Relations', {
 			follows: [
 				{
 					username: 'demirbas',
@@ -146,7 +146,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	handleFollowersPress = () => {
-		this.props.navigation.navigate('FollowsList', {
+		this.props.navigation.navigate('Relations', {
 			follows: [
 				{
 					username: 'demirbas',

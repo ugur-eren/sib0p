@@ -7,7 +7,7 @@ import Header from '../../Components/Header/Header'
 import TextButton from '../../Components/TextButton/TextButton'
 import UserTypes from '../../Includes/Types/UserTypes'
 import Types from '../../Includes/Types/Types'
-import { FollowsListItemStyles as styles } from './styles'
+import { RelationStyles as styles } from './styles'
 
 interface Props {
 	navigation: Types.Navigation
@@ -17,7 +17,7 @@ interface Props {
 
 interface State {}
 
-class FollowsListItem extends React.PureComponent<Props, State> {
+class Relation extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
@@ -49,4 +49,4 @@ class FollowsListItem extends React.PureComponent<Props, State> {
 	}
 }
 
-export default withTheme(FollowsListItem)
+export default withTheme(Relation)
