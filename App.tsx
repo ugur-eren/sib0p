@@ -54,11 +54,11 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				data?: UserTypes.Profile
 				posts?: PostTypes.Post[]
 			}
-		},
+		}
 		currentTime: number
 	} = {
 		profiles: {},
-		currentTime: 0
+		currentTime: 0,
 	}
 
 	async componentDidMount() {
@@ -73,6 +73,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
 			})
 		}
+
 		let settings = await Storage.getMultipleWithDefault({
 			theme: 'system',
 			notification: 'true',
@@ -161,6 +162,40 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			}
 		}
 
+		let loggedIn = await Api.checkLogin({ token: stateObject.user.token })
+		if (!loggedIn) {
+			return this.setState({ ready: true }, () => {
+				SplashScreen.hide()
+				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+			})
+		}
+
+		if (!loggedIn.username) {
+			stateObject = {
+				...stateObject,
+				user: {
+					active: false,
+					token: '',
+					username: '',
+				},
+			}
+
+			return this.setState({ ready: true }, async () => {
+				await this.logout()
+				SplashScreen.hide()
+			})
+		} else {
+			stateObject = {
+				...stateObject,
+				user: {
+					active: true,
+					token: stateObject.user.token,
+					username: loggedIn.username,
+				},
+			}
+			Storage.set('username', loggedIn.username || '')
+		}
+
 		this.setState(stateObject, () => {
 			SplashScreen.hide()
 			if (!this.state.user.active) {
@@ -226,31 +261,30 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	getIsVideoMuted = () => this.isVideoMuted
 
 	logout = async (runtime?: boolean) => {
-		let isSet = await Storage.setMultiple({
+		await Storage.setMultiple({
 			token: '',
 			username: '',
 		})
-		if (isSet) {
-			this.setState({
-				user: {
-					active: false,
-					token: '',
-					username: '',
-				},
-			})
 
-			let response = await Api.logout({ token: this.state.user.token })
-			if (response && response.status) {
-			} else {
-				this._navigationRef.dispatch(
-					NavigationActions.navigate({
-						routeName: 'authStack',
-						params: {
-							showMessage: runtime ? 'no_login' : undefined,
-						},
-					})
-				)
-			}
+		this.setState({
+			user: {
+				active: false,
+				token: '',
+				username: '',
+			},
+		})
+
+		let response = await Api.logout({ token: this.state.user.token })
+		if (response && response.status) {
+		} else {
+			this._navigationRef.dispatch(
+				NavigationActions.navigate({
+					routeName: 'authStack',
+					params: {
+						showMessage: runtime ? 'no_login' : undefined,
+					},
+				})
+			)
 		}
 	}
 
@@ -288,7 +322,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				[data.username]: {
 					...(this.DataCache.profiles[data.username] ? this.DataCache.profiles[data.username] : {}),
 					data: data,
-					...(posts ? {posts: posts} : {}),
+					...(posts ? { posts: posts } : {}),
 				},
 			},
 		}
@@ -296,7 +330,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	setCurrentTime = (currentTime: number) => {
 		this.DataCache = {
 			...this.DataCache,
-			currentTime: currentTime
+			currentTime: currentTime,
 		}
 	}
 
@@ -343,7 +377,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 									DataCache: this.getDataCache,
 									setProfileDataCache: this.setProfileDataCache,
-									setCurrentTime: this.setCurrentTime
+									setCurrentTime: this.setCurrentTime,
 								} as Types.ScreenProps
 							}
 						/>

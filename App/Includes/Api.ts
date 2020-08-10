@@ -2,7 +2,7 @@ import axios from 'axios'
 import Config from '../Includes/Config'
 import ApiTypes from './Types/ApiTypes'
 
-type Response<T> = Promise<T | false>
+type Response<T = ApiTypes.Init> = Promise<T | false>
 type Params = {
 	[key: string]: any
 }
@@ -52,16 +52,24 @@ export default new (class Functions {
 		})
 	}
 
-	checkConnection = (): Response<ApiTypes.CheckConnectionResponse> => {
-		return this.get('CheckConnection')
+	checkConnection = (): Response => {
+		return this.get("CheckConnection")
 	}
 
+	register = (params: ApiTypes.RegisterRequest): Response<ApiTypes.RegisterResponse> => {
+		return this.post("Register", params)
+	}
+	
 	login = (params: Params): Response<ApiTypes.LoginResponse> => {
 		return this.post('Login', params)
 	}
 
 	logout = (params: Params): Response<ApiTypes.LogoutResponse> => {
 		return this.post('Logout', params)
+	}
+
+	checkLogin = (params: Params): Response<ApiTypes.CheckLoginResponse> => {
+		return this.post('CheckLogin', params)
 	}
 
 	getExplore = (params: Params): Response<ApiTypes.GetExploreResponse> => {
@@ -82,6 +90,14 @@ export default new (class Functions {
 
 	getRelations = (params: Params): Response<ApiTypes.GetRelationsResponse> => {
 		return this.post('GetRelations', params)
+	}
+
+	doAction = (params: ApiTypes.DoActionRequest): Response<ApiTypes.DoActionResponse> => {
+		return this.post('DoAction', params)
+	}
+
+	requestCaptcha = (): Response<ApiTypes.RequestCaptchaResponse> => {
+		return this.get('RequestCaptcha')
 	}
 
 	sharePost = (

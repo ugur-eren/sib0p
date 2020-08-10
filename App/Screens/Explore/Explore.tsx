@@ -8,10 +8,12 @@ import PostTypes from '../../Includes/Types/PostTypes'
 import Api from '../../Includes/Api'
 import styles from './styles'
 import Loader from './Loader'
+import Header from '../../Components/Header/Header'
 
 interface Props {
 	navigation: Types.Navigation<{
-		type: 'explore' | 'follows'
+		type: 'explore' | 'follows' | 'tags'
+		tag?: PostTypes.Tag
 	}>
 	theme: Types.Theme
 }
@@ -34,7 +36,7 @@ class Explore extends React.PureComponent<Props, State> {
 	}
 
 	private newPageActive: boolean = false
-	private pageType = this.props.navigation.getParam("type")
+	private pageType = this.props.navigation.getParam('type')
 
 	async componentDidMount() {
 		this.init()
@@ -44,10 +46,12 @@ class Explore extends React.PureComponent<Props, State> {
 		if (!refresh && !this.state.loading) {
 			this.setState({ loading: true })
 		}
+		let tag = this.props.navigation.getParam('tag')
 		let posts = await Api.getExplore({
 			token: this.props.navigation.getScreenProps().user.token,
 			last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
-			type: this.pageType
+			type: this.pageType,
+			...(tag ? { tag: tag.id } : {}),
 		})
 
 		let stateObject = {}
@@ -87,7 +91,11 @@ class Explore extends React.PureComponent<Props, State> {
 					<Loader theme={this.props.theme} />
 				) : (
 					<>
-						<MainHeader />
+						{this.pageType === 'tags' ? (
+							<Header title={'Tag: #' + (this.props.navigation.getParam('tag')?.name || 'Bilinmiyor')} />
+						) : (
+							<MainHeader />
+						)}
 						<Posts
 							navigation={this.props.navigation}
 							refresh={this.refresh}

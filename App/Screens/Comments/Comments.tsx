@@ -9,6 +9,7 @@ import CommentTypes from '../../Includes/Types/CommentTypes'
 import Api from '../../Includes/Api'
 import Comment from './Comment'
 import { CommentsStyles as styles } from './styles'
+import Loader from './Loader'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -124,28 +125,34 @@ class Comments extends React.PureComponent<Props, State> {
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<Header title='Yorumlar' />
 
-				<FlatList
-					data={this.state.comments}
-					keyExtractor={this._keyExtractor}
-					ItemSeparatorComponent={this._itemSeperator}
-					renderItem={this._renderItem}
-					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
-					ListEmptyComponent={this._emptyComponent}
-					onEndReached={this.getNextPage}
-				/>
+				{this.state.loading ? (
+					<Loader theme={theme} />
+				) : (
+					<>
+						<FlatList
+							data={this.state.comments}
+							keyExtractor={this._keyExtractor}
+							ItemSeparatorComponent={this._itemSeperator}
+							renderItem={this._renderItem}
+							refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
+							ListEmptyComponent={this._emptyComponent}
+							onEndReached={this.getNextPage}
+						/>
 
-				<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
-					<TextInput
-						value={this.state.commentInput}
-						onChangeText={this.handleCommentChange}
-						placeholder={'Yorumunuz...'}
-						placeholderTextColor={theme.colors.halfContrast}
-						style={[styles.writeCommentInput, { color: theme.colors.contrast }]}
-						keyboardAppearance={this.props.theme.dark ? 'dark' : 'default'}
-					/>
+						<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
+							<TextInput
+								value={this.state.commentInput}
+								onChangeText={this.handleCommentChange}
+								placeholder={'Yorumunuz...'}
+								placeholderTextColor={theme.colors.halfContrast}
+								style={[styles.writeCommentInput, { color: theme.colors.contrast }]}
+								keyboardAppearance={this.props.theme.dark ? 'dark' : 'default'}
+							/>
 
-					<TextButton label='Gönder' loadable onPress={this.sendComment} />
-				</SafeAreaView>
+							<TextButton label='Gönder' loadable onPress={this.sendComment} />
+						</SafeAreaView>
+					</>
+				)}
 			</View>
 		)
 	}

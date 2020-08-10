@@ -35,6 +35,23 @@ export default StyleSheet.create({
 		marginBottom: 10,
 	},
 	noComments: {
-		paddingHorizontal: 10
-	}
+		paddingHorizontal: 10,
+	},
+	tags: {
+		flex: 1,
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		paddingHorizontal: 10,
+	},
+	tagContainer: {
+		marginRight: 10,
+	},
+	tag: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	tagName: {
+		fontFamily: Config.fonts.semi,
+	},
 })

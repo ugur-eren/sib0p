@@ -4,15 +4,45 @@ import UserTypes from './UserTypes'
 import NotificationTypes from './NotificationTypes'
 
 declare namespace ApiTypes {
-	type Init = {
+	type Init<T = string> = {
 		status: boolean
-		error?: string
+		error?: T
+	}
+	type Request = {
+		token: string
 	}
 	export type Response = Promise<any | false>
 
-	export interface CheckConnectionResponse extends Init {}
+	export interface CheckLoginResponse extends Init {
+		username: string
+	}
 
 	export interface LoginResponse extends Init {
+		token?: string
+		username?: string
+	}
+
+	export interface RegisterRequest {
+		username: string
+		name: string
+		surname: string
+		email: string
+		password: string
+		captchaToken: string
+		captcha: string
+	}
+	export interface RegisterResponse
+		extends Init<
+			| 'some_empty'
+			| 'expired_captcha'
+			| 'wrong_captcha'
+			| 'username_short'
+			| 'wrong_username'
+			| 'username_not_allowed'
+			| 'wrong_email'
+			| 'username_in_use'
+			| 'email_in_use'
+		> {
 		token?: string
 		username?: string
 	}
@@ -45,6 +75,23 @@ declare namespace ApiTypes {
 	export interface SharePostResponse extends Init {
 		notifications: NotificationTypes.Notification[]
 		currentTime: number
+	}
+
+	export interface DoActionRequest extends Request {
+		type: 'like' | 'dislike' | 'resib' | 'comment' | 'comment_like' | 'comment_dislike'
+		post: number
+	}
+
+	export interface DoActionResponse extends Init {
+		hasLiked?: boolean
+		hasDisliked?: boolean
+		likesCount?: number
+		dislikesCount?: number
+	}
+
+	export interface RequestCaptchaResponse extends Init {
+		token: string
+		captcha: string
 	}
 }
 

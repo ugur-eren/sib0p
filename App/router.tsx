@@ -126,6 +126,12 @@ const mainStack = createStackNavigator(
 		bottomStack: {
 			screen: bottomStack,
 		},
+		CustomPosts: {
+			screen: Explore,
+			params: {
+				type: 'tags'
+			}
+		},
 		Comments: {
 			screen: Comments,
 		},
@@ -167,12 +173,15 @@ const rootStack = createSwitchNavigator(
 		NoConnection: {
 			screen: NoConnection
 		},
+		EmptyPage: {
+			screen: () => <></>
+		},
 	},
 	{
 		defaultNavigationOptions: {
 			headerShown: false,
 		},
-		initialRouteName: 'NoConnection',
+		initialRouteName: 'EmptyPage',
 	}
 )
 

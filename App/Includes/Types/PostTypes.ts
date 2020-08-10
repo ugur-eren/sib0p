@@ -3,13 +3,15 @@ import UserTypes from './UserTypes'
 
 declare namespace PostTypes {
 	export interface Post {
-		id: string
+		id: number
 		user: UserTypes.TopContent
 		time: number
 		description: string
+		tags: PostTypes.Tag[]
 		postData: PostTypes.PostData[]
 		likesCount: number
 		dislikesCount: number
+		resibCount: number
 		hasLiked: boolean
 		hasDisliked: boolean
 		hasResibed: boolean
@@ -24,6 +26,11 @@ declare namespace PostTypes {
 		ratio: number
 		thumbnail: string
 		poster?: string
+	}
+	
+	export interface Tag {
+		id: number
+		name: string
 	}
 }
 
