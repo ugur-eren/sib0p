@@ -351,7 +351,7 @@ class Register extends React.PureComponent<Props, State> {
 						</View>
 
 						<View style={styles.bottomContainer}>
-							<Button label='Kayıt Ol' loading={true} containerStyle={styles.buttonContainer} onPress={this.onRegisterPress} />
+							<Button label={screen.language.register} loading={true} containerStyle={styles.buttonContainer} onPress={this.onRegisterPress} />
 							<TouchableOpacity onPress={this.navigateToLogin}>
 								<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
 									{screen.language.have_an_account}{' '}
