@@ -94,20 +94,6 @@ class Register extends React.PureComponent<Props, State> {
 			return this.setState({ usernameError: 'Kullanıcı adı 4 karakterden az olamaz.' })
 		}
 
-		if (!this.state.name) {
-			return this.setState({ nameError: 'İsim boş olamaz.' })
-		}
-		if (this.state.name.length < 4) {
-			return this.setState({ nameError: 'İsim 4 karakterden az olamaz.' })
-		}
-
-		if (!this.state.surname) {
-			return this.setState({ surnameError: 'Soyisim boş olamaz.' })
-		}
-		if (this.state.surname.length < 4) {
-			return this.setState({ surnameError: 'Soyisim 4 karakterden az olamaz.' })
-		}
-
 		if (!this.state.email) {
 			return this.setState({ emailError: 'E-Posta boş olamaz.' })
 		}
@@ -238,7 +224,7 @@ class Register extends React.PureComponent<Props, State> {
 
 						<View style={styles.centerContainer}>
 							<Input
-								placeholder='Kullanıcı Adı'
+								placeholder='Kullanıcı Adı *'
 								leftIcon='tag'
 								value={this.state.username}
 								error={this.state.usernameError}
@@ -259,7 +245,7 @@ class Register extends React.PureComponent<Props, State> {
 								onChangeText={this._onSurnameChange}
 							/>
 							<Input
-								placeholder='E-Posta'
+								placeholder='E-Posta *'
 								leftIcon='at-sign'
 								email
 								value={this.state.email}
@@ -267,7 +253,7 @@ class Register extends React.PureComponent<Props, State> {
 								onChangeText={this._onEmailChange}
 							/>
 							<Input
-								placeholder='Şifre'
+								placeholder='Şifre *'
 								leftIcon='lock'
 								password
 								value={this.state.password}
@@ -275,7 +261,7 @@ class Register extends React.PureComponent<Props, State> {
 								onChangeText={this._onPasswordChange}
 							/>
 							<Input
-								placeholder='Şifre Tekrar'
+								placeholder='Şifre Tekrar *'
 								leftIcon='lock'
 								password
 								value={this.state.passwordCheck}
@@ -296,7 +282,7 @@ class Register extends React.PureComponent<Props, State> {
 								</TouchableOpacity>
 								<Input
 									containerStyle={{ flex: 1, marginBottom: 0 }}
-									placeholder='Güvenlik Kodu'
+									placeholder='Güvenlik Kodu *'
 									leftIcon='key'
 									number
 									value={this.state.captcha}

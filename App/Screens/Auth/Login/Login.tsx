@@ -2,13 +2,14 @@ import React from 'react'
 import { View } from 'react-native'
 import { withTheme, Text } from 'react-native-paper'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import FastImage from 'react-native-fast-image'
+import OneSignal from 'react-native-onesignal'
 import Button from '../../../Components/Button/Button'
 import Input from '../../../Components/Input/Input'
 import Types from '../../../Includes/Types/Types'
 import Api from '../../../Includes/Api'
 import Storage from '../../../Includes/Storage'
 import styles from './styles'
-import FastImage from 'react-native-fast-image'
 
 interface Props {
 	navigation: Types.Navigation
@@ -70,6 +71,8 @@ class Login extends React.PureComponent<Props, State> {
 				username: login.username,
 			})
 
+			OneSignal.sendTag("token", login.notif_token)
+			
 			this.props.navigation.getScreenProps().setUserData({
 				active: true,
 				token: login.token,

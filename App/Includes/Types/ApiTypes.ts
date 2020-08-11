@@ -19,6 +19,7 @@ declare namespace ApiTypes {
 
 	export interface LoginResponse extends Init {
 		token?: string
+		notif_token?: string
 		username?: string
 	}
 
@@ -63,6 +64,17 @@ declare namespace ApiTypes {
 		user: UserTypes.Profile
 	}
 
+	export interface GetProfileDataResponse extends Init {
+		user_data: UserTypes.UserData
+	}
+
+	export interface UpdateProfileResponse
+		extends Init<
+			'username_short' | 'username_not_allowed' | 'username_in_use' | 'wrong_username' | 'email_in_use' | 'wrong_email' | 'some_empty'
+		> {}
+
+	export interface ChangePasswordResponse extends Init<'wrong_password' | 'some_empty'> {}
+
 	export interface GetNotificationsResponse extends Init {
 		notifications: NotificationTypes.Notification[]
 		currentTime: number
@@ -70,6 +82,10 @@ declare namespace ApiTypes {
 
 	export interface GetRelationsResponse extends Init {
 		relations: UserTypes.Relations[]
+	}
+
+	export interface Search extends Init {
+		result: UserTypes.Relations[]
 	}
 
 	export interface SharePostResponse extends Init {
@@ -88,9 +104,11 @@ declare namespace ApiTypes {
 	export interface DoActionResponse extends Init {
 		hasLiked?: boolean
 		hasDisliked?: boolean
+		hasResibed?: boolean
 		likesCount?: number
 		dislikesCount?: number
-		
+		resibCount?: number
+
 		isFollowed?: boolean
 		followersCount?: number
 	}

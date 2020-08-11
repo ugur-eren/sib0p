@@ -53,13 +53,13 @@ export default new (class Functions {
 	}
 
 	checkConnection = (): Response => {
-		return this.get("CheckConnection")
+		return this.get('CheckConnection')
 	}
 
 	register = (params: ApiTypes.RegisterRequest): Response<ApiTypes.RegisterResponse> => {
-		return this.post("Register", params)
+		return this.post('Register', params)
 	}
-	
+
 	login = (params: Params): Response<ApiTypes.LoginResponse> => {
 		return this.post('Login', params)
 	}
@@ -84,6 +84,18 @@ export default new (class Functions {
 		return this.post('GetProfile', params)
 	}
 
+	getProfileData = (params: Params): Response<ApiTypes.GetProfileDataResponse> => {
+		return this.post('GetProfileData', params)
+	}
+
+	updateProfile = (params: Params): Response<ApiTypes.UpdateProfileResponse> => {
+		return this.post('UpdateProfile', params)
+	}
+
+	changePassword = (params: Params): Response<ApiTypes.ChangePasswordResponse> => {
+		return this.post('ChangePassword', params)
+	}
+
 	getNotifications = (params: Params): Response<ApiTypes.GetNotificationsResponse> => {
 		return this.post('GetNotifications', params)
 	}
@@ -96,9 +108,14 @@ export default new (class Functions {
 		return this.post('DoAction', params)
 	}
 
+	search = (params: Params): Response<ApiTypes.Search> => {
+		return this.post('Search', params)
+	}
+
 	requestCaptcha = (): Response<ApiTypes.RequestCaptchaResponse> => {
 		return this.get('RequestCaptcha')
 	}
+
 
 	sharePost = (
 		params: Params,

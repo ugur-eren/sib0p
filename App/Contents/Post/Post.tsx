@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View } from 'react-native'
 import { Text, Divider, useTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -38,6 +38,18 @@ const Post = (props: Props) => {
 		resibCount: post.resibCount,
 	})
 
+	useEffect(() => {
+		setCountState({
+			...countState,
+			hasLiked: post.hasLiked,
+			hasDisliked: post.hasDisliked,
+			hasResibed: post.hasResibed,
+			likesCount: post.likesCount,
+			dislikesCount: post.dislikesCount,
+			resibCount: post.resibCount,
+		})
+	}, [props.post])
+
 	const _navigateToComments = () => {
 		props.navigation.push('Comments', { post: post.id })
 	}
@@ -50,19 +62,20 @@ const Post = (props: Props) => {
 		})
 		if (response) {
 			if (response.status) {
-				setCountState(countState => {
-					return ({
-					...countState,
-					hasLiked: response ? response.hasLiked : false,
-					hasDisliked: response ? response.hasDisliked : false,
-					likesCount: response ? response.likesCount : NaN,
-					dislikesCount: response ? response.dislikesCount : NaN,
-				})})
+				setCountState((countState) => {
+					return {
+						...countState,
+						hasLiked: response ? response.hasLiked : false,
+						hasDisliked: response ? response.hasDisliked : false,
+						likesCount: response ? response.likesCount : NaN,
+						dislikesCount: response ? response.dislikesCount : NaN,
+					}
+				})
 			} else {
 				if (response.error === 'no_login') {
 					props.navigation.getScreenProps().logout(true)
-				} else if (response.error === 'no_post'){
-					props.navigation.getScreenProps().error("Post bulunamadı. Silinmiş olabilir..")
+				} else if (response.error === 'no_post') {
+					props.navigation.getScreenProps().error('Post bulunamadı. Silinmiş olabilir..')
 				} else {
 					props.navigation.getScreenProps().unknown_error(response.error)
 				}
@@ -80,19 +93,20 @@ const Post = (props: Props) => {
 		})
 		if (response) {
 			if (response.status) {
-				setCountState(countState => {
-					return ({
-					...countState,
-					hasLiked: response ? response.hasLiked : false,
-					hasDisliked: response ? response.hasDisliked : false,
-					likesCount: response ? response.likesCount : NaN,
-					dislikesCount: response ? response.dislikesCount : NaN,
-				})})
+				setCountState((countState) => {
+					return {
+						...countState,
+						hasLiked: response ? response.hasLiked : false,
+						hasDisliked: response ? response.hasDisliked : false,
+						likesCount: response ? response.likesCount : NaN,
+						dislikesCount: response ? response.dislikesCount : NaN,
+					}
+				})
 			} else {
 				if (response.error === 'no_login') {
 					props.navigation.getScreenProps().logout(true)
-				} else if (response.error === 'no_post'){
-					props.navigation.getScreenProps().error("Post bulunamadı. Silinmiş olabilir..")
+				} else if (response.error === 'no_post') {
+					props.navigation.getScreenProps().error('Post bulunamadı. Silinmiş olabilir..')
 				} else {
 					props.navigation.getScreenProps().unknown_error(response.error)
 				}
@@ -108,15 +122,54 @@ const Post = (props: Props) => {
 			type: 'resib',
 			post: post.id,
 		})
+		if (response) {
+			if (response.status) {
+				setCountState((countState) => {
+					return {
+						...countState,
+						hasLiked: response ? response.hasLiked : false,
+						hasDisliked: response ? response.hasDisliked : false,
+						likesCount: response ? response.likesCount : NaN,
+						dislikesCount: response ? response.dislikesCount : NaN,
+
+						hasResibed: response ? response.hasResibed : false,
+						resibCount: response ? response.resibCount : NaN,
+					}
+				})
+			} else {
+				if (response.error === 'no_login') {
+					props.navigation.getScreenProps().logout(true)
+				} else if (response.error === 'no_post') {
+					props.navigation.getScreenProps().error('Post bulunamadı. Silinmiş olabilir..')
+				} else {
+					props.navigation.getScreenProps().unknown_error(response.error)
+				}
+			}
+		} else {
+			props.navigation.getScreenProps().unknown_error()
+		}
 	}
 
 	return (
 		<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-			{post.postType === "resib" && post.resibber ? (
-				<View style={{paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', marginBottom: 3, borderBottomColor: theme.colors.background, borderBottomWidth: 0.5}}>
-					<Feather name="repeat" size={16} color={theme.colors.main} />
-					<FastImage source={{ uri: post.resibber.profilePhoto }} style={{width: 25, height: 25, borderRadius: 25, marginHorizontal: 10}} />
-					<Text style={{fontFamily: 'FiraSans-SemiBold'}}>{post.resibber.username}</Text>
+			{post.postType === 'resib' && post.resibber ? (
+				<View
+					style={{
+						paddingHorizontal: 10,
+						paddingVertical: 5,
+						flexDirection: 'row',
+						alignItems: 'center',
+						marginBottom: 3,
+						borderBottomColor: theme.colors.background,
+						borderBottomWidth: 0.5,
+					}}
+				>
+					<Feather name='repeat' size={16} color={theme.colors.main} />
+					<FastImage
+						source={{ uri: post.resibber.profilePhoto }}
+						style={{ width: 25, height: 25, borderRadius: 25, marginHorizontal: 10 }}
+					/>
+					<Text style={{ fontFamily: 'FiraSans-SemiBold' }}>{post.resibber.username}</Text>
 				</View>
 			) : (
 				<></>

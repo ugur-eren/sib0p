@@ -36,6 +36,14 @@ declare namespace UserTypes {
 		tags: UserTagTypes.Tag[]
 		isFollowed?: boolean
 	}
+
+	export interface UserData {
+		username: string
+		name: string
+		surname: string
+		email: string
+		bio: string
+	}
 }
 
 export default UserTypes

@@ -1,6 +1,6 @@
 import React from 'react'
-import { View } from 'react-native'
-import { List, withTheme, Menu, Text, Portal, Dialog, Paragraph, Button } from 'react-native-paper'
+import { View, Platform } from 'react-native'
+import { List, withTheme, Menu, Text, Portal, Dialog, Paragraph, Button, Switch } from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler'
 import Header from '../../Components/Header/Header'
 import Types from '../../Includes/Types/Types'
@@ -52,6 +52,11 @@ class Settings extends React.PureComponent<Props, State> {
 		})
 	}
 
+	toggleNotification = () => {
+		let screen = this.props.navigation.getScreenProps()
+		screen.setNotification(!screen.notification)
+	}
+
 	render() {
 		let { theme } = this.props
 
@@ -81,7 +86,23 @@ class Settings extends React.PureComponent<Props, State> {
 							selectItem={this.onThemeSelect}
 							data={SupportedThemes}
 						/>
-						<ListMenu
+
+						<List.Item
+							style={styles.clearListStyle}
+							title={'Bildirimler'}
+							left={(props) => <List.Icon {...props} style={{}} icon='bell' />}
+							onPress={() => this.props.navigation.navigate('ChangePassword')}
+							right={() => (
+								<Switch
+									value={this.props.navigation.getScreenProps().notification}
+									style={Platform.OS == 'ios' && { marginRight: 20 }}
+									onValueChange={this.toggleNotification}
+									color={theme.colors.main}
+								/>
+							)}
+						/>
+						
+						{/* <ListMenu
 							title='Dil'
 							iconName='flag'
 							anchorTitle='Türkçe'
@@ -91,7 +112,7 @@ class Settings extends React.PureComponent<Props, State> {
 								english: 'English',
 								german: 'Deutsche',
 							}}
-						/>
+						/> */}
 						<List.Item
 							style={styles.clearListStyle}
 							title={'Çıkış Yap'}

@@ -24,6 +24,8 @@ import Comments from './Screens/Comments/Comments'
 import UserProfile from './Screens/UserProfile/UserProfile'
 import Relations from './Screens/Relations/Relations'
 import Settings from './Screens/Settings/Settings'
+import EditProfile from './Screens/Settings/EditProfile'
+import ChangePassword from './Screens/Settings/ChangePassword'
 import Search from './Screens/Search/Search'
 import SinglePost from './Screens/SinglePost/SinglePost'
 
@@ -143,6 +145,12 @@ const mainStack = createStackNavigator(
 		},
 		Settings: {
 			screen: Settings,
+		},
+		EditProfile: {
+			screen: EditProfile,
+		},
+		ChangePassword: {
+			screen: ChangePassword
 		},
 		Share: {
 			screen: Share,

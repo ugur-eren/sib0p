@@ -334,6 +334,12 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 	}
 
+	setNotification = (active: boolean) => {
+		Storage.set("notification", active ? 'true' : 'false')
+		OneSignal.setSubscription(active)
+		this.setState({notification: active})
+	}
+
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -360,6 +366,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 								{
 									theme: Theme[this.state.theme],
 									user: this.state.user,
+									notification: this.state.notification,
 									selectedTheme: this.state.selectedTheme,
 									logout: this.logout,
 									unknown_error: this.unknown_error,
@@ -371,6 +378,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 									setUserData: this.setUserData,
 									setTheme: this.setTheme,
+									setNotification: this.setNotification,
 									setIsVideoMuted: this.setIsVideoMuted,
 
 									getIsVideoMuted: this.getIsVideoMuted,

@@ -11,6 +11,7 @@ declare namespace Types {
 	export interface ScreenProps {
 		theme: Theme
 		user: ScreenPropsUser
+		notification: boolean
 		selectedTheme: SupportedThemes
 		logout: (runtime?: boolean) => Promise<void>
 		unknown_error: (error?: string) => void
@@ -22,6 +23,7 @@ declare namespace Types {
 
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void
 		setTheme: (theme: SupportedThemes, callback?: () => void) => void
+		setNotification: (active: boolean) => void
 		setIsVideoMuted: (isMuted: boolean) => void
 
 		getIsVideoMuted: () => boolean
