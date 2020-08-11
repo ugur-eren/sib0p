@@ -180,7 +180,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				},
 			}
 
-			return this.setState({ ready: true }, async () => {
+			return this.setState(stateObject, async () => {
 				await this.logout()
 				SplashScreen.hide()
 			})

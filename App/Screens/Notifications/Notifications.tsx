@@ -79,11 +79,8 @@ class Notifications extends React.PureComponent<Props, State> {
 		return this.init(true, true)
 	}
 
-	goToPost = (post: string) => {
-		this.props.navigation.navigate('Post', { post })
-	}
 	_renderItem = ({ item }: { item: NotificationTypes.Notification }) => (
-		<Notification notification={item} goToPost={this.goToPost} currentTime={this.state.currentTime} />
+		<Notification notification={item} navigation={this.props.navigation} currentTime={this.state.currentTime} />
 	)
 	_keyExtractor = (item: NotificationTypes.Notification, index: number) => index.toString()
 	_itemSeperatorComponent = () => <Divider />

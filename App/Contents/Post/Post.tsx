@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { View } from 'react-native'
 import { Text, Divider, useTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import Feather from 'react-native-vector-icons/Feather'
+import FastImage from 'react-native-fast-image'
 import PostContainer from '../PostContainer/PostContainer'
 import TopProfile from '../TopProfile/TopProfile'
 import FeaturedComments from '../FeaturedComments/FeaturedComments'
@@ -17,7 +19,7 @@ interface Props {
 	post: PostTypes.Post
 	isVisible: boolean
 	currentTime: number
-	openModal: (post: PostTypes.Post) => void
+	openModal?: (post: PostTypes.Post) => void
 	noUser?: boolean
 	noUserTouchable?: boolean
 	commentsVisible?: boolean
@@ -59,6 +61,8 @@ const Post = (props: Props) => {
 			} else {
 				if (response.error === 'no_login') {
 					props.navigation.getScreenProps().logout(true)
+				} else if (response.error === 'no_post'){
+					props.navigation.getScreenProps().error("Post bulunamadı. Silinmiş olabilir..")
 				} else {
 					props.navigation.getScreenProps().unknown_error(response.error)
 				}
@@ -87,6 +91,8 @@ const Post = (props: Props) => {
 			} else {
 				if (response.error === 'no_login') {
 					props.navigation.getScreenProps().logout(true)
+				} else if (response.error === 'no_post'){
+					props.navigation.getScreenProps().error("Post bulunamadı. Silinmiş olabilir..")
 				} else {
 					props.navigation.getScreenProps().unknown_error(response.error)
 				}
@@ -106,6 +112,15 @@ const Post = (props: Props) => {
 
 	return (
 		<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+			{post.postType === "resib" && post.resibber ? (
+				<View style={{paddingHorizontal: 10, paddingVertical: 5, flexDirection: 'row', alignItems: 'center', marginBottom: 3, borderBottomColor: theme.colors.background, borderBottomWidth: 0.5}}>
+					<Feather name="repeat" size={16} color={theme.colors.main} />
+					<FastImage source={{ uri: post.resibber.profilePhoto }} style={{width: 25, height: 25, borderRadius: 25, marginHorizontal: 10}} />
+					<Text style={{fontFamily: 'FiraSans-SemiBold'}}>{post.resibber.username}</Text>
+				</View>
+			) : (
+				<></>
+			)}
 			{!props.noUser ? (
 				<TopProfile
 					user={{

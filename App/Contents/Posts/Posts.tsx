@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle } from 'react-native'
-import { List, withTheme } from 'react-native-paper'
+import { List, withTheme, Dialog, Paragraph, Button } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
 
@@ -8,6 +8,7 @@ import Config from '../../Includes/Config'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import styles from './styles'
+import Api from '../../Includes/Api'
 
 interface Props {
 	navigation: Types.Navigation
@@ -17,8 +18,8 @@ interface Props {
 	refresh: () => Promise<any>
 	getNextPage: () => Promise<any>
 	noUserTouchable?: boolean
-	ListHeaderComponent?: () => JSX.Element
-	ListEmptyComponent?: () => JSX.Element
+	ListHeaderComponent?: React.ComponentType
+	ListEmptyComponent?: React.ComponentType
 	style?: StyleProp<ViewStyle>
 	contentContainerStyle?: StyleProp<ViewStyle>
 }
@@ -28,6 +29,9 @@ interface State {
 	refreshing: boolean
 	focused: boolean
 	activePost: PostTypes.Post
+	reportPostActive: boolean
+	deletePostActive: boolean
+	deletePostLoading: boolean
 }
 
 class Posts extends React.PureComponent<Props, State> {
@@ -39,6 +43,9 @@ class Posts extends React.PureComponent<Props, State> {
 			refreshing: false,
 			focused: true,
 			activePost: null,
+			reportPostActive: false,
+			deletePostActive: false,
+			deletePostLoading: false,
 		}
 	}
 
@@ -76,7 +83,7 @@ class Posts extends React.PureComponent<Props, State> {
 		/>
 	)
 	_itemSeperatorComponent = () => <View style={styles.itemSeperator}></View>
-	_keyExtractor = (item: PostTypes.Post) => item.id
+	_keyExtractor = (item: PostTypes.Post) => item.id.toString()
 
 	_viewableItemsChanged = ({ viewableItems }: { viewableItems: Array<{ index: number; isViewable: boolean; item: PostTypes.Post; key: any }> }) => {
 		if (viewableItems.length > 0) {
@@ -98,8 +105,9 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	openModal = (post: PostTypes.Post) => {
-		this.setState({ activePost: post })
-		this.modalRef?.open()
+		this.setState({ activePost: post }, () => {
+			this.modalRef?.open()
+		})
 	}
 
 	sharePost = () => {
@@ -112,11 +120,51 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	reportPost = () => {
+		this.setState({ reportPostActive: true })
 		this.modalRef?.close()
 	}
 
+	hideReportPost = () => {
+		this.setState({ reportPostActive: false })
+	}
+
 	deletePost = () => {
+		this.setState({ deletePostActive: true })
 		this.modalRef?.close()
+	}
+
+	hideDeletePost = () => {
+		this.setState({ deletePostActive: false })
+	}
+
+	_deletePost = async () => {
+		this.setState({ deletePostLoading: true })
+		let screen = this.props.navigation.getScreenProps()
+
+		let response = await Api.doAction({
+			type: 'delete_post',
+			token: screen.user.token,
+			post: this.state.activePost.id,
+		})
+
+		if (response) {
+			if (response.status) {
+				this.setState({ deletePostLoading: false, deletePostActive: false })
+				this.refresh()
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'no_post') {
+					screen.error('Post bulunamadı. Silinmiş olabilir..')
+				} else if (response.error === 'no_auth') {
+					screen.error('Bu postu sadece postu paylaşan kullanıcı silebilir.')
+				} else {
+					screen.unknown_error(response.error)
+				}
+			}
+		} else {
+			screen.unknown_error()
+		}
 	}
 
 	render() {
@@ -154,6 +202,41 @@ class Posts extends React.PureComponent<Props, State> {
 						)}
 					</List.Section>
 				</Modalize>
+
+				<Dialog visible={this.state.reportPostActive} onDismiss={this.hideReportPost}>
+					<Dialog.Title>Şikayet Et</Dialog.Title>
+					<Dialog.Content>
+						<Paragraph>Bu gönderiyi şikayet etmek istediğinize emin misiniz?</Paragraph>
+					</Dialog.Content>
+					<Dialog.Actions>
+						<Button onPress={this.hideReportPost} color={this.props.theme.colors.main} style={{ marginRight: 15 }}>
+							Şikayet Et
+						</Button>
+						<Button onPress={this.hideReportPost} color={this.props.theme.colors.contrast}>
+							İptal
+						</Button>
+					</Dialog.Actions>
+				</Dialog>
+
+				<Dialog visible={this.state.deletePostActive} onDismiss={this.hideDeletePost}>
+					<Dialog.Title>Gönderiyi Sil</Dialog.Title>
+					<Dialog.Content>
+						<Paragraph>Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</Paragraph>
+					</Dialog.Content>
+					<Dialog.Actions>
+						<Button
+							onPress={this.state.deletePostLoading ? undefined : this._deletePost}
+							color={this.props.theme.colors.main}
+							loading={this.state.deletePostLoading}
+							style={{ marginRight: 15 }}
+						>
+							Sil
+						</Button>
+						<Button onPress={this.hideDeletePost} color={this.props.theme.colors.contrast}>
+							İptal
+						</Button>
+					</Dialog.Actions>
+				</Dialog>
 			</>
 		)
 	}

@@ -10,6 +10,8 @@ import PostTypes from '../../Includes/Types/PostTypes'
 import Timer from '../../Components/Timer/Timer'
 import styles from './styles'
 import UserTagTypes from '../../Includes/Types/UserTagTypes'
+import Api from '../../Includes/Api'
+import TextButton from '../../Components/TextButton/TextButton'
 
 interface Props {
 	navigation: Types.Navigation
@@ -20,28 +22,71 @@ interface Props {
 	noUserTouchable?: boolean
 }
 
-interface State {}
+interface State {
+	user: UserTypes.TopInfo
+}
 
 class Post extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
-		this.state = {}
+		this.state = {
+			user: props.user,
+		}
+	}
+
+	UNSAFE_componentWillReceiveProps(nextProps: Props) {
+		if (this.props.user.isFollowed !== nextProps.user.isFollowed) {
+			this.state.user.isFollowed = nextProps.user.isFollowed
+		}
 	}
 
 	handleProfilePress = () => {
-		this.props.navigation.push('UserProfile', { username: this.props.user.username })
+		this.props.navigation.push('UserProfile', { username: this.state.user.username })
 	}
 
 	openModal = () => {
 		this.props.openModal(this.props.post)
 	}
 
+	onFollow = async () => {
+		let screen = this.props.navigation.getScreenProps()
+
+		let response = await Api.doAction({
+			token: screen.user.token,
+			type: 'follow',
+			username: this.state.user.username,
+		})
+		if (response) {
+			if (response.status) {
+				this.setState({
+					user: {
+						...this.state.user,
+						isFollowed: response.isFollowed,
+					},
+				})
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'wrong_username') {
+					screen.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
+				} else if (response.error === 'no_user') {
+					screen.error('Bu kullanıcı bulunamadı. Kullanıcı adı değişmiş olabilir.')
+				} else {
+					screen.unknown_error(response.error)
+				}
+			}
+		} else {
+			screen.unknown_error()
+		}
+	}
+
 	_renderUserTags = () => this.props.user.tags.map(this._renderUserTag)
 	_renderUserTag = (tag: UserTagTypes.Tag) => <Feather key={tag.id.toString()} name={tag.icon} size={16} color={tag.color} style={styles.usertag} />
 
 	render() {
-		let { user, theme, noUserTouchable } = this.props
+		let { theme, noUserTouchable } = this.props
+		let { user } = this.state
 		let ContainerComponent = noUserTouchable ? TouchableWithoutFeedback : TouchableOpacity
 		return (
 			<View style={styles.container}>
@@ -58,12 +103,10 @@ class Post extends React.PureComponent<Props, State> {
 
 						<Timer time={user.time} />
 					</ContainerComponent>
-					{noUserTouchable || user.isFollowed ? (
+					{noUserTouchable || user.username === this.props.navigation.getScreenProps().user.username || user.isFollowed ? (
 						<></>
 					) : (
-						<View style={styles.followButton}>
-							<Text style={{ color: theme.colors.main }}>Takip Et</Text>
-						</View>
+						<TextButton label={'Takip Et'} loadable onPress={this.onFollow} />
 					)}
 				</View>
 

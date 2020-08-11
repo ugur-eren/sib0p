@@ -8,12 +8,13 @@ import Functions from '../../Includes/Functions'
 import Types from '../../Includes/Types/Types'
 import NotificationTypes from '../../Includes/Types/NotificationTypes'
 import styles from './styles'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 interface Props {
+	navigation: Types.Navigation
 	theme: Types.Theme
 	notification: NotificationTypes.Notification
 	currentTime: number
-	goToPost: (post: string) => void
 }
 
 interface State {}
@@ -24,16 +25,37 @@ class Notification extends React.PureComponent<Props, State> {
 
 		this.state = {}
 	}
+	private goToUserActive: boolean = false
+
+	goToPost = () => {
+		if (!this.goToUserActive) {
+			if (this.props.notification.post) {
+				this.props.navigation.navigate('SinglePost', { post: this.props.notification.post })
+			} else {
+				this.goToUser()
+			}
+		} else {
+			this.goToUserActive = false
+		}
+	}
+
+	goToUser = () => {
+		this.goToUserActive = true
+		this.props.navigation.push('UserProfile', { username: this.props.notification.user.username })
+	}
+
 	render() {
 		let { notification, theme } = this.props
 
 		return (
-			<View style={[styles.notification, { backgroundColor: theme.colors.surface }]}>
-				{notification.type === 'warning' ? (
-					<Feather name='alert-circle' size={46} color={theme.colors.main} />
-				) : (
-					<FastImage source={{ uri: notification.user.profilePhoto }} style={styles.userPhoto} />
-				)}
+			<TouchableOpacity onPress={this.goToPost} style={[styles.notification, { backgroundColor: theme.colors.surface }]}>
+				<TouchableOpacity onPress={this.goToUser}>
+					{notification.type === 'warning' ? (
+						<Feather name='alert-circle' size={46} color={theme.colors.main} />
+					) : (
+						<FastImage source={{ uri: notification.user.profilePhoto }} style={styles.userPhoto} />
+					)}
+				</TouchableOpacity>
 				<View style={styles.inner}>
 					<Text numberOfLines={1}>
 						<Text style={{ fontFamily: Config.fonts.semi }}>{notification.user.username}</Text>
@@ -63,7 +85,7 @@ class Notification extends React.PureComponent<Props, State> {
 						<Feather name='clock' /> <Text>{Functions.convertTime(notification.time, this.props.currentTime)}</Text>
 					</Text>
 				</View>
-			</View>
+			</TouchableOpacity>
 		)
 	}
 }

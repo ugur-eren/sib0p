@@ -16,6 +16,7 @@ declare namespace UserTypes {
 		profilePhoto: string
 		backgroundPhoto: string
 		tags: UserTagTypes.Tag[]
+		isFollowed: boolean
 		postsCount: number
 		followsCount: number
 		followersCount: number

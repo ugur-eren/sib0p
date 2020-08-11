@@ -15,6 +15,7 @@ import PostTypes from '../../Includes/Types/PostTypes'
 import Loader from './Loader'
 import EmptyList from '../../Components/EmptyList/EmptyList'
 import Header from '../../Components/Header/Header'
+import UserTagTypes from '../../Includes/Types/UserTagTypes'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -149,6 +150,47 @@ class UserProfile extends React.PureComponent<Props, State> {
 		this.props.navigation.navigate('Settings')
 	}
 
+	onFollow = async () => {
+		let screen = this.props.navigation.getScreenProps()
+		if (screen.user.username === this.state.user.username) {
+			return this.onSettingsPress()
+		}
+
+		let response = await Api.doAction({
+			token: screen.user.token,
+			type: 'follow',
+			username: this.state.user.username,
+		})
+		if (response) {
+			if (response.status) {
+				this.setState(
+					{
+						user: {
+							...this.state.user,
+							isFollowed: response.isFollowed,
+							followersCount: response.followersCount,
+						},
+					},
+					() => {
+						this.props.navigation.getScreenProps().setProfileDataCache(this.state.user)
+					}
+				)
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'wrong_username') {
+					screen.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
+				} else if (response.error === 'no_user') {
+					screen.error('Bu kullanıcı bulunamadı. Kullanıcı adı değişmiş olabilir.')
+				} else {
+					screen.unknown_error(response.error)
+				}
+			}
+		} else {
+			screen.unknown_error()
+		}
+	}
+
 	_renderUserTagsContainer = () =>
 		this.state.user.tags.length > 0 ? (
 			<View style={[styles.userTagsContainer, { backgroundColor: this.props.theme.colors.surface }]}>{this._renderUserTags()}</View>
@@ -156,7 +198,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 			<></>
 		)
 	_renderUserTags = () => this.state.user.tags.map(this._renderUserTag)
-	_renderUserTag = (tag) => (
+	_renderUserTag = (tag: UserTagTypes.Tag) => (
 		<View key={tag.id.toString()} style={styles.userTag}>
 			<Feather name={tag.icon} color={tag.color} style={styles.userTagIcon} size={16} />
 			<Text>{tag.name}</Text>
@@ -183,7 +225,11 @@ class UserProfile extends React.PureComponent<Props, State> {
 						<Text>{user.fullName}</Text>
 					</View>
 
-					{isMyself ? <></> : <TextButton label={'Takip Et'} onPress={() => {}} />}
+					<TextButton
+						loadable
+						label={isMyself ? 'Profili Düzenle' : user.isFollowed ? 'Takipten Çık' : 'Takip Et'}
+						onPress={this.onFollow}
+					/>
 				</View>
 
 				{user.bio ? (
@@ -251,7 +297,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 						getNextPage={this.getNextPage}
 						navigation={this.props.navigation}
 						refresh={this.refresh}
-						ListHeaderComponent={this._renderHeader}
+						ListHeaderComponent={React.memo(() => (
+							<this._renderHeader />
+						))}
 						ListEmptyComponent={this._emptyComponent}
 						noUserTouchable
 					/>

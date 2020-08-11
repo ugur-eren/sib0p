@@ -2,7 +2,7 @@ import UserTypes from './UserTypes'
 
 declare namespace CommentTypes {
 	export interface Comment {
-        id: string
+        id: number
         user: UserTypes.TopContent
         time: number
         content: string
@@ -10,6 +10,7 @@ declare namespace CommentTypes {
         dislikesCount: number
         hasLiked: boolean
         hasDisliked: boolean
+        isMine: boolean
     }
 }
 

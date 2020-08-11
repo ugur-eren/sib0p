@@ -18,11 +18,13 @@ declare namespace PostTypes {
 		commentsCount: number
 		featuredComments: CommentTypes.Comment[]
 		isMine: boolean
+		postType: 'media' | 'poll' | 'resib' | 'message'
+		resibber?: UserTypes.TopContent
 	}
 	
 	export interface PostData {
 		uri: string
-		type: 'image' | 'video' | 'poll'
+		type: 'image' | 'video'
 		ratio: number
 		thumbnail: string
 		poster?: string
