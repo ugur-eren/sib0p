@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle } from 'react-native'
+import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle, FlatListProps } from 'react-native'
 import { List, withTheme, Dialog, Paragraph, Button } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
@@ -20,6 +20,7 @@ interface Props {
 	noUserTouchable?: boolean
 	ListHeaderComponent?: React.ComponentType
 	ListEmptyComponent?: React.ComponentType
+	ListFooterComponent?: React.ComponentType
 	style?: StyleProp<ViewStyle>
 	contentContainerStyle?: StyleProp<ViewStyle>
 }
@@ -183,6 +184,7 @@ class Posts extends React.PureComponent<Props, State> {
 					onEndReached={this.props.getNextPage}
 					ListHeaderComponent={this.props.ListHeaderComponent}
 					ListEmptyComponent={this.props.ListEmptyComponent}
+					ListFooterComponent={this.props.ListFooterComponent}
 					style={this.props.style}
 					contentContainerStyle={this.props.contentContainerStyle}
 				/>

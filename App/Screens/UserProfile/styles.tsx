@@ -23,12 +23,19 @@ export default StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
-	profilePhoto: {
+	profilePhotoContainer: {
 		width: 100,
 		height: 100,
 		borderRadius: 100,
 		top: -25,
 		borderWidth: 0.5,
+		overflow: 'hidden'
+	},
+	profilePhoto: {
+		width: 100,
+		height: 100,
+		borderRadius: 100,
+		overflow: 'hidden'
 	},
 	userInfo: {
 		paddingHorizontal: 10,
@@ -60,11 +67,9 @@ export default StyleSheet.create({
 		width: 0.5,
 		height: '100%',
 	},
-	centerTouchableContainer: {
-		flex: 1,
-	},
 	centerTouchable: {
 		alignItems: 'center',
+		flex: 1
 	},
 	postsDivider: {
 		width: '100%',
@@ -81,5 +86,11 @@ export default StyleSheet.create({
 	},
 	userTagIcon: {
 		marginRight: 10,
+	},
+	bottomLoader: {
+		paddingVertical: 15,
+		alignItems: 'center',
+		justifyContent: 'center',
+		width: '100%',
 	},
 })

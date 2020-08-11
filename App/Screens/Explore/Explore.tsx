@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native'
-import { withTheme } from 'react-native-paper'
+import { withTheme, ActivityIndicator } from 'react-native-paper'
 import MainHeader from '../../Components/MainHeader/MainHeader'
 import Posts from '../../Contents/Posts/Posts'
 import Types from '../../Includes/Types/Types'
@@ -84,6 +84,12 @@ class Explore extends React.PureComponent<Props, State> {
 		return this.init(true, true)
 	}
 
+	_footerComponent = () => (
+		<View style={styles.bottomLoader}>
+			<ActivityIndicator size={24} color={this.props.theme.colors.main} />
+		</View>
+	)
+
 	render() {
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
@@ -102,6 +108,7 @@ class Explore extends React.PureComponent<Props, State> {
 							getNextPage={this.getNextPage}
 							posts={this.state.posts}
 							currentTime={this.state.currentTime}
+							ListFooterComponent={this._footerComponent}
 						/>
 					</>
 				)}

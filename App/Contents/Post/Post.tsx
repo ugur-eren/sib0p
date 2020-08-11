@@ -195,7 +195,7 @@ const Post = (props: Props) => {
 			{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
 			{post.tags ? <RenderTags tags={post.tags} navigation={navigation} /> : <></>}
 
-			{post.postData.length > 0 ? <PostContainer postData={post.postData} navigation={navigation} isVisible={props.isVisible} /> : <></>}
+			{post.postData.length > 0 ? <PostContainer like={_likePost} postData={post.postData} navigation={navigation} isVisible={props.isVisible} /> : <></>}
 
 			<View style={styles.bottomContainer}>
 				<View style={styles.buttons}>

@@ -10,6 +10,7 @@ import styles from './styles'
 interface Props {
 	navigation: Types.Navigation
 	postData: PostTypes.PostData[]
+	like: () => Promise<void>
 	isVisible: boolean
 }
 
@@ -26,6 +27,7 @@ const PostContainer = (props: Props) => {
 		<PostContent
 			key={item.uri}
 			post={item}
+			like={props.like}
 			style={styles.post}
 			navigation={props.navigation}
 			isVisible={props.isVisible && index === activeSlide}
@@ -75,6 +77,7 @@ const PostContainer = (props: Props) => {
 		return (
 			<PostContent
 				post={postData[0]}
+				like={props.like}
 				style={[styles.post, { height: width / postData[0].ratio }]}
 				navigation={props.navigation}
 				isVisible={props.isVisible}

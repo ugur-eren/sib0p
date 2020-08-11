@@ -1,9 +1,9 @@
 import React from 'react'
-import { View } from 'react-native'
-import { Text, withTheme, Divider } from 'react-native-paper'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { View, TouchableOpacity } from 'react-native'
+import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import Feather from 'react-native-vector-icons/Feather'
+import ImagePicker, { Image as ImageType } from 'react-native-image-crop-picker'
 import TextButton from '../../Components/TextButton/TextButton'
 import TransparentHeader from '../../Components/TransparentHeader/TransparentHeader'
 import Types from '../../Includes/Types/Types'
@@ -31,6 +31,8 @@ interface State {
 	posts: PostTypes.Post[]
 	currentTime: number
 	noUser: boolean
+	hasPage: boolean
+	error: false | string
 }
 
 class UserProfile extends React.PureComponent<Props, State> {
@@ -43,6 +45,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			posts: [],
 			currentTime: 0,
 			noUser: false,
+			hasPage: false,
+			error: false,
 		}
 	}
 
@@ -107,13 +111,17 @@ class UserProfile extends React.PureComponent<Props, State> {
 			})
 			if (posts) {
 				if (posts.status) {
-					stateObject = {
-						...stateObject,
-						posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
-						currentTime: posts.currentTime,
+					if (posts.posts.length < 1) {
+						this.setState({ hasPage: false, currentTime: posts.currentTime })
+					} else {
+						stateObject = {
+							...stateObject,
+							posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
+							currentTime: posts.currentTime,
+						}
+						this.props.navigation.getScreenProps().setProfileDataCache(stateObject.user, posts.posts)
+						this.props.navigation.getScreenProps().setCurrentTime(posts.currentTime)
 					}
-					this.props.navigation.getScreenProps().setProfileDataCache(stateObject.user, posts.posts)
-					this.props.navigation.getScreenProps().setCurrentTime(posts.currentTime)
 				} else {
 					if (posts.error === 'no_login') {
 						this.props.navigation.getScreenProps().logout(true)
@@ -131,7 +139,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	getNextPage = () => {
-		return this.init(true, true)
+		if (this.state.hasPage) {
+			return this.init(true, true)
+		}
 	}
 
 	refresh = () => {
@@ -205,6 +215,79 @@ class UserProfile extends React.PureComponent<Props, State> {
 		</View>
 	)
 
+	_changePP = () => {
+		this._changePhoto('pp')
+	}
+	_changeBG = () => {
+		this._changePhoto('bg')
+	}
+	_changePhoto = (type: 'pp' | 'bg') => {
+		ImagePicker.openPicker({
+			mediaType: 'photo',
+			multiple: false,
+			width: 500,
+			height: type === 'pp' ? 500 : 250,
+			cropping: true,
+			forceJpg: true,
+			freeStyleCropEnabled: false,
+			includeBase64: true,
+			compressImageMaxWidth: 1080,
+			compressImageMaxHeight: 1080,
+			compressImageQuality: 0.75,
+			cropperToolbarTitle: 'Resim Boyutunu Ayarlayınız',
+			loadingLabelText: 'Yükleniyor...',
+			cropperChooseText: 'Seç',
+			cropperCancelText: 'İptal',
+		})
+			.then(async (images) => {
+				if (images) {
+					let im: ImageType = null
+					if (images instanceof Array) {
+						if (images.length > 0) {
+							im = images[0]
+						}
+					} else {
+						if (images.size > 20971520) {
+							return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
+						}
+						im = images
+					}
+
+					if (im && im.data) {
+						let screen = this.props.navigation.getScreenProps()
+
+						let response = await Api.changePhoto({
+							token: screen.user.token,
+							type: type,
+							image: im.data,
+						})
+
+						if (response) {
+							if (response.status) {
+								this.setState({ error: (type == 'pp' ? 'Profil fotoğrafı' : 'Arkaplan fotoğrafı') + ' başarıyla güncellendi.' })
+								this.refresh()
+							} else {
+								if (response.error === 'no_image') {
+									screen.error('Fotoğraf seçilmedi. Lütfen tekrar deneyiniz.')
+								} else if (response.error === 'not_supported') {
+									screen.error('Yüklediğiniz dosya formatı desteklenmemektedir. Lütfen farklı bir dosya ile tekrar deneyiniz.')
+								} else {
+									screen.unknown_error(response.error)
+								}
+							}
+						} else {
+							screen.unknown_error()
+						}
+					} else {
+						return this.setState({
+							error: 'Dosya açılırken bir sorun oluştu. Lütfen dosya izinlerini kontol ediniz ve tekrar deneyiniz.',
+						})
+					}
+				}
+			})
+			.catch(() => {})
+	}
+
 	_renderHeader = () => {
 		let { theme, navigation } = this.props
 		let myself = navigation.getScreenProps().user
@@ -214,11 +297,15 @@ class UserProfile extends React.PureComponent<Props, State> {
 		return (
 			<>
 				<View style={styles.backgroundContainer}>
-					<FastImage source={{ uri: user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
+					<TouchableOpacity onPress={this._changeBG} style={[styles.backgroundImage, { backgroundColor: 'red' }]}>
+						<FastImage source={{ uri: user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
+					</TouchableOpacity>
 					<TransparentHeader title={user.username} onSettings={isMyself ? this.onSettingsPress : undefined} />
 				</View>
 				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
-					<FastImage source={{ uri: user.profilePhoto }} style={[styles.profilePhoto, { borderColor: this.props.theme.colors.main }]} />
+					<TouchableOpacity onPress={this._changePP} style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}>
+						<FastImage source={{ uri: user.profilePhoto }} style={styles.profilePhoto} />
+					</TouchableOpacity>
 
 					<View style={styles.userInfo}>
 						<Text style={styles.username}>{user.username}</Text>
@@ -250,22 +337,14 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 					<Divider style={styles.centerDivider} />
 
-					<TouchableOpacity
-						onPress={this.handleFollowsPress}
-						style={styles.centerTouchable}
-						containerStyle={styles.centerTouchableContainer}
-					>
+					<TouchableOpacity onPress={this.handleFollowsPress} style={styles.centerTouchable}>
 						<Text>Takip</Text>
 						<Text style={styles.centerText}>{user.followsCount}</Text>
 					</TouchableOpacity>
 
 					<Divider style={styles.centerDivider} />
 
-					<TouchableOpacity
-						onPress={this.handleFollowersPress}
-						style={styles.centerTouchable}
-						containerStyle={styles.centerTouchableContainer}
-					>
+					<TouchableOpacity onPress={this.handleFollowersPress} style={styles.centerTouchable}>
 						<Text>Takipçi</Text>
 						<Text style={styles.centerText}>{user.followersCount}</Text>
 					</TouchableOpacity>
@@ -275,6 +354,18 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	_emptyComponent = () => <EmptyList image={require('../../Assets/Images/no-posts.png')} title='Hiç post bulunamadı' />
+	_footerComponent = () =>
+		!this.state.hasPage ? (
+			<></>
+		) : (
+			<View style={styles.bottomLoader}>
+				<ActivityIndicator size={24} color={this.props.theme.colors.main} />
+			</View>
+		)
+
+	dismissError = () => {
+		this.setState({ error: false })
+	}
 
 	render() {
 		let { theme } = this.props
@@ -300,10 +391,16 @@ class UserProfile extends React.PureComponent<Props, State> {
 						ListHeaderComponent={React.memo(() => (
 							<this._renderHeader />
 						))}
+						ListFooterComponent={this._footerComponent}
 						ListEmptyComponent={this._emptyComponent}
 						noUserTouchable
 					/>
 				)}
+				<Portal>
+					<Snackbar visible={!!this.state.error} onDismiss={this.dismissError}>
+						<Text style={{ color: theme.colors.contrast }}>{this.state.error}</Text>
+					</Snackbar>
+				</Portal>
 			</View>
 		)
 	}

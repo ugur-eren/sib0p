@@ -108,8 +108,12 @@ export default new (class Functions {
 		return this.post('DoAction', params)
 	}
 
-	search = (params: Params): Response<ApiTypes.Search> => {
+	search = (params: Params): Response<ApiTypes.SearchResponse> => {
 		return this.post('Search', params)
+	}
+
+	changePhoto = (params: Params): Response<ApiTypes.ChangePhotoResponse> => {
+		return this.post("ChangePhoto", params)
 	}
 
 	requestCaptcha = (): Response<ApiTypes.RequestCaptchaResponse> => {

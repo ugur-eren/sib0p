@@ -84,9 +84,11 @@ declare namespace ApiTypes {
 		relations: UserTypes.Relations[]
 	}
 
-	export interface Search extends Init {
+	export interface SearchResponse extends Init {
 		result: UserTypes.Relations[]
 	}
+
+	export interface ChangePhotoResponse extends Init<'no_image' | 'not_supported'> {}
 
 	export interface SharePostResponse extends Init {
 		notifications: NotificationTypes.Notification[]

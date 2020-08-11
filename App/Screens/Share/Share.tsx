@@ -93,8 +93,8 @@ class Share extends React.PureComponent<Props, State> {
 		ImagePicker.openPicker({
 			mediaType: type === 'image' ? 'photo' : 'video',
 			multiple: false,
-			width: 600,
-			height: 800,
+			width: 400,
+			height: 600,
 			cropping: type === 'image',
 			forceJpg: type === 'image',
 			freeStyleCropEnabled: type === 'image',
@@ -120,7 +120,7 @@ class Share extends React.PureComponent<Props, State> {
 					this.setState({ images: [...this.state.images, { type: type, content: images.path }] })
 				}
 			}
-		})
+		}).catch(() => {})
 	}
 
 	onErrorDismiss = () => {
