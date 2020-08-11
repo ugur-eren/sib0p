@@ -21,8 +21,12 @@ const AnimatedFeather = Animated.createAnimatedComponent(Feather)
 
 const PostContent = (props: Props) => {
 	const likeAnim = useRef(new Animated.Value(0)).current
+	const [muted, setMuted] = useState(props.navigation.getScreenProps().getIsVideoMuted())
 
 	const onPress = () => {
+		props.navigation.getScreenProps().setIsVideoMuted(!props.navigation.getScreenProps().getIsVideoMuted())
+		setMuted(props.navigation.getScreenProps().getIsVideoMuted())
+
 		if (doublePress) {
 			props.like()
 			doublePress = false
@@ -56,7 +60,7 @@ const PostContent = (props: Props) => {
 			{props.post.type === 'image' ? (
 				<Image navigation={props.navigation} post={props.post} isVisible={props.isVisible} style={props.style} />
 			) : props.post.type === 'video' ? (
-				<Video navigation={props.navigation} post={props.post} isVisible={props.isVisible} style={props.style} />
+				<Video muted={muted} navigation={props.navigation} post={props.post} isVisible={props.isVisible} style={props.style} />
 			) : (
 				<></>
 			)}

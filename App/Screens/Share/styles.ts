@@ -96,12 +96,6 @@ export default StyleSheet.create({
 		shadowRadius: 1.41,
 	},
 	submitButton: {
-		width: '100%',
-		flexDirection: 'row',
-		justifyContent: 'center',
-		alignItems: 'center',
-		paddingVertical: 15,
-
 		elevation: 2,
 		shadowColor: '#000',
 		shadowOffset: {
@@ -110,6 +104,13 @@ export default StyleSheet.create({
 		},
 		shadowOpacity: 0.2,
 		shadowRadius: 1.41,
+	},
+	submitButtonTouchable: {
+		width: '100%',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingVertical: 15,
 	},
 	submitIcon: {
 		marginRight: 10,
@@ -159,5 +160,5 @@ export default StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		paddingBottom: 20,
-	},
+	}
 })

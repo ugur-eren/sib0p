@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -37,10 +37,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Sib0p uygulaması, size daha doğru veriler sunabilmek ve bildirim gönderebilmek için konum izininizi istemektedir.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>Sib0p uygulaması, size daha doğru veriler sunabilmek ve bildirim gönderebilmek için konum izininizi istemektedir.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string/>
+	<string>Sib0p uygulaması, gönderi paylaşabilmeniz ve profilinizi düzenleyebilmenizi için dosya izini istemektedir.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>earworm.ttf</string>
@@ -66,7 +68,13 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>

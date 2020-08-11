@@ -14,10 +14,7 @@ export default new (class Functions {
 		return new Promise((resolve, reject) => {
 			fetch(this.uri + method + '.php')
 				.then((response) => response.json())
-				.then((data) => {
-					console.log(method, data)
-					resolve(data)
-				})
+				.then((data) => resolve(data))
 				.catch((err) => {
 					console.log('api error', method, err)
 					resolve(false)
@@ -40,11 +37,8 @@ export default new (class Functions {
 				},
 				body: joinedBody,
 			})
-				.then((response) => response.text())
-				.then((data) => {
-					console.log(method, data)
-					resolve(JSON.parse(data))
-				})
+				.then((response) => response.json())
+				.then((data) => resolve(data))
 				.catch((err) => {
 					console.log('api error', this.uri + method + '.php', err)
 					resolve(false)
@@ -140,11 +134,9 @@ export default new (class Functions {
 					onUploadProgress: onUploadProgress,
 				})
 				.then((res) => {
-					console.log('sharePost', res.data)
 					resolve(res.data instanceof Object ? res.data : false)
 				})
 				.catch((err) => {
-					console.log('api error', 'sharePost', err)
 					resolve(false)
 				})
 		})

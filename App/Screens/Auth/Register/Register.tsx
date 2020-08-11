@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, ScrollView, RefreshControl, ActivityIndicator } from 'react-native'
-import { withTheme, Text } from 'react-native-paper'
+import { withTheme, Text, Checkbox } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import FastImage from 'react-native-fast-image'
 import Button from '../../../Components/Button/Button'
@@ -9,6 +9,8 @@ import Api from '../../../Includes/Api'
 import Storage from '../../../Includes/Storage'
 import Types from '../../../Includes/Types/Types'
 import styles from './styles'
+import { CheckboxAndroid } from 'react-native-paper/src/components/Checkbox/CheckboxAndroid'
+import Config from '../../../Includes/Config'
 
 interface Props {
 	navigation: Types.Navigation
@@ -19,6 +21,7 @@ interface State {
 	loading: boolean
 	refreshing: boolean
 	error: boolean
+	agreementActive: boolean
 	captchaToken: string
 	username: string
 	name: string
@@ -44,6 +47,7 @@ class Register extends React.PureComponent<Props, State> {
 			loading: true,
 			refreshing: false,
 			error: false,
+			agreementActive: false,
 			captchaToken: null,
 			username: '',
 			name: '',
@@ -87,6 +91,10 @@ class Register extends React.PureComponent<Props, State> {
 	}
 
 	onRegisterPress = async () => {
+		if (!this.state.agreementActive){
+			return this.props.navigation.getScreenProps().error('Hizmet ve Kullanım koşullarını, Veri ve Gizlilik Politikasını kabul etmeniz gerekmektedir.')
+		}
+
 		if (!this.state.username) {
 			return this.setState({ usernameError: 'Kullanıcı adı boş olamaz.' })
 		}
@@ -202,6 +210,18 @@ class Register extends React.PureComponent<Props, State> {
 		this.refreshCaptcha()
 	}
 
+	toggleAgreement = () => {
+		this.setState({ agreementActive: !this.state.agreementActive })
+	}
+
+	_hizmetKosullari = () => {
+		this.props.navigation.navigate("PasswordRecovery", {title: 'Kullanım Koşulları', uri: Config.siteUri + 'hizmet-kullanim-kosullari.html'})
+	}
+
+	_gizlilikPolitikasi = () => {
+		this.props.navigation.navigate("PasswordRecovery", {title: 'Veri ve Gizlilik Politikası', uri: Config.siteUri + 'gizlilik-politikasi.html'})
+	}
+
 	render() {
 		let { theme } = this.props
 		return (
@@ -290,13 +310,33 @@ class Register extends React.PureComponent<Props, State> {
 									onChangeText={this._onCaptchaChange}
 								/>
 							</View>
+
+							<View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 21, flex: 1 }}>
+								<CheckboxAndroid
+									theme={theme}
+									status={this.state.agreementActive ? 'checked' : 'unchecked'}
+									uncheckedColor={theme.colors.contrast}
+									color={theme.colors.main}
+									onPress={this.toggleAgreement}
+								/>
+								<Text style={[styles.centerText, { color: theme.colors.contrast, flex: 1 }]} onPress={this.toggleAgreement}>
+									<Text onPress={this._hizmetKosullari} style={{ color: theme.colors.main }}>
+										Hizmet ve Kullanım koşullarını
+									</Text>
+									,{' '}
+									<Text onPress={this._gizlilikPolitikasi} style={{ color: theme.colors.main }}>
+										Veri ve Gizlilik Politikası
+									</Text>{' '}
+									Okudum ve kabul ediyorum.
+								</Text>
+							</View>
 						</View>
 
 						<View style={styles.bottomContainer}>
 							<Button label='Kayıt Ol' loading={true} containerStyle={styles.buttonContainer} onPress={this.onRegisterPress} />
 							<TouchableOpacity onPress={this.navigateToLogin}>
 								<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
-									Hesabın var mı? <Text style={{ color: theme.colors.main }}>{'\n\n'}Giriş Yap</Text>
+									Hesabın var mı? <Text style={{ color: theme.colors.main, textAlign: 'center' }}>{'\n\n'}Giriş Yap</Text>
 								</Text>
 							</TouchableOpacity>
 						</View>

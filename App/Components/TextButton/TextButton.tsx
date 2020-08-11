@@ -18,9 +18,7 @@ const TextButton = (props: Props) => {
 	const [loading, setLoading] = useState(false)
 
 	const onPress = async () => {
-		console.log("press")
 		if (!loading && props.loadable){
-			console.log("loading")
 			setLoading(true)
 			await props.onPress()
 			setLoading(false)

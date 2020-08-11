@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, Alert, TouchableOpacity } from 'react-native'
+import { View, ScrollView, Alert, TouchableOpacity, SafeAreaView } from 'react-native'
 import {
 	Text,
 	Divider,
@@ -262,7 +262,7 @@ class Share extends React.PureComponent<Props, State> {
 							<View style={[styles.content, { backgroundColor: theme.colors.surface }]}>
 								<View style={styles.topContainer}>
 									<View style={styles.topInner}>
-										<Feather name='edit-3' size={24} style={styles.topIcon} />
+										<Feather color={theme.colors.contrast} name='edit-3' size={24} style={styles.topIcon} />
 										<Text style={styles.topTitle}>Detay</Text>
 									</View>
 									<Divider style={styles.divider} />
@@ -308,7 +308,7 @@ class Share extends React.PureComponent<Props, State> {
 							<View style={[styles.content, styles.noBottomContent, { backgroundColor: theme.colors.surface }]}>
 								<View style={styles.topContainer}>
 									<View style={styles.topInner}>
-										<Feather name='image' size={24} style={styles.topIcon} />
+										<Feather color={theme.colors.contrast} name='image' size={24} style={styles.topIcon} />
 										<Text style={styles.topTitle}>Medya</Text>
 									</View>
 									<Divider style={styles.divider} />
@@ -321,7 +321,7 @@ class Share extends React.PureComponent<Props, State> {
 
 											<TouchableRipple style={styles.imageInner} onPress={this.addNewMediaSelector}>
 												<>
-													<Feather name='plus' size={64} />
+													<Feather color={theme.colors.contrast} name='plus' size={64} />
 													<View style={styles.imageTouchableFix} />
 												</>
 											</TouchableRipple>
@@ -332,13 +332,15 @@ class Share extends React.PureComponent<Props, State> {
 								</View>
 							</View>
 						</ScrollView>
-
-						<TouchableRipple onPress={this.onSubmit} style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}>
-							<>
-								<Feather name='upload' size={24} color={this.props.theme.colors.main} style={styles.submitIcon} />
-								<Text style={[styles.submitText, { color: this.props.theme.colors.main }]}>Paylaş</Text>
-							</>
-						</TouchableRipple>
+						
+						<SafeAreaView style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}>
+							<TouchableRipple onPress={this.onSubmit} style={styles.submitButtonTouchable}>
+								<>
+									<Feather name='upload' size={24} color={this.props.theme.colors.main} style={styles.submitIcon} />
+									<Text style={[styles.submitText, { color: this.props.theme.colors.main }]}>Paylaş</Text>
+								</>
+							</TouchableRipple>
+						</SafeAreaView>
 
 						{this.state.showTypeSelector ? (
 							<View style={[styles.selectorContainer, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .5)' }]}>

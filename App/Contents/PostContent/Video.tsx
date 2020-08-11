@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Dimensions, StyleProp, ImageStyle } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import { TouchableWithoutFeedback, TouchableOpacity } from 'react-native-gesture-handler'
@@ -14,6 +14,7 @@ interface Props {
 	post: PostTypes.PostData
 	isVisible: boolean
 	style?: StyleProp<ImageStyle>
+	muted: boolean
 }
 
 const Video = (props: Props) => {
@@ -24,11 +25,6 @@ const Video = (props: Props) => {
 	const [muted, setMuted] = useState(props.navigation.getScreenProps().getIsVideoMuted())
 
 	const width = Dimensions.get('window').width
-
-	const _toggleMuteVideo = () => {
-		props.navigation.getScreenProps().setIsVideoMuted(!props.navigation.getScreenProps().getIsVideoMuted())
-		setMuted(props.navigation.getScreenProps().getIsVideoMuted())
-	}
 
 	const _videoError = (err: any) => {
 		if (err & err.error) {
@@ -47,15 +43,16 @@ const Video = (props: Props) => {
 		setError(false)
 	}
 
+	console.log(props.muted)
 	return (
-		<TouchableWithoutFeedback onPress={_toggleMuteVideo}>
+		<>
 			{renderVideo ? (
 				<RNVideo
 					source={{ uri: props.post.uri }}
 					style={[props.style, { height: width / props.post.ratio, aspectRatio: props.post.ratio }]}
 					paused={!props.isVisible}
 					repeat={true}
-					muted={muted}
+					muted={props.muted}
 					poster={props.post.poster}
 					resizeMode='contain'
 					onReadyForDisplay={_videoReady}
@@ -79,14 +76,14 @@ const Video = (props: Props) => {
 				<></>
 			)}
 
-			{muted ? (
+			{props.muted ? (
 				<View style={styles.mutedContainer}>
 					<Feather name='volume-x' size={24} color={'white'} style={styles.muted} />
 				</View>
 			) : (
 				<></>
 			)}
-		</TouchableWithoutFeedback>
+		</>
 	)
 }
 

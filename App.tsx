@@ -28,7 +28,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		OneSignal.inFocusDisplaying(2)
 
 		if (Platform.OS == 'ios') {
-			OneSignal.promptForPushNotificationsWithUserResponse()
+			OneSignal.promptForPushNotificationsWithUserResponse(() => {})
 		}
 
 		this.state = {
@@ -273,6 +273,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				username: '',
 			},
 		})
+
+		OneSignal.deleteTag("token")
 
 		let response = await Api.logout({ token: this.state.user.token })
 		if (response && response.status) {

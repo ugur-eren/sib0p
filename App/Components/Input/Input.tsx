@@ -60,7 +60,7 @@ class Input extends React.PureComponent<Props, State> {
 							backgroundColor: theme.colors.inputBackground,
 							borderColor: this.props.error ? theme.colors.error : theme.colors.inputBorder,
 						},
-						multiline && { alignItems: 'flex-start' },
+						multiline && { alignItems: 'flex-start', height: 'auto' },
 						this.props.style,
 					]}
 				>
@@ -83,8 +83,8 @@ class Input extends React.PureComponent<Props, State> {
 						style={[
 							styles.input,
 							{ color: theme.colors.contrast },
-							multiline && { minHeight: 100, textAlignVertical: 'top' },
 							this.props.inputStyle,
+							multiline && { minHeight: 100, textAlignVertical: 'top' },
 						]}
 						multiline={multiline}
 						placeholderTextColor={theme.colors.halfContrast}

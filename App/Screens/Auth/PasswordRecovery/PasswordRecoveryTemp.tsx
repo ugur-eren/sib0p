@@ -7,7 +7,10 @@ import Config from '../../../Includes/Config'
 import Types from '../../../Includes/Types/Types'
 
 interface Props {
-	navigation: Types.Navigation
+	navigation: Types.Navigation<{
+		uri?: string
+		title?: string
+	}>
 	theme: Types.Theme
 }
 
@@ -24,10 +27,10 @@ class PasswordRecoveryTemp extends React.PureComponent<Props, State> {
 		let { theme } = this.props
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-				<Header title='Şifre Sıfırlama' />
+				<Header title={this.props.navigation.getParam("title") || 'Şifre Sıfırlama'} />
 
 				<WebView
-					source={{ uri: Config.siteUri + '/mobile/login.php?q=rescue' }}
+					source={{ uri: this.props.navigation.getParam("uri") ? this.props.navigation.getParam("uri") : Config.siteUri + 'login.php?q=rescue' }}
 					style={{
 						flex: 1,
 					}}

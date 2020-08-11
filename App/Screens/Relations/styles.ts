@@ -25,6 +25,8 @@ const RelationStyles = StyleSheet.create({
 	imageContainer: {
 		width: 60,
 		height: 60,
+		borderRadius: 60,
+		overflow: 'hidden',
 		marginRight: 15,
 	},
 	image: {

@@ -12,11 +12,14 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		14C472EB550442BE8ACB9C72 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DD5806435F8E4B79A29719E9 /* AntDesign.ttf */; };
 		14E662640F33498AA8D49F5B /* FiraSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5692E62F802146C885B45F05 /* FiraSans-Medium.ttf */; };
 		1EABBE233F83B55A11787317 /* libPods-sib0p.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C5B4A465290CE14F24D4DD2 /* libPods-sib0p.a */; };
 		22DA0604EE6042E9BD617331 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 014CF19AA4494BE1BB03CFF4 /* FontAwesome.ttf */; };
-		26DDEC20645C4F9F86D5926A /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D4F0C9B930314FDAAE1FEC37 /* Entypo.ttf */; };
+		23A6EA5924E2C8980041B797 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4266B41357345BF8467E85B /* MaterialIcons.ttf */; };
+		23A6EA6224E2CA380041B797 /* QBImagePicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23A6EA6124E2CA370041B797 /* QBImagePicker.storyboard */; };
+		23A6EA6B24E2CF820041B797 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23A6EA6A24E2CF820041B797 /* NotificationService.swift */; };
+		23A6EA6F24E2CF820041B797 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 23A6EA6824E2CF820041B797 /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		26E61496F3934CC1E0CEE65B /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B5431243590768953B79ABDD /* libPods-OneSignalNotificationServiceExtension.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -26,7 +29,6 @@
 		3A53ABE881B948CA96D86DC3 /* no-comments.png in Resources */ = {isa = PBXBuildFile; fileRef = 4510E33C006E4503AE32DA36 /* no-comments.png */; };
 		49808F35DC72425789D72AB0 /* no-notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = 65BF0CD25616444582C0A9EE /* no-notifications.png */; };
 		5609F37328AA4EDDA59E68FD /* earworm.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 225FBA8B941B4AADBCEDD5D2 /* earworm.ttf */; };
-		5B0294B71F814890B7066502 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4266B41357345BF8467E85B /* MaterialIcons.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8D6706E6680641298FFD06D7 /* no-connection.png in Resources */ = {isa = PBXBuildFile; fileRef = 49E20B9A26634A26ABF3442F /* no-connection.png */; };
 		8FF76BE1EC98B053B2812BC1 /* libPods-sib0p-sib0pTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D9CDE301046432C31FBEF43E /* libPods-sib0p-sib0pTests.a */; };
@@ -38,15 +40,8 @@
 		C331BF3BBDC04150A90636D3 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6022F45A2C084211B09E05F7 /* MaterialCommunityIcons.ttf */; };
 		CB534A3756264F32A68BAB6E /* logo-wide.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D486FB992B6492381DB6791 /* logo-wide.png */; };
 		CBD0C6FE5B9D7F1F40AC2229 /* libPods-sib0p-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A63910E6323D123040237026 /* libPods-sib0p-tvOSTests.a */; };
-		CC221753F30B401FA1066B3D /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CFAA51DD617D49CFBFE5D0A4 /* Octicons.ttf */; };
-		D2F782480F9A4A9F9B2A98CA /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C29D899CB54241978123068D /* Zocial.ttf */; };
-		D4592076656A4DFEBE659045 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B6A784E24524DBDA5CE93BB /* SimpleLineIcons.ttf */; };
-		D9332E5707F54BC18D900AF9 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A4A06A0DF9D47E2BAD763CB /* Foundation.ttf */; };
-		D971433100C3487A81F9F0BE /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9C1FBE03758746EBAD44C0EA /* Ionicons.ttf */; };
 		DCA853B1D32D428DACA414FE /* FiraSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC2923B457CA44E892B7A861 /* FiraSans-SemiBold.ttf */; };
 		E84D3DA9EFE747BCB72364E5 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A8C55B422BF40F58DD83810 /* Feather.ttf */; };
-		F2C2306A9FC6491F85696A50 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D0457C92F8E43059BA1005E /* Fontisto.ttf */; };
-		F40445B22A3C4E2686DC448A /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2F6A0E2D340485D95BB51EB /* EvilIcons.ttf */; };
 		FED4BF56C29B4EF39D5C0D38 /* FiraSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5E7B9C89C78945F7BBB58FF4 /* FiraSans-Regular.ttf */; };
 /* End PBXBuildFile section */
 
@@ -58,6 +53,13 @@
 			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
 			remoteInfo = sib0p;
 		};
+		23A6EA6D24E2CF820041B797 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 23A6EA6724E2CF820041B797;
+			remoteInfo = OneSignalNotificationServiceExtension;
+		};
 		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
@@ -67,12 +69,27 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		23A6EA7324E2CF820041B797 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				23A6EA6F24E2CF820041B797 /* OneSignalNotificationServiceExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* sib0pTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sib0pTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* sib0pTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sib0pTests.m; sourceTree = "<group>"; };
 		014CF19AA4494BE1BB03CFF4 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		07F5E26B84951CD555363EDC /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		09C51F394FA046DAB6965AEC /* icon-users.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "icon-users.png"; path = "../App/Assets/Images/icon-users.png"; sourceTree = "<group>"; };
 		0CE859AEEC1CF9F25290EA5A /* Pods-sib0p-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sib0p-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-sib0p-tvOSTests/Pods-sib0p-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* sib0p.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sib0p.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +99,11 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = sib0p/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sib0p/main.m; sourceTree = "<group>"; };
 		225FBA8B941B4AADBCEDD5D2 /* earworm.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = earworm.ttf; path = ../App/Assets/Fonts/earworm.ttf; sourceTree = "<group>"; };
+		23A6EA6124E2CA370041B797 /* QBImagePicker.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = QBImagePicker.storyboard; path = "../node_modules/react-native-image-crop-picker/ios/QBImagePicker/QBImagePicker/QBImagePicker.storyboard"; sourceTree = "<group>"; };
+		23A6EA6324E2CE5F0041B797 /* sib0p.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sib0p.entitlements; path = sib0p/sib0p.entitlements; sourceTree = "<group>"; };
+		23A6EA6824E2CF820041B797 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		23A6EA6A24E2CF820041B797 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		23A6EA6C24E2CF820041B797 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2B5930DC007545E1A3BA8D96 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* sib0p-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "sib0p-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* sib0p-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "sib0p-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -93,6 +115,7 @@
 		4A12A7A156E64BD89FE66A3E /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		4D0457C92F8E43059BA1005E /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
 		522043386E114069527C90FE /* Pods-sib0p-sib0pTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sib0p-sib0pTests.release.xcconfig"; path = "Target Support Files/Pods-sib0p-sib0pTests/Pods-sib0p-sib0pTests.release.xcconfig"; sourceTree = "<group>"; };
+		5237205E31C7A42EB7515CC5 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OneSignalNotificationServiceExtension.release.xcconfig"; path = "Target Support Files/Pods-OneSignalNotificationServiceExtension/Pods-OneSignalNotificationServiceExtension.release.xcconfig"; sourceTree = "<group>"; };
 		5692E62F802146C885B45F05 /* FiraSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FiraSans-Medium.ttf"; path = "../App/Assets/Fonts/FiraSans-Medium.ttf"; sourceTree = "<group>"; };
 		5CAE559B599F4BE6AA5F6643 /* icon-user.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "icon-user.png"; path = "../App/Assets/Images/icon-user.png"; sourceTree = "<group>"; };
 		5E7B9C89C78945F7BBB58FF4 /* FiraSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FiraSans-Regular.ttf"; path = "../App/Assets/Fonts/FiraSans-Regular.ttf"; sourceTree = "<group>"; };
@@ -111,6 +134,7 @@
 		9D486FB992B6492381DB6791 /* logo-wide.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "logo-wide.png"; path = "../App/Assets/Images/logo-wide.png"; sourceTree = "<group>"; };
 		A257988F037D47BCBA59A718 /* icon-compass.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "icon-compass.png"; path = "../App/Assets/Images/icon-compass.png"; sourceTree = "<group>"; };
 		A63910E6323D123040237026 /* libPods-sib0p-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sib0p-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B5431243590768953B79ABDD /* libPods-OneSignalNotificationServiceExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OneSignalNotificationServiceExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC2923B457CA44E892B7A861 /* FiraSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "FiraSans-SemiBold.ttf"; path = "../App/Assets/Fonts/FiraSans-SemiBold.ttf"; sourceTree = "<group>"; };
 		C216F103C885420FA85DD803 /* error.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = error.png; path = ../App/Assets/Images/error.png; sourceTree = "<group>"; };
 		C29D899CB54241978123068D /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -145,6 +169,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EABBE233F83B55A11787317 /* libPods-sib0p.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23A6EA6524E2CF820041B797 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26E61496F3934CC1E0CEE65B /* libPods-OneSignalNotificationServiceExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +219,7 @@
 		13B07FAE1A68108700A75B9A /* sib0p */ = {
 			isa = PBXGroup;
 			children = (
+				23A6EA6324E2CE5F0041B797 /* sib0p.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -198,6 +231,15 @@
 			name = sib0p;
 			sourceTree = "<group>";
 		};
+		23A6EA6924E2CF820041B797 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				23A6EA6A24E2CF820041B797 /* NotificationService.swift */,
+				23A6EA6C24E2CF820041B797 /* Info.plist */,
+			);
+			path = OneSignalNotificationServiceExtension;
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -207,6 +249,7 @@
 				D9CDE301046432C31FBEF43E /* libPods-sib0p-sib0pTests.a */,
 				7B48DBFC188F74E1FF5E6B65 /* libPods-sib0p-tvOS.a */,
 				A63910E6323D123040237026 /* libPods-sib0p-tvOSTests.a */,
+				B5431243590768953B79ABDD /* libPods-OneSignalNotificationServiceExtension.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -263,6 +306,8 @@
 				72FC43D26E32BD85EEC5E9FD /* Pods-sib0p-tvOS.release.xcconfig */,
 				C47D2B0FB9E65C3575F665FD /* Pods-sib0p-tvOSTests.debug.xcconfig */,
 				0CE859AEEC1CF9F25290EA5A /* Pods-sib0p-tvOSTests.release.xcconfig */,
+				07F5E26B84951CD555363EDC /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */,
+				5237205E31C7A42EB7515CC5 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -277,9 +322,11 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				23A6EA6124E2CA370041B797 /* QBImagePicker.storyboard */,
 				13B07FAE1A68108700A75B9A /* sib0p */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* sib0pTests */,
+				23A6EA6924E2CF820041B797 /* OneSignalNotificationServiceExtension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				4D19475A71934A07869A4941 /* Resources */,
@@ -297,6 +344,7 @@
 				00E356EE1AD99517003FC87E /* sib0pTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* sib0p-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* sib0p-tvOSTests.xctest */,
+				23A6EA6824E2CF820041B797 /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -334,15 +382,35 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				23A6EA7324E2CF820041B797 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				23A6EA6E24E2CF820041B797 /* PBXTargetDependency */,
 			);
 			name = sib0p;
 			productName = sib0p;
 			productReference = 13B07F961A680F5B00A75B9A /* sib0p.app */;
 			productType = "com.apple.product-type.application";
+		};
+		23A6EA6724E2CF820041B797 /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 23A6EA7024E2CF820041B797 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
+			buildPhases = (
+				22CD1FB35EFF83BAFFC0495C /* [CP] Check Pods Manifest.lock */,
+				23A6EA6424E2CF820041B797 /* Sources */,
+				23A6EA6524E2CF820041B797 /* Frameworks */,
+				23A6EA6624E2CF820041B797 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OneSignalNotificationServiceExtension;
+			productName = OneSignalNotificationServiceExtension;
+			productReference = 23A6EA6824E2CF820041B797 /* OneSignalNotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		2D02E47A1E0B4A5D006451C7 /* sib0p-tvOS */ = {
 			isa = PBXNativeTarget;
@@ -389,6 +457,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1160;
 				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -398,6 +467,11 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = XA8FDWWMUA;
 						LastSwiftMigration = 1120;
+					};
+					23A6EA6724E2CF820041B797 = {
+						CreatedOnToolsVersion = 11.6;
+						DevelopmentTeam = XA8FDWWMUA;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -427,6 +501,7 @@
 				00E356ED1AD99517003FC87E /* sib0pTests */,
 				2D02E47A1E0B4A5D006451C7 /* sib0p-tvOS */,
 				2D02E48F1E0B4A5D006451C7 /* sib0p-tvOSTests */,
+				23A6EA6724E2CF820041B797 /* OneSignalNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -444,6 +519,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				23A6EA6224E2CA380041B797 /* QBImagePicker.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				CB534A3756264F32A68BAB6E /* logo-wide.png in Resources */,
 				5609F37328AA4EDDA59E68FD /* earworm.ttf in Resources */,
@@ -452,27 +528,25 @@
 				14E662640F33498AA8D49F5B /* FiraSans-Medium.ttf in Resources */,
 				FED4BF56C29B4EF39D5C0D38 /* FiraSans-Regular.ttf in Resources */,
 				DCA853B1D32D428DACA414FE /* FiraSans-SemiBold.ttf in Resources */,
-				14C472EB550442BE8ACB9C72 /* AntDesign.ttf in Resources */,
-				26DDEC20645C4F9F86D5926A /* Entypo.ttf in Resources */,
-				F40445B22A3C4E2686DC448A /* EvilIcons.ttf in Resources */,
 				E84D3DA9EFE747BCB72364E5 /* Feather.ttf in Resources */,
 				22DA0604EE6042E9BD617331 /* FontAwesome.ttf in Resources */,
 				92BEB3FFE04348A2AE07584B /* FontAwesome5_Brands.ttf in Resources */,
 				B8B00F9FEEA444E585F954F4 /* FontAwesome5_Regular.ttf in Resources */,
 				B57F302D02FC4C8288BA4A86 /* FontAwesome5_Solid.ttf in Resources */,
-				F2C2306A9FC6491F85696A50 /* Fontisto.ttf in Resources */,
-				D9332E5707F54BC18D900AF9 /* Foundation.ttf in Resources */,
-				D971433100C3487A81F9F0BE /* Ionicons.ttf in Resources */,
 				C331BF3BBDC04150A90636D3 /* MaterialCommunityIcons.ttf in Resources */,
-				5B0294B71F814890B7066502 /* MaterialIcons.ttf in Resources */,
-				CC221753F30B401FA1066B3D /* Octicons.ttf in Resources */,
-				D4592076656A4DFEBE659045 /* SimpleLineIcons.ttf in Resources */,
-				D2F782480F9A4A9F9B2A98CA /* Zocial.ttf in Resources */,
+				23A6EA5924E2C8980041B797 /* MaterialIcons.ttf in Resources */,
 				A1823B2FD40140B6A75B3821 /* error.png in Resources */,
 				3A53ABE881B948CA96D86DC3 /* no-comments.png in Resources */,
 				8D6706E6680641298FFD06D7 /* no-connection.png in Resources */,
 				49808F35DC72425789D72AB0 /* no-notifications.png in Resources */,
 				C2FE7B5152134402B9A5884D /* no-posts.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		23A6EA6624E2CF820041B797 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,7 +580,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		1D3BEB4B2A62E31B8C0CC31A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -524,6 +598,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-sib0p-tvOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		22CD1FB35EFF83BAFFC0495C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OneSignalNotificationServiceExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -722,6 +818,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		23A6EA6424E2CF820041B797 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				23A6EA6B24E2CF820041B797 /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2D02E4771E0B4A5D006451C7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -746,6 +850,11 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* sib0p */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+		23A6EA6E24E2CF820041B797 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 23A6EA6724E2CF820041B797 /* OneSignalNotificationServiceExtension */;
+			targetProxy = 23A6EA6D24E2CF820041B797 /* PBXContainerItemProxy */;
 		};
 		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -802,9 +911,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E3D719ADFBE1D5E16755E7F1 /* Pods-sib0p.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = sib0p/sib0p.entitlements;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = XA8FDWWMUA;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = sib0p/Info.plist;
@@ -827,9 +938,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F29746297852FE4D167BDB94 /* Pods-sib0p.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = sib0p/sib0p.entitlements;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = XA8FDWWMUA;
 				INFOPLIST_FILE = sib0p/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -846,6 +959,65 @@
 			};
 			name = Release;
 		};
+		23A6EA7124E2CF820041B797 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 07F5E26B84951CD555363EDC /* Pods-OneSignalNotificationServiceExtension.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = XA8FDWWMUA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = net.ugureren.sib0p.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		23A6EA7224E2CF820041B797 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5237205E31C7A42EB7515CC5 /* Pods-OneSignalNotificationServiceExtension.release.xcconfig */;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 5;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = XA8FDWWMUA;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = net.ugureren.sib0p.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E476132CFE7532186404C35A /* Pods-sib0p-tvOS.debug.xcconfig */;
@@ -856,6 +1028,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -885,6 +1058,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "sib0p-tvOS/Info.plist";
@@ -1086,6 +1260,15 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		23A6EA7024E2CF820041B797 /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				23A6EA7124E2CF820041B797 /* Debug */,
+				23A6EA7224E2CF820041B797 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

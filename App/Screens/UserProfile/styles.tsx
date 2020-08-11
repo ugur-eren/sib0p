@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import Config from '../../Includes/Config'
 
 export default StyleSheet.create({
@@ -12,7 +12,7 @@ export default StyleSheet.create({
 		minHeight: '100%',
 	},
 	backgroundContainer: {
-		height: 200,
+		height: Platform.OS == 'ios' ? 235 : 200,
 	},
 	backgroundImage: {
 		flex: 1,
