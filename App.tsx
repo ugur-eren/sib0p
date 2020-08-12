@@ -13,6 +13,7 @@ import Storage from './App/Includes/Storage'
 import Theme from './App/Includes/Theme/Theme'
 import Types from './App/Includes/Types/Types'
 import Api from './App/Includes/Api'
+import { Languages, DefaultLanguage } from './App/Includes/Languages'
 import UserTypes from './App/Includes/Types/UserTypes'
 import PostTypes from './App/Includes/Types/PostTypes'
 
@@ -153,8 +154,10 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 		// Language
 		if (allSettings.language === 'system') {
-			// do intl stuff. but im using v8-nointl.
-			// maybe react-native-intl
+			stateObject = {
+				...stateObject,
+				language: DefaultLanguage === 'tr' || DefaultLanguage === 'en' ? DefaultLanguage : 'en',
+			}
 		} else {
 			stateObject = {
 				...stateObject,
@@ -274,7 +277,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			},
 		})
 
-		OneSignal.deleteTag("token")
+		OneSignal.deleteTag('token')
 
 		let response = await Api.logout({ token: this.state.user.token })
 		if (response && response.status) {
@@ -292,9 +295,12 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 	unknown_error = (error?: string) => {
 		if (error) {
-			this.setState({ errorMessage: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' + error })
+			this.setState({ errorMessage: Languages[this.state.language].unknown_error + error })
 		} else {
-			Alert.alert('Hata!', 'Maalesef, Bilinmeyen bir hata ile karşılaştık. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.')
+			Alert.alert(
+				Languages[this.state.language].error,
+				Languages[this.state.language].unknown_error + Languages[this.state.language].check_network
+			)
 		}
 	}
 
@@ -337,9 +343,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	}
 
 	setNotification = (active: boolean) => {
-		Storage.set("notification", active ? 'true' : 'false')
+		Storage.set('notification', active ? 'true' : 'false')
 		OneSignal.setSubscription(active)
-		this.setState({notification: active})
+		this.setState({ notification: active })
 	}
 
 	render() {
@@ -359,7 +365,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					}}
 					theme={Theme[this.state.theme]}
 				>
-					<PostSharer sharePost={this.setSharePost} token={this.state.user.token} />
+					<PostSharer language={Languages[this.state.language]} sharePost={this.setSharePost} token={this.state.user.token} />
 					{this.state.ready ? (
 						<AppRouter
 							ref={this._setNavigationRef}
@@ -367,6 +373,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 							screenProps={
 								{
 									theme: Theme[this.state.theme],
+									language: Languages[this.state.language],
+									activeLanguage: this.state.language,
 									user: this.state.user,
 									notification: this.state.notification,
 									selectedTheme: this.state.selectedTheme,

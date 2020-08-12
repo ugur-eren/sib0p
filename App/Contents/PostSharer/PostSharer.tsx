@@ -7,6 +7,7 @@ import Api from '../../Includes/Api'
 
 interface Props {
 	theme: Types.Theme
+	language: Types.Language
 	token: string
 	sharePost: (props: any) => void
 }
@@ -82,15 +83,15 @@ class PostSharer extends React.PureComponent<Props, State> {
 		)
 		if (sharePost) {
 			if (sharePost.status) {
-				Alert.alert('Başarılı!', 'Gönderiniz başarıyla paylaşıldı.', [{ style: 'cancel', text: 'Tamam' }])
+				Alert.alert(this.props.language.success, this.props.language.post_share_success, [{ style: 'cancel', text: 'Tamam' }])
 			} else {
-				Alert.alert('Hata!', 'Gönderiniz paylaşırken bilinmeyen bir sorun oluştu. Lütfen daha sonra tekrar deneyiniz.', [
-					{ style: 'cancel', text: 'Tamam' },
+				Alert.alert(this.props.language.error, this.props.language.post_share_error, [
+					{ style: 'cancel', text: this.props.language.ok },
 				])
 			}
 		} else {
-			Alert.alert('Hata!', 'Gönderiniz paylaşırken bilinmeyen bir sorun oluştu. Lütfen daha sonra tekrar deneyiniz.', [
-				{ style: 'cancel', text: 'Tamam' },
+			Alert.alert(this.props.language.error, this.props.language.post_share_error, [
+				{ style: 'cancel', text: this.props.language.ok },
 			])
 		}
 

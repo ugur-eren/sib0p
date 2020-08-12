@@ -59,6 +59,12 @@ class Post extends React.PureComponent<Props, State> {
 		})
 		if (response) {
 			if (response.status) {
+				let cached = screen.DataCache()
+				if (cached.profiles[this.state.user.username]){
+					cached.profiles[this.state.user.username].data.isFollowed = true
+					screen.setProfileDataCache(cached.profiles[this.state.user.username].data)
+				}
+				
 				this.setState({
 					user: {
 						...this.state.user,
@@ -69,9 +75,9 @@ class Post extends React.PureComponent<Props, State> {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'wrong_username') {
-					screen.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
+					screen.error(screen.language.wrong_username_error)
 				} else if (response.error === 'no_user') {
-					screen.error('Bu kullanıcı bulunamadı. Kullanıcı adı değişmiş olabilir.')
+					screen.error(screen.language.no_user_error)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -88,6 +94,7 @@ class Post extends React.PureComponent<Props, State> {
 		let { theme, noUserTouchable } = this.props
 		let { user } = this.state
 		let ContainerComponent = noUserTouchable ? TouchableWithoutFeedback : TouchableOpacity
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={styles.container}>
 				<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.imageContainer}>
@@ -106,7 +113,7 @@ class Post extends React.PureComponent<Props, State> {
 					{noUserTouchable || user.username === this.props.navigation.getScreenProps().user.username || user.isFollowed ? (
 						<></>
 					) : (
-						<TextButton label={'Takip Et'} loadable onPress={this.onFollow} />
+						<TextButton label={screen.language.follow} loadable onPress={this.onFollow} language={screen.language} />
 					)}
 				</View>
 

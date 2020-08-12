@@ -17,13 +17,6 @@ interface State {
 	logoutLoading: boolean
 }
 
-const SupportedThemes: Types.SupportedThemesObject = {
-	light: 'Aydınlık',
-	dark: 'Karanlık',
-	timed: 'Zaman Ayarlı',
-	system: 'Sistem Varsayılanı',
-}
-
 class Settings extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
@@ -59,6 +52,14 @@ class Settings extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
+
+		const SupportedThemes: Types.SupportedThemesObject = {
+			light: screen.language.theme_light,
+			dark: screen.language.theme_dark,
+			timed: screen.language.theme_timed,
+			system: screen.language.theme_system,
+		}
 
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
@@ -68,19 +69,19 @@ class Settings extends React.PureComponent<Props, State> {
 					<List.Section>
 						<List.Item
 							style={styles.clearListStyle}
-							title={'Profili Düzenle'}
+							title={screen.language.edit_profile}
 							left={(props) => <List.Icon {...props} style={{}} icon='edit-3' />}
 							onPress={() => this.props.navigation.navigate('EditProfile')}
 						/>
 						<List.Item
 							style={styles.clearListStyle}
-							title={'Şifre Değiştir'}
+							title={screen.language.change_password}
 							left={(props) => <List.Icon {...props} style={{}} icon='lock' />}
 							onPress={() => this.props.navigation.navigate('ChangePassword')}
 						/>
 
 						<ListMenu
-							title='Tema'
+							title={screen.language.theme}
 							iconName='moon'
 							anchorTitle={SupportedThemes[this.props.navigation.getScreenProps().selectedTheme]}
 							selectItem={this.onThemeSelect}
@@ -89,7 +90,7 @@ class Settings extends React.PureComponent<Props, State> {
 
 						<List.Item
 							style={styles.clearListStyle}
-							title={'Bildirimler'}
+							title={screen.language.notifications}
 							left={(props) => <List.Icon {...props} style={{}} icon='bell' />}
 							onPress={() => this.props.navigation.navigate('ChangePassword')}
 							right={() => (
@@ -101,21 +102,17 @@ class Settings extends React.PureComponent<Props, State> {
 								/>
 							)}
 						/>
-						
-						{/* <ListMenu
-							title='Dil'
-							iconName='flag'
-							anchorTitle='Türkçe'
-							selectItem={this.onThemeSelect}
-							data={{
-								turkish: 'Türkçe',
-								english: 'English',
-								german: 'Deutsche',
-							}}
-						/> */}
+
 						<List.Item
 							style={styles.clearListStyle}
-							title={'Çıkış Yap'}
+							title={screen.language.blocked_users}
+							left={(props) => <List.Icon {...props} style={{}} icon='alert-octagon' />}
+							onPress={() => this.props.navigation.navigate('BlockedUsers')}
+						/>
+
+						<List.Item
+							style={styles.clearListStyle}
+							title={screen.language.logout}
 							left={(props) => <List.Icon {...props} style={{}} icon='log-out' />}
 							onPress={this.showLogoutDialog}
 						/>
@@ -124,9 +121,9 @@ class Settings extends React.PureComponent<Props, State> {
 
 				<Portal>
 					<Dialog visible={this.state.logoutDialog} onDismiss={this.hideLogoutDialog}>
-						<Dialog.Title>Çıkış Yap</Dialog.Title>
+						<Dialog.Title>{screen.language.logout}</Dialog.Title>
 						<Dialog.Content>
-							<Paragraph>Hesabınızdan çıkış yapmak istediğinize emin misiniz?</Paragraph>
+							<Paragraph>{screen.language.logout_dialog}</Paragraph>
 						</Dialog.Content>
 						<Dialog.Actions>
 							<Button
@@ -135,10 +132,10 @@ class Settings extends React.PureComponent<Props, State> {
 								loading={this.state.logoutLoading}
 								style={{ marginRight: 15 }}
 							>
-								Çıkış Yap
+								{screen.language.logout}
 							</Button>
 							<Button onPress={this.hideLogoutDialog} color={theme.colors.contrast}>
-								İptal
+								{screen.language.cancel}
 							</Button>
 						</Dialog.Actions>
 					</Dialog>

@@ -37,8 +37,11 @@ export default new (class Functions {
 				},
 				body: joinedBody,
 			})
-				.then((response) => response.json())
-				.then((data) => resolve(data))
+				.then((response) => response.text())
+				.then((data) => {
+					console.log(method, data)
+					resolve(JSON.parse(data))
+				})
 				.catch((err) => {
 					console.log('api error', this.uri + method + '.php', err)
 					resolve(false)
@@ -107,13 +110,16 @@ export default new (class Functions {
 	}
 
 	changePhoto = (params: Params): Response<ApiTypes.ChangePhotoResponse> => {
-		return this.post("ChangePhoto", params)
+		return this.post('ChangePhoto', params)
+	}
+
+	getBlockedUsers = (params: Params): Response<ApiTypes.GetBlockedUsersResponse> => {
+		return this.post('GetBlockedUsers', params)
 	}
 
 	requestCaptcha = (): Response<ApiTypes.RequestCaptchaResponse> => {
 		return this.get('RequestCaptcha')
 	}
-
 
 	sharePost = (
 		params: Params,
@@ -134,9 +140,11 @@ export default new (class Functions {
 					onUploadProgress: onUploadProgress,
 				})
 				.then((res) => {
+					console.log(res)
 					resolve(res.data instanceof Object ? res.data : false)
 				})
 				.catch((err) => {
+					console.log(err)
 					resolve(false)
 				})
 		})

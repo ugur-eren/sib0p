@@ -1,37 +1,35 @@
 import React from 'react'
 import { Text } from 'react-native-paper'
-import { WebView } from 'react-native-webview'
 import Config from './Config'
 import Types from './Types/Types'
-import { Dimensions } from 'react-native'
 import Spotify from '../Contents/Embeds/Spotify'
 import Youtube from '../Contents/Embeds/Youtube'
 
 export default new (class Functions {
-	convertTime = (time: number, currentTime: number): string => {
+	convertTime = (time: number, currentTime: number, language: Types.Language): string => {
 		let past = currentTime - time
 		if (past < 10) {
-			return 'Biraz önce'
+			return language.just_now
 		}
 		if (past < 60) {
-			return past + ' saniye önce'
+			return past + language.seconds_ago
 		}
 		if (Math.floor(past / 60) < 60) {
-			return Math.floor(past / 60) + ' dakika önce'
+			return Math.floor(past / 60) + language.minutes_ago
 		}
 		if (Math.floor(past / 3600) < 24) {
-			return Math.floor(past / 3600) + ' saat önce'
+			return Math.floor(past / 3600) + language.hours_ago
 		}
 		if (Math.floor(past / 86400) < 7) {
-			return Math.floor(past / 86400) + ' gün önce'
+			return Math.floor(past / 86400) + language.days_ago
 		}
 		if (Math.floor(past / 86400) < 31) {
-			return Math.floor(past / 604800) + ' hafta önce'
+			return Math.floor(past / 604800) + language.weeks_ago
 		}
 		if (Math.floor(past / 2592000) < 12) {
-			return Math.floor(past / 2592000) + ' ay önce'
+			return Math.floor(past / 2592000) + language.months_ago
 		}
-		return Math.floor(past / 31104000) + ' yıl önce'
+		return Math.floor(past / 31104000) + language.years_ago
 	}
 
 	checkEmail = (value: string): boolean => {

@@ -33,14 +33,14 @@ const PostContent = (props: Props) => {
 			Animated.timing(likeAnim, {
 				useNativeDriver: true,
 				toValue: 1,
-				duration: 1000,
+				duration: 500,
 				easing: Easing.elastic(1.2)
 			}).start((end) => {
 				if (end) {
 					Animated.timing(likeAnim, {
 						useNativeDriver: true,
 						toValue: 0,
-						duration: 500,
+						duration: 250,
 						easing: Easing.elastic(1.2)
 					}).start()
 				}

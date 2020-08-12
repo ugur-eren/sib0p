@@ -75,7 +75,9 @@ const Relations = (props: Props) => {
 	const _emptyComponent = () => (
 		<EmptyList
 			image={require('../../Assets/Images/no-comments.png')}
-			title={'Bu kullanıcı' + (type === 'follows' ? 'nın takip ettiği kimse yok.' : 'yı takip eden kimse yok.') + '.'}
+			title={
+				type === 'follows' ? props.navigation.getScreenProps().language.no_follows : props.navigation.getScreenProps().language.no_followers
+			}
 		/>
 	)
 
@@ -86,7 +88,7 @@ const Relations = (props: Props) => {
 			{state.loading ? (
 				<Loader theme={theme} />
 			) : state.noUser ? (
-				<EmptyList image={require('../../Assets/Images/no-comments.png')} title='Bu kullanıcı bulunamadı.' />
+				<EmptyList image={require('../../Assets/Images/no-comments.png')} title={props.navigation.getScreenProps().no_user_error} />
 			) : (
 				<View style={styles.listContainer}>
 					<FlatList

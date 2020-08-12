@@ -25,12 +25,15 @@ class PasswordRecoveryTemp extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-				<Header title={this.props.navigation.getParam("title") || 'Şifre Sıfırlama'} />
+				<Header title={this.props.navigation.getParam('title') || screen.language.password_reset} />
 
 				<WebView
-					source={{ uri: this.props.navigation.getParam("uri") ? this.props.navigation.getParam("uri") : Config.siteUri + 'login.php?q=rescue' }}
+					source={{
+						uri: this.props.navigation.getParam('uri') ? this.props.navigation.getParam('uri') : Config.siteUri + 'login.php?q=rescue',
+					}}
 					style={{
 						flex: 1,
 					}}

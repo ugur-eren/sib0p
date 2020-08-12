@@ -11,6 +11,7 @@ interface Props {
 	containerStyle?: ViewStyle
 	style?: TextStyle
 	onPress: () => any
+	language: Types.Language
 }
 
 const TextButton = (props: Props) => {
@@ -18,18 +19,20 @@ const TextButton = (props: Props) => {
 	const [loading, setLoading] = useState(false)
 
 	const onPress = async () => {
-		if (!loading && props.loadable){
+		if (!loading && props.loadable) {
 			setLoading(true)
 			await props.onPress()
 			setLoading(false)
-		} else if (props.loadable){
+		} else if (props.loadable) {
 			props.onPress()
 		}
 	}
 
 	return (
 		<TouchableOpacity onPress={onPress} style={[styles.container, props.containerStyle]}>
-			<Text style={[{ color: loading ? theme.colors.halfContrast : theme.colors.main }, props.style]}>{loading ? 'Yükleniyor..' : props.label}</Text>
+			<Text style={[{ color: loading ? theme.colors.halfContrast : theme.colors.main }, props.style]}>
+				{loading ? props.language.loading : props.label}
+			</Text>
 		</TouchableOpacity>
 	)
 }

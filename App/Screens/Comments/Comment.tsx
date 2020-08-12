@@ -54,7 +54,7 @@ class Comment extends React.PureComponent<Props, State> {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'no_comment') {
-					screen.error('Yorum bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_comment_error)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -88,7 +88,7 @@ class Comment extends React.PureComponent<Props, State> {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'no_comment') {
-					screen.error('Yorum bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_comment_error)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -105,13 +105,14 @@ class Comment extends React.PureComponent<Props, State> {
 	render() {
 		let { navigation, theme } = this.props
 		let { comment } = this.state
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
 				<TopProfile
 					user={{
 						username: comment.user.username,
 						profilePhoto: comment.user.profilePhoto,
-						time: Functions.convertTime(comment.time, this.props.currentTime),
+						time: Functions.convertTime(comment.time, this.props.currentTime, screen.language),
 						tags: comment.user.tags,
 						isFollowed: comment.user.isFollowed,
 					}}

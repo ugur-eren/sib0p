@@ -2,6 +2,9 @@ import { NavigationState, NavigationParams } from 'react-navigation'
 import { NavigationStackProp } from 'react-navigation-stack'
 import UserTypes from './UserTypes'
 import PostTypes from './PostTypes'
+import { Languages } from '../Languages'
+
+let lang = Languages.tr
 
 declare namespace Types {
 	export interface Navigation<Params = NavigationParams, State = NavigationState> extends NavigationStackProp<State, Params> {
@@ -10,6 +13,8 @@ declare namespace Types {
 
 	export interface ScreenProps {
 		theme: Theme
+		language: Language
+		activeLanguage: string
 		user: ScreenPropsUser
 		notification: boolean
 		selectedTheme: SupportedThemes
@@ -34,7 +39,7 @@ declare namespace Types {
 					data: UserTypes.Profile
 					posts?: PostTypes.Post[]
 				}
-			},
+			}
 			currentTime: number
 		}
 		setProfileDataCache: (data: UserTypes.Profile, posts?: PostTypes.Post[]) => void
@@ -114,6 +119,50 @@ declare namespace Types {
 		system: string
 	}
 	export type SupportedThemes = keyof SupportedThemesObject
+
+	export type Languages = {
+		[key: string]: Language
+	}
+
+	export type Language = typeof lang
+
+	/* export interface Language {
+		code: string
+		langName: string
+		success: string
+		error: string
+		ok: string
+		share_text: string
+		share: string
+		report: string
+		delete: string
+		cancel: string
+		delete_post: string
+		report_dialog: string
+		delete_dialog: string
+		no_post_error: string
+		no_user_error: string
+		no_comments: string
+        comments_count: string
+		video_load_error: string
+		post_auth_error: string
+		report_success: string
+		post_share_success: string
+		post_share_error: string
+		wrong_username_error: string
+		follow: string
+		username_empty: string
+		username_less: string
+		password_empty: string
+		couldnt_take_login_info: string
+		wrong_username: string
+		no_user: string
+		wrong_password: string
+		unknown_error: string
+		username: string
+		password: string
+		login: string
+	} */
 }
 
 export default Types

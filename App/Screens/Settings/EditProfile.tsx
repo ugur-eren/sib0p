@@ -84,21 +84,20 @@ class EditProfile extends React.PureComponent<Props, State> {
 	}
 
 	_onLoginPress = async () => {
+		let screen = this.props.navigation.getScreenProps()
 		if (!this.state.username) {
-			return this.setState({ usernameError: 'Kullanıcı adı boş olamaz.' })
+			return this.setState({ usernameError: screen.language.username_empty })
 		}
 		if (this.state.username.length < 4) {
-			return this.setState({ usernameError: 'Kullanıcı adı 4 karakterden az olamaz.' })
+			return this.setState({ usernameError: screen.language.username_less })
 		}
 
 		if (!this.state.email) {
-			return this.setState({ emailError: 'E-Posta boş olamaz.' })
+			return this.setState({ emailError: screen.language.email_empty })
 		}
 		if (this.state.email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,}$/g) === null) {
-			return this.setState({ emailError: 'E-Posta Adresiniz doğru değil.' })
+			return this.setState({ emailError: screen.language.email_wrong })
 		}
-
-		let screen = this.props.navigation.getScreenProps()
 
 		let response = await Api.updateProfile({
 			token: screen.user.token,
@@ -124,19 +123,19 @@ class EditProfile extends React.PureComponent<Props, State> {
 				})
 			} else {
 				if (response.error === 'wrong_username') {
-					screen.error('Kullanıcı adı sadece İngilizce karakterler, sayı, nokta, alt çizgi ve üst çizgi içerebilir.')
+					screen.error(screen.language.wrong_username)
 				} else if (response.error === 'email_in_use') {
-					screen.error('Bu E-Posta adresi başka bir kullanıcı tarafından kullanılmaktadır.')
+					screen.error(screen.language.email_in_use)
 				} else if (response.error === 'some_empty') {
-					screen.error('Bazı alanları doldurmamışsınız. Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.')
+					screen.error(screen.language.some_empty)
 				} else if (response.error === 'username_in_use') {
-					screen.error('Bu kullanıcı adı başka bir kullanıcı tarafından kullanılmaktadır.')
+					screen.error(screen.language.username_in_use)
 				} else if (response.error === 'username_not_allowed') {
-					screen.error('Bu kullanıcı adı kullanılamaz.')
+					screen.error(screen.language.username_not_allowed)
 				} else if (response.error === 'username_short') {
-					screen.error('Kullanıcı adı 4 karakterden az olamaz.')
+					screen.error(screen.language.username_less)
 				} else if (response.error === 'wrong_email') {
-					screen.error('Girdiğiniz E-Posta adresi doğru değil. Lütfen E-Posta adresinizi kontrol ediniz ve tekrar deneyiniz.')
+					screen.error(screen.language.email_wrong)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -152,6 +151,7 @@ class EditProfile extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<>
 				{this.state.loading ? (
@@ -160,7 +160,7 @@ class EditProfile extends React.PureComponent<Props, State> {
 					</View>
 				) : (
 					<>
-						<Header title={'Profili Düzenle'} />
+						<Header title={screen.language.edit_profile} />
 						<ScrollView
 							style={[styles.container, { backgroundColor: theme.colors.surface }]}
 							keyboardDismissMode='none'
@@ -168,32 +168,48 @@ class EditProfile extends React.PureComponent<Props, State> {
 						>
 							<View style={styles.centerContainer}>
 								<Input
-									placeholder='Kullanıcı Adı'
+									placeholder={screen.language.username}
 									leftIcon='tag'
 									value={this.state.username}
 									onChangeText={this._usernameChange}
 									error={this.state.usernameError}
 								/>
-								<Input placeholder='İsim' leftIcon='user' value={this.state.name} onChangeText={this._nameChange} />
-								<Input placeholder='Soyisim' leftIcon='users' value={this.state.surname} onChangeText={this._surnameChange} />
+								<Input placeholder={screen.language.name} leftIcon='user' value={this.state.name} onChangeText={this._nameChange} />
 								<Input
-									placeholder='E-Posta'
+									placeholder={screen.language.surname}
+									leftIcon='users'
+									value={this.state.surname}
+									onChangeText={this._surnameChange}
+								/>
+								<Input
+									placeholder={screen.language.email}
 									leftIcon='at-sign'
 									value={this.state.email}
 									onChangeText={this._emailChange}
 									error={this.state.emailError}
 									email
 								/>
-								<Input placeholder='Bio' leftIcon='lock' multiline value={this.state.bio} onChangeText={this._bioChange} />
+								<Input
+									placeholder={screen.language.bio}
+									leftIcon='lock'
+									multiline
+									value={this.state.bio}
+									onChangeText={this._bioChange}
+								/>
 							</View>
 
 							<View style={styles.bottomContainer}>
-								<Button label='Profili Düzenle' loading={true} containerStyle={styles.buttonContainer} onPress={this._onLoginPress} />
+								<Button
+									label={screen.language.edit_profile}
+									loading={true}
+									containerStyle={styles.buttonContainer}
+									onPress={this._onLoginPress}
+								/>
 							</View>
 
 							<Portal>
 								<Snackbar visible={this.state.isErrorVisible} onDismiss={this.dismissError}>
-									<Text style={{ color: theme.colors.contrast }}>Profiliniz başarıyla güncellendi.</Text>
+									<Text style={{ color: theme.colors.contrast }}>{screen.language.edit_profile_success}</Text>
 								</Snackbar>
 							</Portal>
 						</ScrollView>

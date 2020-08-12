@@ -90,6 +90,8 @@ class Share extends React.PureComponent<Props, State> {
 	}
 
 	addNewMedia = (type: 'image' | 'video') => {
+		let screen = this.props.navigation.getScreenProps()
+
 		ImagePicker.openPicker({
 			mediaType: type === 'image' ? 'photo' : 'video',
 			multiple: false,
@@ -101,26 +103,28 @@ class Share extends React.PureComponent<Props, State> {
 			compressImageMaxWidth: 1080,
 			compressImageMaxHeight: 1080,
 			compressImageQuality: 0.75,
-			cropperToolbarTitle: 'Resim Boyutunu Ayarlayınız',
-			loadingLabelText: 'Yükleniyor...',
-			cropperChooseText: 'Seç',
-			cropperCancelText: 'İptal',
-		}).then(async (images) => {
-			if (images) {
-				if (images instanceof Array) {
-					if (images.filter((im) => im.size > 20971520).length > 0) {
-						return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
+			cropperToolbarTitle: screen.language.cropper_title,
+			loadingLabelText: screen.language.loading,
+			cropperChooseText: screen.language.choose,
+			cropperCancelText: screen.language.cancel,
+		})
+			.then(async (images) => {
+				if (images) {
+					if (images instanceof Array) {
+						if (images.filter((im) => im.size > 20971520).length > 0) {
+							return this.setState({ error: screen.language.image_size_more })
+						}
+						let imagePaths = images.map((im) => ({ type: type, content: im.path }))
+						this.setState({ images: [...this.state.images, ...imagePaths] })
+					} else {
+						if (images.size > 20971520) {
+							return this.setState({ error: screen.language.image_size_more })
+						}
+						this.setState({ images: [...this.state.images, { type: type, content: images.path }] })
 					}
-					let imagePaths = images.map((im) => ({ type: type, content: im.path }))
-					this.setState({ images: [...this.state.images, ...imagePaths] })
-				} else {
-					if (images.size > 20971520) {
-						return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
-					}
-					this.setState({ images: [...this.state.images, { type: type, content: images.path }] })
 				}
-			}
-		}).catch(() => {})
+			})
+			.catch(() => {})
 	}
 
 	onErrorDismiss = () => {
@@ -173,7 +177,7 @@ class Share extends React.PureComponent<Props, State> {
 		if (this.state.message || this.state.images.length > 0) {
 			this.setState({ sharePostDialog: true })
 		} else {
-			this.setState({ error: 'En az bir medya seçmeli ya da mesaj yazmalısınız.' })
+			this.setState({ error: this.props.navigation.getScreenProps().language.must_choose })
 		}
 	}
 
@@ -182,15 +186,13 @@ class Share extends React.PureComponent<Props, State> {
 	}
 
 	sharePost = () => {
-		if (this.props.navigation.getScreenProps().isSharePostActive()) {
-			return Alert.alert(
-				'Hata!',
-				'Şu an paylaşılmakta olan bir gönderiniz mevcut. Yeni bir gönderi paylaşmadan önce yüklemenin tamamlanmasını bekleyiniz.',
-				[{ style: 'cancel', text: 'Tamam' }]
-			)
+		let screen = this.props.navigation.getScreenProps()
+
+		if (screen.isSharePostActive()) {
+			return Alert.alert(screen.language.error, screen.language.waiting_to_post, [{ style: 'cancel', text: screen.language.ok }])
 		}
 		this.setState({ sharePostDialog: false })
-		this.props.navigation.getScreenProps().sharePost(this.state.message, this.state.tags, this.state.images)
+		screen.sharePost(this.state.message, this.state.tags, this.state.images)
 		this.props.navigation.goBack()
 	}
 
@@ -217,7 +219,7 @@ class Share extends React.PureComponent<Props, State> {
 	tryPermissionAgain = async () => {
 		if (this.state.filePermission === 'blocked') {
 			if (!(await Permissions.openSettings())) {
-				this.setState({ error: 'İzin ayarları açılırken bir sorun oluştu.' })
+				this.setState({ error: this.props.navigation.getScreenProps().language.perm_settings_error })
 			}
 		} else {
 			let filePerm = await Permissions.requestFile()
@@ -227,9 +229,10 @@ class Share extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				<Header title='Gönderi Paylaş' />
+				<Header title={screen.language.share_post} />
 
 				{this.state.filePermission === null ? (
 					<View style={styles.loading}>
@@ -240,16 +243,14 @@ class Share extends React.PureComponent<Props, State> {
 						<EmptyList
 							image={require('../../Assets/Images/error.png')}
 							title={
-								this.state.filePermission === 'unavailable'
-									? 'Devam edebilmeniz için dosya izinine ihtiyacımız var. \n Fakat cihazınız dosya izinlerini desteklememektedir. \n Bunun bir hata olduğunu düşünüyorsanız bizimle iletişime geçiniz.'
-									: 'Devam edebilmeniz için dosya izinine ihtiyacımız var. \n\n Dosya izinlerini sadece gönderi içeriği için kullanmaktayız.'
+								this.state.filePermission === 'unavailable' ? screen.language.file_perm_unavailable : screen.language.file_perm_ask
 							}
 						/>
 
 						{this.state.filePermission !== 'unavailable' ? (
 							<View style={styles.buttonContainer}>
 								<Button mode='contained' onPress={this.tryPermissionAgain} loading={this.state.loading}>
-									{this.state.filePermission === 'blocked' ? 'Uygulama Ayarlarını Aç' : 'Tekrar Dene'}
+									{this.state.filePermission === 'blocked' ? screen.language.file_perm_open_settins : screen.language.try_again}
 								</Button>
 							</View>
 						) : (
@@ -272,7 +273,7 @@ class Share extends React.PureComponent<Props, State> {
 									<Input
 										value={this.state.message}
 										onChangeText={this.onMessageChange}
-										placeholder='Mesaj'
+										placeholder={screen.language.message}
 										leftIcon='message-square'
 										multiline
 									/>
@@ -281,7 +282,7 @@ class Share extends React.PureComponent<Props, State> {
 										onChangeText={this.onTagsTextChange}
 										onSubmitEditing={this.onTagsSubmit}
 										onBlur={this.onTagsSubmit}
-										placeholder='Etiketler'
+										placeholder={screen.language.tags}
 										leftIcon='hash'
 									/>
 									<View style={styles.tags}>
@@ -332,7 +333,7 @@ class Share extends React.PureComponent<Props, State> {
 								</View>
 							</View>
 						</ScrollView>
-						
+
 						<SafeAreaView style={[styles.submitButton, { backgroundColor: theme.colors.primary }]}>
 							<TouchableRipple onPress={this.onSubmit} style={styles.submitButtonTouchable}>
 								<>
@@ -374,16 +375,16 @@ class Share extends React.PureComponent<Props, State> {
 
 						<Portal>
 							<Dialog visible={this.state.sharePostDialog} onDismiss={this.hidePostDialog}>
-								<Dialog.Title>Paylaş</Dialog.Title>
+								<Dialog.Title>{screen.language.share}</Dialog.Title>
 								<Dialog.Content>
-									<Paragraph>Gönderinizi paylaşmak istediğinize emin misiniz?</Paragraph>
+									<Paragraph>{screen.language.share_dialog}</Paragraph>
 								</Dialog.Content>
 								<Dialog.Actions>
 									<Button onPress={this.sharePost} color={theme.colors.main} style={{ marginRight: 15 }}>
-										Paylaş
+										{screen.language.share}
 									</Button>
 									<Button onPress={this.hidePostDialog} color={theme.colors.contrast}>
-										İptal
+										{screen.language.cancel}
 									</Button>
 								</Dialog.Actions>
 							</Dialog>

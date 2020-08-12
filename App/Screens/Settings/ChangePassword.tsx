@@ -50,22 +50,22 @@ class ChangePassword extends React.PureComponent<Props, State> {
 	}
 
 	_onLoginPress = async () => {
+		let screen = this.props.navigation.getScreenProps()
 		if (!this.state.oldPassword) {
-			return this.setState({ oldPasswordError: 'Eski şifreniz boş olamaz.' })
+			return this.setState({ oldPasswordError: screen.language.old_password_empty })
 		}
 
 		if (!this.state.newPassword) {
-			return this.setState({ newPasswordError: 'Yeni şifreniz boş olamaz.' })
+			return this.setState({ newPasswordError: screen.language.new_password_empty })
 		}
-		if (this.state.newPassword.length < 4) {
-			return this.setState({ newPasswordError: 'Yeni şifreniz 4 karakterden az olamaz.' })
+		if (this.state.newPassword.length < 5) {
+			return this.setState({ newPasswordError: screen.language.new_password_less })
 		}
 
 		if (this.state.newPassword !== this.state.passwordCheck) {
-			return this.setState({ newPasswordError: 'Şifreleriniz eşleşmemektedir.', passwordCheckError: 'Şifreleriniz eşleşmemektedir.' })
+			return this.setState({ newPasswordError: screen.language.password_not_match, passwordCheckError: screen.language.password_not_match })
 		}
 
-		let screen = this.props.navigation.getScreenProps()
 		let response = await Api.changePassword({
 			token: screen.user.token,
 			old_password: this.state.oldPassword,
@@ -85,9 +85,9 @@ class ChangePassword extends React.PureComponent<Props, State> {
 				})
 			} else {
 				if (response.error === 'some_empty') {
-					screen.error('Bazı alanları doldurmamışsınız. Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.')
+					screen.error(screen.language.some_empty)
 				} else if (response.error === 'wrong_password') {
-					screen.error('Şifreniz yanlış.')
+					screen.error(screen.language.wrong_password)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -103,9 +103,10 @@ class ChangePassword extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<>
-				<Header title={'Profili Düzenle'} />
+				<Header title={screen.language.change_password} />
 				<ScrollView
 					style={[styles.container, { backgroundColor: theme.colors.surface }]}
 					keyboardDismissMode='none'
@@ -113,7 +114,7 @@ class ChangePassword extends React.PureComponent<Props, State> {
 				>
 					<View style={styles.centerContainer}>
 						<Input
-							placeholder='Eski Şifre'
+							placeholder={screen.language.old_password}
 							leftIcon='lock'
 							password
 							value={this.state.oldPassword}
@@ -122,7 +123,7 @@ class ChangePassword extends React.PureComponent<Props, State> {
 						/>
 
 						<Input
-							placeholder='Yeni Şifre'
+							placeholder={screen.language.new_password}
 							leftIcon='lock'
 							password
 							value={this.state.newPassword}
@@ -131,7 +132,7 @@ class ChangePassword extends React.PureComponent<Props, State> {
 						/>
 
 						<Input
-							placeholder='Şifre Tekrar'
+							placeholder={screen.language.new_password_again}
 							leftIcon='lock'
 							password
 							value={this.state.passwordCheck}
@@ -141,12 +142,17 @@ class ChangePassword extends React.PureComponent<Props, State> {
 					</View>
 
 					<View style={styles.bottomContainer}>
-						<Button label='Şifre Değiştir' loading={true} containerStyle={styles.buttonContainer} onPress={this._onLoginPress} />
+						<Button
+							label={screen.language.change_password}
+							loading={true}
+							containerStyle={styles.buttonContainer}
+							onPress={this._onLoginPress}
+						/>
 					</View>
 
 					<Portal>
 						<Snackbar visible={this.state.isErrorVisible} onDismiss={this.dismissError}>
-							<Text style={{ color: theme.colors.contrast }}>Şifreniz başarıyla güncellendi.</Text>
+							<Text style={{ color: theme.colors.contrast }}>{screen.language.change_password_success}</Text>
 						</Snackbar>
 					</Portal>
 				</ScrollView>

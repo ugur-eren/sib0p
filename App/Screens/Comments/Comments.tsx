@@ -82,11 +82,7 @@ class Comments extends React.PureComponent<Props, State> {
 				} else {
 					this.props.navigation
 						.getScreenProps()
-						.error(
-							comments.error === 'noPostData'
-								? 'Gönderi bilgisi gönderilemedi. Lütfen daha sonra tekrar deneyiniz.'
-								: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' + comments.error
-						)
+						.error(comments.error === 'noPostData' ? screen.language.no_post_data : screen.language.unknown_error + comments.error)
 				}
 			}
 		} else {
@@ -136,9 +132,9 @@ class Comments extends React.PureComponent<Props, State> {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'no_post') {
-					screen.error('Post bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'same_comment') {
-					screen.error('Bu post için aynı yorumu daha önce yapmışsınız.')
+					screen.error(screen.language.same_comment_error)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -185,9 +181,9 @@ class Comments extends React.PureComponent<Props, State> {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'no_comment') {
-					screen.error('Yorum bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_comment_error)
 				} else if (response.error === 'no_auth') {
-					screen.error('Bu yorumu sadece yorumu paylaşan kullanıcı silebilir.')
+					screen.error(screen.language.comment_auth_error)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -202,13 +198,16 @@ class Comments extends React.PureComponent<Props, State> {
 	)
 	_itemSeperator = () => <Divider style={styles.itemSeperator} />
 	_keyExtractor = (item: CommentTypes.Comment) => item.id.toString()
-	_emptyComponent = () => <EmptyList image={require('../../Assets/Images/no-comments.png')} title='Bu gönderiye hiç yorum yapılmamış.' />
+	_emptyComponent = () => (
+		<EmptyList image={require('../../Assets/Images/no-comments.png')} title={this.props.navigation.getScreenProps().language.no_comments_made} />
+	)
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				{this.props.customHeader ? <></> : <Header title='Yorumlar' />}
+				{this.props.customHeader ? <></> : <Header title={screen.language.comments} />}
 
 				{this.state.loading ? (
 					<Loader theme={theme} />
@@ -229,20 +228,20 @@ class Comments extends React.PureComponent<Props, State> {
 							<TextInput
 								value={this.state.commentInput}
 								onChangeText={this.handleCommentChange}
-								placeholder={'Yorumunuz...'}
+								placeholder={screen.language.your_comment}
 								placeholderTextColor={theme.colors.halfContrast}
 								style={[styles.writeCommentInput, { color: theme.colors.contrast }]}
 								keyboardAppearance={this.props.theme.dark ? 'dark' : 'default'}
 							/>
 
-							<TextButton label='Gönder' loadable onPress={this.sendComment} />
+							<TextButton label={screen.language.send} loadable onPress={this.sendComment} language={screen.language}/>
 						</SafeAreaView>
 
 						<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>
 							<List.Section>
 								{this.state.activeComment?.isMine ? (
 									<List.Item
-										title='Sil'
+										title={screen.language.delete}
 										onPress={this.deleteComment}
 										left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />}
 									/>
@@ -253,9 +252,9 @@ class Comments extends React.PureComponent<Props, State> {
 						</Modalize>
 
 						<Dialog visible={this.state.deleteCommentActive} onDismiss={this.hideDeleteComment}>
-							<Dialog.Title>Yorumu Sil</Dialog.Title>
+							<Dialog.Title>{screen.language.delete_comment}</Dialog.Title>
 							<Dialog.Content>
-								<Paragraph>Bu yorumu silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</Paragraph>
+								<Paragraph>{screen.language.delete_comment_dialog}</Paragraph>
 							</Dialog.Content>
 							<Dialog.Actions>
 								<Button
@@ -264,10 +263,10 @@ class Comments extends React.PureComponent<Props, State> {
 									loading={this.state.deleteCommentLoading}
 									style={{ marginRight: 15 }}
 								>
-									Sil
+									{screen.language.delete}
 								</Button>
 								<Button onPress={this.hideDeleteComment} color={this.props.theme.colors.contrast}>
-									İptal
+									{screen.language.cancel}
 								</Button>
 							</Dialog.Actions>
 						</Dialog>

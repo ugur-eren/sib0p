@@ -85,7 +85,7 @@ class Notifications extends React.PureComponent<Props, State> {
 	_keyExtractor = (item: NotificationTypes.Notification, index: number) => index.toString()
 	_itemSeperatorComponent = () => <Divider />
 	_emptyComponent = () => (
-		<EmptyList image={require('../../Assets/Images/no-notifications.png')} title='Son 3 gün içinde okunmamış bildiriminiz bulunmamaktadır' />
+		<EmptyList image={require('../../Assets/Images/no-notifications.png')} title={this.props.navigation.getScreenProps().language.no_notifs} />
 	)
 
 	render() {

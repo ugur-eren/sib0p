@@ -10,6 +10,7 @@ import Types from '../../../Includes/Types/Types'
 import Api from '../../../Includes/Api'
 import Storage from '../../../Includes/Storage'
 import styles from './styles'
+import Config from '../../../Includes/Config'
 
 interface Props {
 	navigation: Types.Navigation
@@ -45,15 +46,16 @@ class Login extends React.PureComponent<Props, State> {
 
 	_onLoginPress = async () => {
 		let { username, password } = this.state
+		let screen = this.props.navigation.getScreenProps()
 
 		if (!username) {
-			return this.setState({ usernameError: 'Kullanıcı adı boş olamaz.' })
+			return this.setState({ usernameError: screen.language.username_empty })
 		}
 		if (username.length < 4) {
-			return this.setState({ usernameError: 'Kullanıcı adı 4 karakterden az olamaz.' })
+			return this.setState({ usernameError: screen.language.username_less })
 		}
 		if (!password) {
-			return this.setState({ passwordError: 'Şifreniz boş olamaz.' })
+			return this.setState({ passwordError: screen.language.password_empty })
 		}
 
 		let login = await Api.login({ username: username, password: password })
@@ -63,7 +65,7 @@ class Login extends React.PureComponent<Props, State> {
 		}
 		if (login.status) {
 			if (!login.token || !login.username) {
-				return this.props.navigation.getScreenProps().unknown_error('Giriş bilgileri alınamadı. Lütfen daha sonra tekrar deneyiniz.')
+				return this.props.navigation.getScreenProps().unknown_error(screen.language.couldnt_take_login_info)
 			}
 
 			await Storage.setMultiple({
@@ -71,8 +73,8 @@ class Login extends React.PureComponent<Props, State> {
 				username: login.username,
 			})
 
-			OneSignal.sendTag("token", login.notif_token)
-			
+			OneSignal.sendTag('token', login.notif_token)
+
 			this.props.navigation.getScreenProps().setUserData({
 				active: true,
 				token: login.token,
@@ -84,12 +86,12 @@ class Login extends React.PureComponent<Props, State> {
 				.getScreenProps()
 				.error(
 					login.error === 'wrong_username'
-						? 'Lütfen kullanıcı adınızın sadece ingilizce karakterler, sayı, nokta ve çizgilerden oluştuğundan emin olunuz.'
+						? screen.language.wrong_username
 						: login.error === 'no_user'
-						? 'Böyle bir kullanıcı bulunamadı. Lütfen kullanıcı adınızı kontrol ediniz.'
+						? screen.language.no_user
 						: login.error === 'wrong_password'
-						? 'Yanlış Parola girdiniz. Lütfen parolanızı kontrol ediniz.'
-						: 'Maalesef, Bilinmeyen bir hata ile karşılaştık. ' + login.error
+						? screen.language.wrong_username
+						: screen.language.unknown_error + login.error
 				)
 		}
 	}
@@ -104,6 +106,7 @@ class Login extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<ScrollView
 				style={[styles.container, { backgroundColor: theme.colors.surface }]}
@@ -112,19 +115,19 @@ class Login extends React.PureComponent<Props, State> {
 			>
 				<View style={[styles.topContainer, { backgroundColor: theme.colors.background }]}>
 					<FastImage source={require('../../../Assets/Images/logo-wide.png')} style={styles.topLogo} resizeMode='contain' />
-					<Text style={[styles.topSubtitle, { color: theme.colors.contrast }]}>Giriş Yap</Text>
+					<Text style={[styles.topSubtitle, { color: theme.colors.contrast }]}>{screen.language.login}</Text>
 				</View>
 
 				<View style={styles.centerContainer}>
 					<Input
-						placeholder='Kullanıcı Adı'
+						placeholder={screen.language.username}
 						leftIcon='user'
 						value={this.state.username}
 						onChangeText={this._onUsernameChange}
 						error={this.state.usernameError}
 					/>
 					<Input
-						placeholder='Parola'
+						placeholder={screen.language.password}
 						leftIcon='lock'
 						password
 						value={this.state.password}
@@ -133,15 +136,19 @@ class Login extends React.PureComponent<Props, State> {
 					/>
 
 					<TouchableOpacity onPress={this.navigateToPasswordRecovery}>
-						<Text style={[styles.centerText, { color: theme.colors.contrast }]}>Şifreni mi unuttun?</Text>
+						<Text style={[styles.centerText, { color: theme.colors.contrast }]}>{screen.language.have_you_forgot_password}</Text>
 					</TouchableOpacity>
 				</View>
 
 				<View style={styles.bottomContainer}>
-					<Button label='Giriş Yap' loading={true} containerStyle={styles.buttonContainer} onPress={this._onLoginPress} />
+					<Button label={screen.language.login} loading={true} containerStyle={styles.buttonContainer} onPress={this._onLoginPress} />
 					<TouchableOpacity onPress={this.navigateToRegister}>
 						<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
-							Henüz bir hesabın yok mu? <Text style={{ color: theme.colors.main, textAlign: 'center' }}>{'\n\n'}Kayıt Ol</Text>
+							{screen.language.have_no_account}{' '}
+							<Text style={{ color: theme.colors.main, textAlign: 'center', fontFamily: Config.fonts.semi }}>
+								{'\n\n'}
+								{screen.language.register}
+							</Text>
 						</Text>
 					</TouchableOpacity>
 				</View>

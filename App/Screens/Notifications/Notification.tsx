@@ -46,6 +46,7 @@ class Notification extends React.PureComponent<Props, State> {
 
 	render() {
 		let { notification, theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 
 		return (
 			<TouchableOpacity onPress={this.goToPost} style={[styles.notification, { backgroundColor: theme.colors.surface }]}>
@@ -62,27 +63,27 @@ class Notification extends React.PureComponent<Props, State> {
 						{'   '}
 						<Text>
 							{notification.type === 'comment'
-								? 'senin gönderine yorum yaptı'
+								? screen.language.notif_commented
 								: notification.type === 'comment_like'
-								? 'senin yorumunu beğendi'
+								? screen.language.notif_liked_comment
 								: notification.type === 'follow'
-								? 'seni takip etmeye başladı'
+								? screen.language.notif_followed
 								: notification.type === 'like'
-								? 'senin gönderini beğendi'
+								? screen.language.notif_liked_post
 								: notification.type === 'commtag'
-								? 'seni bir yorumda etiketledi'
+								? screen.language.notif_tagged_on_comment
 								: notification.type === 'posttag'
-								? 'seni bir gönderide etiketledi'
+								? screen.language.notif_tagged_on_post
 								: notification.type === 'unfollow'
-								? 'seni takipten çıkardı'
+								? screen.language.notif_unfollow
 								: notification.type === 'warning'
-								? 'Bir uyarı aldınız: '
-								: 'senin gönderini beğendi'}
+								? screen.language.notif_warning
+								: screen.language.notif_liked_post}
 						</Text>
 					</Text>
 					{notification.content ? <Text>{notification.content}</Text> : <></>}
 					<Text>
-						<Feather name='clock' /> <Text>{Functions.convertTime(notification.time, this.props.currentTime)}</Text>
+						<Feather name='clock' /> <Text>{Functions.convertTime(notification.time, this.props.currentTime, screen.language)}</Text>
 					</Text>
 				</View>
 			</TouchableOpacity>

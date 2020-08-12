@@ -91,6 +91,7 @@ class Explore extends React.PureComponent<Props, State> {
 	)
 
 	render() {
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
 				{this.state.loading ? (
@@ -98,7 +99,7 @@ class Explore extends React.PureComponent<Props, State> {
 				) : (
 					<>
 						{this.pageType === 'tags' ? (
-							<Header title={'Tag: #' + (this.props.navigation.getParam('tag')?.name || 'Bilinmiyor')} />
+							<Header title={'Tag: #' + (this.props.navigation.getParam('tag')?.name || screen.language.unknown)} />
 						) : (
 							<MainHeader />
 						)}

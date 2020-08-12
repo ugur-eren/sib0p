@@ -26,6 +26,7 @@ export default StyleSheet.create({
 	profilePhotoContainer: {
 		width: 100,
 		height: 100,
+		backgroundColor :'red',
 		borderRadius: 100,
 		top: -25,
 		borderWidth: 0.5,

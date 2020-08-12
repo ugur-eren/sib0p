@@ -91,32 +91,34 @@ class Register extends React.PureComponent<Props, State> {
 	}
 
 	onRegisterPress = async () => {
-		if (!this.state.agreementActive){
-			return this.props.navigation.getScreenProps().error('Hizmet ve Kullanım koşullarını, Veri ve Gizlilik Politikasını kabul etmeniz gerekmektedir.')
+		let screen = this.props.navigation.getScreenProps()
+
+		if (!this.state.agreementActive) {
+			return this.props.navigation.getScreenProps().error(screen.language.must_agree_agreement)
 		}
 
 		if (!this.state.username) {
-			return this.setState({ usernameError: 'Kullanıcı adı boş olamaz.' })
+			return this.setState({ usernameError: screen.language.username_empty })
 		}
 		if (this.state.username.length < 4) {
-			return this.setState({ usernameError: 'Kullanıcı adı 4 karakterden az olamaz.' })
+			return this.setState({ usernameError: screen.language.username_less })
 		}
 
 		if (!this.state.email) {
-			return this.setState({ emailError: 'E-Posta boş olamaz.' })
+			return this.setState({ emailError: screen.language.email_empty })
 		}
 		if (this.state.email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,}$/g) === null) {
-			return this.setState({ emailError: 'E-Posta Adresiniz doğru değil.' })
+			return this.setState({ emailError: screen.language.email_wrong })
 		}
 
 		if (this.state.password.length < 5) {
-			return this.setState({ passwordError: 'Şifreniz 5 karakterden az olamaz.' })
+			return this.setState({ passwordError: screen.language.password_less })
 		}
 		if (this.state.password !== this.state.passwordCheck) {
-			return this.setState({ passwordError: 'Şifreleriniz eşleşmemektedir.', passwordCheckError: 'Şifreleriniz eşleşmemektedir.' })
+			return this.setState({ passwordError: screen.language.password_not_match, passwordCheckError: screen.language.password_not_match })
 		}
 		if (!this.state.captcha) {
-			return this.setState({ captchaError: 'Doğrulama Kodu boş olamaz.' })
+			return this.setState({ captchaError: screen.language.captcha_empty })
 		}
 
 		let register = await Api.register({
@@ -131,7 +133,7 @@ class Register extends React.PureComponent<Props, State> {
 		if (register) {
 			if (register.status) {
 				if (!register.token || !register.username) {
-					return this.props.navigation.getScreenProps().unknown_error('Giriş bilgileri alınamadı. Lütfen giriş yapmayı deneyiniz.')
+					return this.props.navigation.getScreenProps().unknown_error(screen.language.couldnt_take_login_info)
 				}
 
 				await Storage.setMultiple({
@@ -147,30 +149,24 @@ class Register extends React.PureComponent<Props, State> {
 				this.props.navigation.navigate('mainStack')
 			} else {
 				if (register.error == 'email_in_use') {
-					this.props.navigation.getScreenProps().error('Bu E-Posta adresi başka bir kullanıcı tarafından kullanılmaktadır.')
+					this.props.navigation.getScreenProps().error(screen.language.email_in_use)
 				} else if (register.error == 'expired_captcha') {
 					this.refreshCaptcha()
-					this.props.navigation.getScreenProps().error('Güvenlik kodu doğrulama süresi geçti. Lütfen güvenlik kodunu tekrar giriniz.')
+					this.props.navigation.getScreenProps().error(screen.language.expired_captcha)
 				} else if (register.error == 'some_empty') {
-					this.props.navigation
-						.getScreenProps()
-						.error('Bazı alanları doldurmamışsınız. Lütfen bilgilerinizi kontrol edip tekrar deneyiniz.')
+					this.props.navigation.getScreenProps().error(screen.language.some_empty)
 				} else if (register.error == 'username_in_use') {
-					this.props.navigation.getScreenProps().error('Bu kullanıcı adı başka bir kullanıcı tarafından kullanılmaktadır.')
+					this.props.navigation.getScreenProps().error(screen.language.email_in_use)
 				} else if (register.error == 'username_not_allowed') {
-					this.props.navigation.getScreenProps().error('Bu kullanıcı adı kullanılamaz.')
+					this.props.navigation.getScreenProps().error(screen.language.username_not_allowed)
 				} else if (register.error == 'username_short') {
-					this.props.navigation.getScreenProps().error('Kullanıcı adı 4 karakterden az olamaz.')
+					this.props.navigation.getScreenProps().error(screen.language.username_less)
 				} else if (register.error == 'wrong_captcha') {
-					this.props.navigation.getScreenProps().error('Doğrulama kodu hatalı. Lütfen tekrar deneyiniz.')
+					this.props.navigation.getScreenProps().error(screen.language.wrong_captcha)
 				} else if (register.error == 'wrong_email') {
-					this.props.navigation
-						.getScreenProps()
-						.error('Girdiğiniz E-Posta adresi doğru değil. Lütfen E-Posta adresinizi kontrol ediniz ve tekrar deneyiniz.')
+					this.props.navigation.getScreenProps().error(screen.language.email_wrong)
 				} else if (register.error == 'wrong_username') {
-					this.props.navigation
-						.getScreenProps()
-						.error('Kullanıcı adı sadece İngilizce karakterler, sayı, nokta, alt çizgi ve üst çizgi içerebilir.')
+					this.props.navigation.getScreenProps().error(screen.language.wrong_username)
 				} else {
 					this.props.navigation.getScreenProps().unknown_error()
 				}
@@ -215,15 +211,22 @@ class Register extends React.PureComponent<Props, State> {
 	}
 
 	_hizmetKosullari = () => {
-		this.props.navigation.navigate("PasswordRecovery", {title: 'Kullanım Koşulları', uri: Config.siteUri + 'hizmet-kullanim-kosullari.html'})
+		this.props.navigation.navigate('PasswordRecovery', {
+			title: this.props.navigation.getScreenProps().language.terms_of_use,
+			uri: Config.siteUri + 'hizmet-kullanim-kosullari.html',
+		})
 	}
 
 	_gizlilikPolitikasi = () => {
-		this.props.navigation.navigate("PasswordRecovery", {title: 'Veri ve Gizlilik Politikası', uri: Config.siteUri + 'gizlilik-politikasi.html'})
+		this.props.navigation.navigate('PasswordRecovery', {
+			title: this.props.navigation.getScreenProps().language.privacy_policy,
+			uri: Config.siteUri + 'gizlilik-politikasi.html',
+		})
 	}
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<>
 				{this.state.loading ? (
@@ -239,33 +242,33 @@ class Register extends React.PureComponent<Props, State> {
 					>
 						<View style={[styles.topContainer, { backgroundColor: theme.colors.background }]}>
 							<FastImage source={require('../../../Assets/Images/logo-wide.png')} style={styles.topLogo} resizeMode='contain' />
-							<Text style={[styles.topSubtitle, { color: theme.colors.contrast }]}>Kayıt Ol</Text>
+							<Text style={[styles.topSubtitle, { color: theme.colors.contrast }]}>{screen.language.register}</Text>
 						</View>
 
 						<View style={styles.centerContainer}>
 							<Input
-								placeholder='Kullanıcı Adı *'
+								placeholder={screen.language.username + ' *'}
 								leftIcon='tag'
 								value={this.state.username}
 								error={this.state.usernameError}
 								onChangeText={this._onUsernameChange}
 							/>
 							<Input
-								placeholder='İsim'
+								placeholder={screen.language.name}
 								leftIcon='user'
 								value={this.state.name}
 								error={this.state.nameError}
 								onChangeText={this._onNameChange}
 							/>
 							<Input
-								placeholder='Soyisim'
+								placeholder={screen.language.surname}
 								leftIcon='users'
 								value={this.state.surname}
 								error={this.state.surnameError}
 								onChangeText={this._onSurnameChange}
 							/>
 							<Input
-								placeholder='E-Posta *'
+								placeholder={screen.language.email + ' *'}
 								leftIcon='at-sign'
 								email
 								value={this.state.email}
@@ -273,7 +276,7 @@ class Register extends React.PureComponent<Props, State> {
 								onChangeText={this._onEmailChange}
 							/>
 							<Input
-								placeholder='Şifre *'
+								placeholder={screen.language.password + ' *'}
 								leftIcon='lock'
 								password
 								value={this.state.password}
@@ -281,7 +284,7 @@ class Register extends React.PureComponent<Props, State> {
 								onChangeText={this._onPasswordChange}
 							/>
 							<Input
-								placeholder='Şifre Tekrar *'
+								placeholder={screen.language.password_again + ' *'}
 								leftIcon='lock'
 								password
 								value={this.state.passwordCheck}
@@ -302,7 +305,7 @@ class Register extends React.PureComponent<Props, State> {
 								</TouchableOpacity>
 								<Input
 									containerStyle={{ flex: 1, marginBottom: 0 }}
-									placeholder='Güvenlik Kodu *'
+									placeholder={screen.language.captcha + ' *'}
 									leftIcon='key'
 									number
 									value={this.state.captcha}
@@ -320,14 +323,29 @@ class Register extends React.PureComponent<Props, State> {
 									onPress={this.toggleAgreement}
 								/>
 								<Text style={[styles.centerText, { color: theme.colors.contrast, flex: 1 }]} onPress={this.toggleAgreement}>
-									<Text onPress={this._hizmetKosullari} style={{ color: theme.colors.main }}>
-										Hizmet ve Kullanım koşullarını
-									</Text>
-									,{' '}
-									<Text onPress={this._gizlilikPolitikasi} style={{ color: theme.colors.main }}>
-										Veri ve Gizlilik Politikası
-									</Text>{' '}
-									Okudum ve kabul ediyorum.
+									{screen.activeLanguage === 'tr' ? (
+										<>
+											<Text onPress={this._hizmetKosullari} style={{ color: theme.colors.main }}>
+												Hizmet ve Kullanım koşullarını
+											</Text>
+											,{' '}
+											<Text onPress={this._gizlilikPolitikasi} style={{ color: theme.colors.main }}>
+												Veri ve Gizlilik Politikasını
+											</Text>{' '}
+											Okudum ve kabul ediyorum.
+										</>
+									) : (
+										<>
+											I've read and accept the{' '}
+											<Text onPress={this._hizmetKosullari} style={{ color: theme.colors.main }}>
+												EULA and Terms of Use
+											</Text>
+											,{' '}
+											<Text onPress={this._gizlilikPolitikasi} style={{ color: theme.colors.main }}>
+												Data and Privacy Policy
+											</Text>
+										</>
+									)}
 								</Text>
 							</View>
 						</View>
@@ -336,7 +354,10 @@ class Register extends React.PureComponent<Props, State> {
 							<Button label='Kayıt Ol' loading={true} containerStyle={styles.buttonContainer} onPress={this.onRegisterPress} />
 							<TouchableOpacity onPress={this.navigateToLogin}>
 								<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
-									Hesabın var mı? <Text style={{ color: theme.colors.main, textAlign: 'center' }}>{'\n\n'}Giriş Yap</Text>
+									{screen.language.have_an_account}{' '}
+									<Text style={{ color: theme.colors.main, textAlign: 'center', fontFamily: Config.fonts.semi }}>
+										{'\n\n' + screen.language.login}
+									</Text>
 								</Text>
 							</TouchableOpacity>
 						</View>

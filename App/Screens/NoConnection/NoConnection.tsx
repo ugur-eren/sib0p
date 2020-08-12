@@ -30,17 +30,15 @@ class NoConnection extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 
 		return (
 			<View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-				<EmptyList
-					image={require('../../Assets/Images/no-connection.png')}
-					title={'Sunucu ile iletişim kurulamadı. \n\n Lütfen internet bağlantığınızı kontrol ediniz ve tekrar deneyiniz.'}
-				/>
+				<EmptyList image={require('../../Assets/Images/no-connection.png')} title={screen.language.no_connection} />
 
 				<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
 					<Button mode='contained' onPress={this.tryAgain} loading={this.state.loading}>
-						Tekrar Dene
+						{screen.language.try_again}
 					</Button>
 				</View>
 			</View>

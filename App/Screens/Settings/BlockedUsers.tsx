@@ -1,7 +1,6 @@
 import React from 'react'
 import { View, FlatList } from 'react-native'
-import { IconButton, withTheme, Divider } from 'react-native-paper'
-import { TextInput } from 'react-native-gesture-handler'
+import { withTheme, Divider } from 'react-native-paper'
 import EmptyList from '../../Components/EmptyList/EmptyList'
 import Relation from '../Relations/Relation'
 import Loader from '../Relations/Loader'
@@ -9,6 +8,7 @@ import Types from '../../Includes/Types/Types'
 import UserTypes from '../../Includes/Types/UserTypes'
 import styles from './styles'
 import Api from '../../Includes/Api'
+import Header from '../../Components/Header/Header'
 
 interface Props {
 	navigation: Types.Navigation
@@ -18,39 +18,34 @@ interface Props {
 interface State {
 	loading: boolean
 	searchValue: string
-	result: UserTypes.Relations[]
+	users: UserTypes.Relations[]
 }
 
-class Search extends React.PureComponent<Props, State> {
+class BlockedUsers extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
 		this.state = {
-			loading: false,
+			loading: true,
 			searchValue: '',
-			result: [],
+			users: [],
 		}
 	}
-	private searchTimeout: any = null
 
-	_onValueChange = (text: string) => {
-		this.setState({ searchValue: text })
-		clearTimeout(this.searchTimeout)
-		this.searchTimeout = null
-		this.searchTimeout = setTimeout(() => this.search(), 500)
+	componentDidMount() {
+		this.init()
 	}
 
-	search = async () => {
-		this.setState({ loading: true })
+	init = async () => {
+		if (!this.state.loading) this.setState({ loading: true })
 		let screen = this.props.navigation.getScreenProps()
-		let response = await Api.search({
+		let response = await Api.getBlockedUsers({
 			token: screen.user.token,
-			search: this.state.searchValue,
 		})
 
 		if (response) {
 			if (response.status) {
-				this.setState({ loading: false, result: response.result })
+				this.setState({ loading: false, users: response.users })
 			} else {
 				if (response.error == 'no_login') {
 					screen.logout(true)
@@ -63,34 +58,24 @@ class Search extends React.PureComponent<Props, State> {
 		}
 	}
 
-	_renderItem = ({ item }: { item: UserTypes.Relations }) => <Relation navigation={this.props.navigation} user={item} />
+	_renderItem = ({ item }: { item: UserTypes.Relations }) => <Relation navigation={this.props.navigation} user={item} noFollow />
 	_keyExtractor = (item: UserTypes.Relations) => item.username
 	_itemSeperator = () => <Divider />
 	_emptyComponent = () => (
-		<EmptyList image={require('../../Assets/Images/no-comments.png')} title={this.props.navigation.getScreenProps().language.no_search_results} />
+		<EmptyList image={require('../../Assets/Images/no-comments.png')} title={this.props.navigation.getScreenProps().language.no_blocked_users} />
 	)
 
 	render() {
 		let { theme } = this.props
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				<View style={[styles.topContainer, { backgroundColor: theme.colors.primary }]}>
-					<TextInput
-						value={this.state.searchValue}
-						onChangeText={this._onValueChange}
-						placeholder={this.props.navigation.getScreenProps().language.search}
-						style={[styles.searchInput, { color: theme.colors.contrast }]}
-						placeholderTextColor={theme.colors.halfContrast}
-					/>
-
-					<IconButton icon='search' onPress={this.search} />
-				</View>
+				<Header title={this.props.navigation.getScreenProps().language.blocked_users} />
 
 				{this.state.loading ? (
 					<Loader theme={theme} />
 				) : (
 					<FlatList
-						data={this.state.result}
+						data={this.state.users}
 						renderItem={this._renderItem}
 						keyExtractor={this._keyExtractor}
 						ItemSeparatorComponent={this._itemSeperator}
@@ -102,4 +87,4 @@ class Search extends React.PureComponent<Props, State> {
 	}
 }
 
-export default withTheme(Search)
+export default withTheme(BlockedUsers)

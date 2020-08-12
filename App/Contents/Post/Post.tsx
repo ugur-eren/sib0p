@@ -26,6 +26,7 @@ interface Props {
 }
 
 const Post = (props: Props) => {
+	let screen = props.navigation.getScreenProps()
 	const theme: Types.Theme = useTheme() as any
 	let { post, navigation } = props
 
@@ -56,7 +57,7 @@ const Post = (props: Props) => {
 
 	const _likePost = async () => {
 		let response = await Api.doAction({
-			token: props.navigation.getScreenProps().user.token,
+			token: screen.user.token,
 			type: 'like',
 			post: post.id,
 		})
@@ -73,21 +74,21 @@ const Post = (props: Props) => {
 				})
 			} else {
 				if (response.error === 'no_login') {
-					props.navigation.getScreenProps().logout(true)
+					screen.logout(true)
 				} else if (response.error === 'no_post') {
-					props.navigation.getScreenProps().error('Post bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_post_error)
 				} else {
-					props.navigation.getScreenProps().unknown_error(response.error)
+					screen.unknown_error(response.error)
 				}
 			}
 		} else {
-			props.navigation.getScreenProps().unknown_error()
+			screen.unknown_error()
 		}
 	}
 
 	const _dislikePost = async () => {
 		let response = await Api.doAction({
-			token: props.navigation.getScreenProps().user.token,
+			token: screen.user.token,
 			type: 'dislike',
 			post: post.id,
 		})
@@ -104,21 +105,21 @@ const Post = (props: Props) => {
 				})
 			} else {
 				if (response.error === 'no_login') {
-					props.navigation.getScreenProps().logout(true)
+					screen.logout(true)
 				} else if (response.error === 'no_post') {
-					props.navigation.getScreenProps().error('Post bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_post_error)
 				} else {
-					props.navigation.getScreenProps().unknown_error(response.error)
+					screen.unknown_error(response.error)
 				}
 			}
 		} else {
-			props.navigation.getScreenProps().unknown_error()
+			screen.unknown_error()
 		}
 	}
 
 	const _resibPost = async () => {
 		let response = await Api.doAction({
-			token: props.navigation.getScreenProps().user.token,
+			token: screen.user.token,
 			type: 'resib',
 			post: post.id,
 		})
@@ -138,15 +139,15 @@ const Post = (props: Props) => {
 				})
 			} else {
 				if (response.error === 'no_login') {
-					props.navigation.getScreenProps().logout(true)
+					screen.logout(true)
 				} else if (response.error === 'no_post') {
-					props.navigation.getScreenProps().error('Post bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_post_error)
 				} else {
-					props.navigation.getScreenProps().unknown_error(response.error)
+					screen.unknown_error(response.error)
 				}
 			}
 		} else {
-			props.navigation.getScreenProps().unknown_error()
+			screen.unknown_error()
 		}
 	}
 
@@ -179,7 +180,7 @@ const Post = (props: Props) => {
 					user={{
 						username: post.user.username,
 						profilePhoto: post.user.profilePhoto,
-						time: Functions.convertTime(post.time, props.currentTime),
+						time: Functions.convertTime(post.time, props.currentTime, screen.language),
 						tags: post.user.tags,
 						isFollowed: post.user.isFollowed,
 					}}
@@ -195,7 +196,11 @@ const Post = (props: Props) => {
 			{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
 			{post.tags ? <RenderTags tags={post.tags} navigation={navigation} /> : <></>}
 
-			{post.postData.length > 0 ? <PostContainer like={_likePost} postData={post.postData} navigation={navigation} isVisible={props.isVisible} /> : <></>}
+			{post.postData.length > 0 ? (
+				<PostContainer like={_likePost} postData={post.postData} navigation={navigation} isVisible={props.isVisible} />
+			) : (
+				<></>
+			)}
 
 			<View style={styles.bottomContainer}>
 				<View style={styles.buttons}>
@@ -206,7 +211,7 @@ const Post = (props: Props) => {
 
 				<View style={styles.commentsButton}>
 					<TouchableOpacity onPress={_navigateToComments} style={styles.commentsButtonInner}>
-						<Text>{post.commentsCount} Yorum</Text>
+						<Text>{post.commentsCount} {screen.language.comments_count}</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
@@ -220,7 +225,7 @@ const Post = (props: Props) => {
 						{post.commentsCount > 0 ? (
 							<FeaturedComments comments={post.featuredComments} />
 						) : (
-							<Text style={styles.noComments}>Hiç yorum yok</Text>
+							<Text style={styles.noComments}>{screen.language.no_comments}</Text>
 						)}
 					</TouchableOpacity>
 				</>

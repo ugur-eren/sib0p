@@ -26,6 +26,7 @@ import Relations from './Screens/Relations/Relations'
 import Settings from './Screens/Settings/Settings'
 import EditProfile from './Screens/Settings/EditProfile'
 import ChangePassword from './Screens/Settings/ChangePassword'
+import BlockedUsers from './Screens/Settings/BlockedUsers'
 import Search from './Screens/Search/Search'
 import SinglePost from './Screens/SinglePost/SinglePost'
 
@@ -151,6 +152,9 @@ const mainStack = createStackNavigator(
 		},
 		ChangePassword: {
 			screen: ChangePassword
+		},
+		BlockedUsers: {
+			screen: BlockedUsers
 		},
 		Share: {
 			screen: Share,

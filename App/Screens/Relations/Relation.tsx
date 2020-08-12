@@ -10,12 +10,15 @@ import { RelationStyles as styles } from './styles'
 interface Props {
 	navigation: Types.Navigation
 	user: UserTypes.Relations
+	noFollow?: boolean
 }
 
 const Relation = (props: Props) => {
 	const _handleProfilePress = () => {
 		props.navigation.push('UserProfile', { username: props.user.username })
 	}
+
+	let screen = props.navigation.getScreenProps()
 
 	return (
 		<View style={styles.container}>
@@ -30,7 +33,15 @@ const Relation = (props: Props) => {
 				</View>
 			</TouchableOpacity>
 
-			<TextButton label={props.user.isFollowed ? 'Takipten Çık' : 'Takip Et'} onPress={() => {}} />
+			{!props.noFollow ? (
+				<TextButton
+					label={props.user.isFollowed ? screen.language.unfollow : screen.language.follow}
+					language={screen.language}
+					onPress={() => {}}
+				/>
+			) : (
+				<></>
+			)}
 		</View>
 	)
 }

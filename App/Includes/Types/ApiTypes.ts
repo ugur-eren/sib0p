@@ -96,11 +96,15 @@ declare namespace ApiTypes {
 	}
 
 	export interface DoActionRequest extends Request {
-		type: 'like' | 'dislike' | 'resib' | 'comment' | 'comment_like' | 'comment_dislike' | 'follow' | 'delete_post' | 'delete_comment'
+		type: 'like' | 'dislike' | 'resib' | 'comment' | 'comment_like' | 'comment_dislike' | 'follow' | 'delete_post' | 'delete_comment' | 'block' | 'unblock' | 'report'
 		post?: number
 		username?: string
 		commentId?: number
 		comment?: string
+	}
+
+	export interface GetBlockedUsersResponse extends Init {
+		users: UserTypes.Relations[]
 	}
 
 	export interface DoActionResponse extends Init {

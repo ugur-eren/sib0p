@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, SafeAreaView } from 'react-native'
+import { View, SafeAreaView, Platform } from 'react-native'
 import { Appbar, Surface, withTheme } from 'react-native-paper'
 import { withNavigation } from 'react-navigation'
 import styles from './styles'
@@ -12,6 +12,7 @@ interface Props {
 	subtitle?: string
 	hideBack?: boolean
 	onSettings?: () => any
+	onMore?: () => any
 }
 
 interface State {}
@@ -45,6 +46,16 @@ class TransparentHeader extends React.Component<Props, State> {
 
 					{this.props.onSettings ? (
 						<Appbar.Action size={22} icon='settings' color={this.props.theme.colors.contrast} onPress={this.props.onSettings} />
+					) : (
+						<></>
+					)}
+					{this.props.onMore ? (
+						<Appbar.Action
+							size={22}
+							icon={Platform.OS === 'ios' ? 'more-horizontal' : 'more-vertical'}
+							color={this.props.theme.colors.contrast}
+							onPress={this.props.onSettings}
+						/>
 					) : (
 						<></>
 					)}

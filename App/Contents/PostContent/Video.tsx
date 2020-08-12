@@ -19,10 +19,10 @@ interface Props {
 
 const Video = (props: Props) => {
 	const theme: Types.Theme = useTheme() as any
+	const screen = props.navigation.getScreenProps()
 	const [renderVideo, setRenderVideo] = useState(true)
 	const [ready, setReady] = useState(false)
 	const [error, setError] = useState(false)
-	const [muted, setMuted] = useState(props.navigation.getScreenProps().getIsVideoMuted())
 
 	const width = Dimensions.get('window').width
 
@@ -43,7 +43,6 @@ const Video = (props: Props) => {
 		setError(false)
 	}
 
-	console.log(props.muted)
 	return (
 		<>
 			{renderVideo ? (
@@ -65,7 +64,7 @@ const Video = (props: Props) => {
 			{error ? (
 				<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
 					<TouchableOpacity onPress={_tryAgain} style={styles.errorTouchable}>
-						<Text style={styles.errorText}>Video yüklenemedi{'\n'}Tekrar denemek için dokunun</Text>
+						<Text style={styles.errorText}>{screen.language.video_load_error}</Text>
 					</TouchableOpacity>
 				</View>
 			) : !ready ? (

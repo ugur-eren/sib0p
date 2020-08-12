@@ -31,6 +31,7 @@ interface State {
 	focused: boolean
 	activePost: PostTypes.Post
 	reportPostActive: boolean
+	reportPostLoading: boolean
 	deletePostActive: boolean
 	deletePostLoading: boolean
 }
@@ -45,6 +46,7 @@ class Posts extends React.PureComponent<Props, State> {
 			focused: true,
 			activePost: null,
 			reportPostActive: false,
+			reportPostLoading: false,
 			deletePostActive: false,
 			deletePostLoading: false,
 		}
@@ -96,7 +98,7 @@ class Posts extends React.PureComponent<Props, State> {
 
 	refresh = async () => {
 		this.setState({ refreshing: true }, async () => {
-			let refresh = await this.props.refresh()
+			await this.props.refresh()
 			this.setState({ refreshing: false })
 		})
 	}
@@ -113,7 +115,7 @@ class Posts extends React.PureComponent<Props, State> {
 
 	sharePost = () => {
 		Share.share({
-			message: "sib0p'da paylaşılan bu postu seveceğini düşünüyorum: " + Config.siteUri + 'post/' + this.state.activePost.id,
+			message: this.props.navigation.getScreenProps().language.share_text + Config.siteUri + 'post/' + this.state.activePost.id,
 			url: Config.siteUri + 'post/' + this.state.activePost.id,
 			title: Config.siteUri + 'post/' + this.state.activePost.id,
 		})
@@ -156,9 +158,38 @@ class Posts extends React.PureComponent<Props, State> {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'no_post') {
-					screen.error('Post bulunamadı. Silinmiş olabilir..')
+					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'no_auth') {
-					screen.error('Bu postu sadece postu paylaşan kullanıcı silebilir.')
+					screen.error(screen.language.post_auth_error)
+				} else {
+					screen.unknown_error(response.error)
+				}
+			}
+		} else {
+			screen.unknown_error()
+		}
+	}
+
+	_reportPost = async () => {
+		this.setState({ reportPostActive: true })
+
+		let screen = this.props.navigation.getScreenProps()
+
+		let response = await Api.doAction({
+			token: screen.user.token,
+			type: 'report',
+			post: this.state.activePost.id,
+		})
+		if (response) {
+			if (response.status) {
+				this.setState({ reportPostActive: false })
+				this.props.navigation.goBack()
+				screen.error(screen.language.report_success)
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'no_post') {
+					screen.error(screen.language.no_post_error)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -169,6 +200,7 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	render() {
+		let screen = this.props.navigation.getScreenProps()
 		return (
 			<>
 				<FlatList
@@ -191,14 +223,18 @@ class Posts extends React.PureComponent<Props, State> {
 
 				<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>
 					<List.Section>
-						<List.Item title='Paylaş' onPress={this.sharePost} left={(props) => <List.Icon {...props} style={{}} icon='share-2' />} />
-						<List.Item
-							title='Şikayet Et'
-							onPress={this.reportPost}
-							left={(props) => <List.Icon {...props} style={{}} icon='alert-circle' />}
-						/>
+						<List.Item title={screen.language.share} onPress={this.sharePost} left={(props) => <List.Icon {...props} style={{}} icon='share-2' />} />
+						{!this.state.activePost?.isMine ? (
+							<List.Item
+								title={screen.language.report}
+								onPress={this.reportPost}
+								left={(props) => <List.Icon {...props} style={{}} icon='alert-circle' />}
+							/>
+						) : (
+							<></>
+						)}
 						{this.state.activePost?.isMine ? (
-							<List.Item title='Sil' onPress={this.deletePost} left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />} />
+							<List.Item title={screen.language.delete} onPress={this.deletePost} left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />} />
 						) : (
 							<></>
 						)}
@@ -206,24 +242,29 @@ class Posts extends React.PureComponent<Props, State> {
 				</Modalize>
 
 				<Dialog visible={this.state.reportPostActive} onDismiss={this.hideReportPost}>
-					<Dialog.Title>Şikayet Et</Dialog.Title>
+						<Dialog.Title>{screen.language.delete}</Dialog.Title>
 					<Dialog.Content>
-						<Paragraph>Bu gönderiyi şikayet etmek istediğinize emin misiniz?</Paragraph>
+						<Paragraph>{screen.language.report_dialog}</Paragraph>
 					</Dialog.Content>
 					<Dialog.Actions>
-						<Button onPress={this.hideReportPost} color={this.props.theme.colors.main} style={{ marginRight: 15 }}>
-							Şikayet Et
+						<Button
+							onPress={this.state.reportPostLoading ? undefined : this._reportPost}
+							color={this.props.theme.colors.main}
+							loading={this.state.reportPostLoading}
+							style={{ marginRight: 15 }}
+						>
+							{screen.language.report}
 						</Button>
 						<Button onPress={this.hideReportPost} color={this.props.theme.colors.contrast}>
-							İptal
+							{screen.language.cancel}
 						</Button>
 					</Dialog.Actions>
 				</Dialog>
 
 				<Dialog visible={this.state.deletePostActive} onDismiss={this.hideDeletePost}>
-					<Dialog.Title>Gönderiyi Sil</Dialog.Title>
+					<Dialog.Title>{screen.language.delete_post}</Dialog.Title>
 					<Dialog.Content>
-						<Paragraph>Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</Paragraph>
+						<Paragraph>{screen.language.delete_dialog}</Paragraph>
 					</Dialog.Content>
 					<Dialog.Actions>
 						<Button
@@ -232,10 +273,10 @@ class Posts extends React.PureComponent<Props, State> {
 							loading={this.state.deletePostLoading}
 							style={{ marginRight: 15 }}
 						>
-							Sil
+							{screen.language.delete}
 						</Button>
 						<Button onPress={this.hideDeletePost} color={this.props.theme.colors.contrast}>
-							İptal
+							{screen.language.cancel}
 						</Button>
 					</Dialog.Actions>
 				</Dialog>

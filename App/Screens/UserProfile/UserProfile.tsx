@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
-import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar } from 'react-native-paper'
+import { View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar, Dialog, Button, Paragraph } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker, { Image as ImageType } from 'react-native-image-crop-picker'
@@ -33,6 +33,8 @@ interface State {
 	noUser: boolean
 	hasPage: boolean
 	error: false | string
+	blockUserActive: boolean
+	blockUserLoading: boolean
 }
 
 class UserProfile extends React.PureComponent<Props, State> {
@@ -47,6 +49,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			noUser: false,
 			hasPage: false,
 			error: false,
+			blockUserActive: false,
+			blockUserLoading: false,
 		}
 	}
 
@@ -55,7 +59,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	init = async (refresh?: boolean, nextPage?: boolean) => {
-		let username = this.props.navigation.getParam('username') || this.props.navigation.getScreenProps().user.username
+		let screen = this.props.navigation.getScreenProps()
+		let username = this.props.navigation.getParam('username') || screen.user.username
 
 		if (!refresh && !this.state.loading) {
 			this.setState({ loading: true })
@@ -63,7 +68,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 		let stateObject: any = {}
 
-		let totalCache = this.props.navigation.getScreenProps().DataCache()
+		let totalCache = screen.DataCache()
 		let cache = totalCache.profiles[username]
 		if (!refresh && !nextPage && cache && cache.data) {
 			await new Promise((resolve) => setTimeout(() => resolve(), 10))
@@ -79,33 +84,31 @@ class UserProfile extends React.PureComponent<Props, State> {
 		if (refresh || nextPage || !cache || !cache.data || !cache.posts || !totalCache.currentTime) {
 			if (refresh || (!nextPage && (!cache || !cache.data))) {
 				let user = await Api.getProfile({
-					token: this.props.navigation.getScreenProps().user.token,
+					token: screen.user.token,
 					username: username,
 				})
 				if (user) {
 					if (user.status) {
 						stateObject = { ...stateObject, user: user.user }
-						this.props.navigation.getScreenProps().setProfileDataCache(user.user)
+						screen.setProfileDataCache(user.user)
 					} else {
 						if (user.error === 'no_login') {
-							this.props.navigation.getScreenProps().logout(true)
+							screen.logout(true)
 						} else {
 							if (user.error === 'no_user') {
 								stateObject = { ...stateObject, noUser: true }
 							} else if (user.error === 'wrong_username') {
-								this.props.navigation
-									.getScreenProps()
-									.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
+								this.props.navigation.getScreenProps().error(screen.language.wrong_username)
 							}
 						}
 					}
 				} else {
-					this.props.navigation.getScreenProps().unknown_error()
+					screen.unknown_error()
 				}
 			}
 
 			let posts = await Api.getExplore({
-				token: this.props.navigation.getScreenProps().user.token,
+				token: screen.user.token,
 				last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
 				username: username,
 			})
@@ -119,18 +122,18 @@ class UserProfile extends React.PureComponent<Props, State> {
 							posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
 							currentTime: posts.currentTime,
 						}
-						this.props.navigation.getScreenProps().setProfileDataCache(stateObject.user, posts.posts)
-						this.props.navigation.getScreenProps().setCurrentTime(posts.currentTime)
+						screen.setProfileDataCache(stateObject.user, posts.posts)
+						screen.setCurrentTime(posts.currentTime)
 					}
 				} else {
 					if (posts.error === 'no_login') {
-						this.props.navigation.getScreenProps().logout(true)
+						screen.logout(true)
 					} else {
-						this.props.navigation.getScreenProps().unknown_error(posts.error)
+						screen.unknown_error(posts.error)
 					}
 				}
 			} else {
-				this.props.navigation.getScreenProps().unknown_error()
+				screen.unknown_error()
 			}
 		}
 
@@ -158,6 +161,45 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 	onSettingsPress = () => {
 		this.props.navigation.navigate('Settings')
+	}
+
+	onBlockPress = () => {
+		this.setState({ blockUserActive: true })
+	}
+
+	hideBlockDialog = () => {
+		this.setState({ blockUserActive: false })
+	}
+
+	blockUser = async () => {
+		this.setState({ blockUserLoading: true })
+
+		let screen = this.props.navigation.getScreenProps()
+
+		let response = await Api.doAction({
+			token: screen.user.token,
+			type: 'block',
+			username: this.state.user.username,
+		})
+		if (response) {
+			if (response.status) {
+				this.setState({ blockUserLoading: false })
+				this.props.navigation.goBack()
+				screen.error(screen.language.user_block_success)
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'wrong_username') {
+					screen.error(screen.language.wrong_username)
+				} else if (response.error === 'no_user') {
+					screen.error(screen.language.no_user_error)
+				} else {
+					screen.unknown_error(response.error)
+				}
+			}
+		} else {
+			screen.unknown_error()
+		}
 	}
 
 	onFollow = async () => {
@@ -189,9 +231,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'wrong_username') {
-					screen.error('Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.')
+					screen.error(screen.language.wrong_username_error)
 				} else if (response.error === 'no_user') {
-					screen.error('Bu kullanıcı bulunamadı. Kullanıcı adı değişmiş olabilir.')
+					screen.error(screen.language.no_user_error)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -222,6 +264,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 		this._changePhoto('bg')
 	}
 	_changePhoto = (type: 'pp' | 'bg') => {
+		let screen = this.props.navigation.getScreenProps()
+
 		ImagePicker.openPicker({
 			mediaType: 'photo',
 			multiple: false,
@@ -234,10 +278,10 @@ class UserProfile extends React.PureComponent<Props, State> {
 			compressImageMaxWidth: 1080,
 			compressImageMaxHeight: 1080,
 			compressImageQuality: 0.75,
-			cropperToolbarTitle: 'Resim Boyutunu Ayarlayınız',
-			loadingLabelText: 'Yükleniyor...',
-			cropperChooseText: 'Seç',
-			cropperCancelText: 'İptal',
+			cropperToolbarTitle: screen.language.cropper_title,
+			loadingLabelText: screen.language.loading,
+			cropperChooseText: screen.language.choose,
+			cropperCancelText: screen.language.cancel,
 		})
 			.then(async (images) => {
 				if (images) {
@@ -248,7 +292,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 						}
 					} else {
 						if (images.size > 20971520) {
-							return this.setState({ error: "Seçilen dosya boyutu 20MB'dan fazla olamaz." })
+							return this.setState({ error: screen.language.image_size_more })
 						}
 						im = images
 					}
@@ -264,13 +308,13 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 						if (response) {
 							if (response.status) {
-								this.setState({ error: (type == 'pp' ? 'Profil fotoğrafı' : 'Arkaplan fotoğrafı') + ' başarıyla güncellendi.' })
+								this.setState({ error: type == 'pp' ? screen.language.pp_photo_success : screen.language.bg_photo_success })
 								this.refresh()
 							} else {
 								if (response.error === 'no_image') {
-									screen.error('Fotoğraf seçilmedi. Lütfen tekrar deneyiniz.')
+									screen.error(screen.language.no_image)
 								} else if (response.error === 'not_supported') {
-									screen.error('Yüklediğiniz dosya formatı desteklenmemektedir. Lütfen farklı bir dosya ile tekrar deneyiniz.')
+									screen.error(screen.language.file_not_supported)
 								} else {
 									screen.unknown_error(response.error)
 								}
@@ -280,7 +324,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 						}
 					} else {
 						return this.setState({
-							error: 'Dosya açılırken bir sorun oluştu. Lütfen dosya izinlerini kontol ediniz ve tekrar deneyiniz.',
+							error: screen.language.file_open_error,
 						})
 					}
 				}
@@ -290,22 +334,35 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 	_renderHeader = () => {
 		let { theme, navigation } = this.props
-		let myself = navigation.getScreenProps().user
+		let screen = navigation.getScreenProps()
+		let myself = screen.user
 		let isMyself = this.state.loading === false && myself.username === this.state.user.username
 		let user = this.state.user
 
 		return (
 			<>
 				<View style={styles.backgroundContainer}>
-					<TouchableOpacity onPress={this._changeBG} style={[styles.backgroundImage, { backgroundColor: 'red' }]}>
+					<TouchableWithoutFeedback
+						onPress={isMyself ? this._changeBG : undefined}
+						style={[styles.backgroundImage, { backgroundColor: 'red' }]}
+					>
 						<FastImage source={{ uri: user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
-					</TouchableOpacity>
-					<TransparentHeader title={user.username} onSettings={isMyself ? this.onSettingsPress : undefined} />
+					</TouchableWithoutFeedback>
+					<TransparentHeader
+						title={user.username}
+						onSettings={isMyself ? this.onSettingsPress : undefined}
+						onMore={isMyself ? undefined : this.onBlockPress}
+					/>
 				</View>
 				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
-					<TouchableOpacity onPress={this._changePP} style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}>
-						<FastImage source={{ uri: user.profilePhoto }} style={styles.profilePhoto} />
-					</TouchableOpacity>
+					<View style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}>
+						<TouchableWithoutFeedback
+							onPress={isMyself ? this._changePP : undefined}
+							style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}
+						>
+							<FastImage source={{ uri: user.profilePhoto }} style={styles.profilePhoto} />
+						</TouchableWithoutFeedback>
+					</View>
 
 					<View style={styles.userInfo}>
 						<Text style={styles.username}>{user.username}</Text>
@@ -314,8 +371,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 					<TextButton
 						loadable
-						label={isMyself ? 'Profili Düzenle' : user.isFollowed ? 'Takipten Çık' : 'Takip Et'}
+						label={isMyself ? screen.language.edit_profile : user.isFollowed ? screen.language.unfollow : screen.language.follow}
 						onPress={this.onFollow}
+						language={screen.language}
 					/>
 				</View>
 
@@ -338,14 +396,14 @@ class UserProfile extends React.PureComponent<Props, State> {
 					<Divider style={styles.centerDivider} />
 
 					<TouchableOpacity onPress={this.handleFollowsPress} style={styles.centerTouchable}>
-						<Text>Takip</Text>
+						<Text>{screen.language.follows}</Text>
 						<Text style={styles.centerText}>{user.followsCount}</Text>
 					</TouchableOpacity>
 
 					<Divider style={styles.centerDivider} />
 
 					<TouchableOpacity onPress={this.handleFollowersPress} style={styles.centerTouchable}>
-						<Text>Takipçi</Text>
+						<Text>{screen.language.followers}</Text>
 						<Text style={styles.centerText}>{user.followersCount}</Text>
 					</TouchableOpacity>
 				</View>
@@ -353,7 +411,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 		)
 	}
 
-	_emptyComponent = () => <EmptyList image={require('../../Assets/Images/no-posts.png')} title='Hiç post bulunamadı' />
+	_emptyComponent = () => (
+		<EmptyList image={require('../../Assets/Images/no-posts.png')} title={this.props.navigation.getScreenProps().language.no_posts} />
+	)
 	_footerComponent = () =>
 		!this.state.hasPage ? (
 			<></>
@@ -369,6 +429,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
 
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -376,8 +437,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 					<Loader theme={theme} />
 				) : this.state.noUser ? (
 					<>
-						<Header title='Bulunamadı' />
-						<EmptyList image={require('../../Assets/Images/no-comments.png')} title='Bu kullanıcı bulunamadı.' />
+						<Header title={screen.language.not_found} />
+						<EmptyList image={require('../../Assets/Images/no-comments.png')} title={screen.language.user_not_found} />
 					</>
 				) : (
 					<Posts
@@ -400,6 +461,27 @@ class UserProfile extends React.PureComponent<Props, State> {
 					<Snackbar visible={!!this.state.error} onDismiss={this.dismissError}>
 						<Text style={{ color: theme.colors.contrast }}>{this.state.error}</Text>
 					</Snackbar>
+				</Portal>
+				<Portal>
+					<Dialog visible={this.state.blockUserActive} onDismiss={this.hideBlockDialog}>
+						<Dialog.Title>Engelle</Dialog.Title>
+						<Dialog.Content>
+							<Paragraph>{screen.language.block_user_dialog}</Paragraph>
+						</Dialog.Content>
+						<Dialog.Actions>
+							<Button
+								onPress={this.state.blockUserLoading ? undefined : this.blockUser}
+								color={theme.colors.main}
+								loading={this.state.blockUserLoading}
+								style={{ marginRight: 15 }}
+							>
+								{screen.language.block}
+							</Button>
+							<Button onPress={this.hideBlockDialog} color={theme.colors.contrast}>
+								{screen.language.cancel}
+							</Button>
+						</Dialog.Actions>
+					</Dialog>
 				</Portal>
 			</View>
 		)
