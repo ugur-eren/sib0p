@@ -54,7 +54,7 @@ class TransparentHeader extends React.Component<Props, State> {
 							size={22}
 							icon={Platform.OS === 'ios' ? 'more-horizontal' : 'more-vertical'}
 							color={this.props.theme.colors.contrast}
-							onPress={this.props.onSettings}
+							onPress={this.props.onMore}
 						/>
 					) : (
 						<></>

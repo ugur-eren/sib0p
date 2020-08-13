@@ -213,7 +213,7 @@ class Register extends React.PureComponent<Props, State> {
 	_hizmetKosullari = () => {
 		this.props.navigation.navigate('PasswordRecovery', {
 			title: this.props.navigation.getScreenProps().language.terms_of_use,
-			uri: Config.siteUri + 'hizmet-kullanim-kosullari.html',
+			uri: Config.siteUri + 'hizmet-kullanim-kosullari.' + this.props.navigation.getScreenProps().language.code + '.html',
 		})
 	}
 
