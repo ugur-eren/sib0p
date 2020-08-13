@@ -6,6 +6,7 @@ export default StyleSheet.create({
 		width: '100%',
 		flexDirection: 'row',
 		padding: 10,
+		alignItems: 'center',
 	},
 	imageContainer: {
 		width: 50,

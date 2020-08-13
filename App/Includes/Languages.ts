@@ -5,6 +5,10 @@ import Types from './Types/Types'
 const defaultLanguage = Config.defaultLanguage
 let selectedLanguage = defaultLanguage
 
+console.log(NativeModules.SettingsManager.settings.AppleLocale)
+console.log(NativeModules.SettingsManager.settings.AppleLanguages)
+console.log(NativeModules.SettingsManager.settings.AppleLanguages[0])
+
 const deviceLanguage: string =
 	Platform.OS === 'ios'
 		? NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0] // iOS 13
@@ -198,7 +202,7 @@ const Languages = {
 		password_empty: 'Password cannot be empty.',
 		couldnt_take_login_info: "Login information couldn't be found. Please try again later.",
 		wrong_username: 'Your username can only contain english characters, numbers, dot or dash.',
-		no_user: 'There are no users with this username. Please check you username and try again.',
+		no_user: 'There are no users with this username. Please check your username and try again.',
 		wrong_password: 'You have entered wrong password. Please check your password and try again.',
 		username: 'Username',
 		password: 'Password',
@@ -312,7 +316,7 @@ const Languages = {
 		block_user_dialog:
 			'Are you sure you want to block this user? You can no longer see any posts or comments related to this user until you unblock this users.',
 		block: 'Block',
-		check_network: 'Please check you network connection and try again.',
+		check_network: 'Please check your network connection and try again.',
 	},
 }
 
