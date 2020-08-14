@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList, SafeAreaView, TextInput, RefreshControl } from 'react-native'
+import { View, FlatList, SafeAreaView, TextInput, RefreshControl, KeyboardAvoidingView } from 'react-native'
 import { Divider, withTheme, List, Dialog, Button, Paragraph } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Header from '../../Components/Header/Header'
@@ -234,7 +234,7 @@ class Comments extends React.PureComponent<Props, State> {
 								keyboardAppearance={this.props.theme.dark ? 'dark' : 'default'}
 							/>
 
-							<TextButton label={screen.language.send} loadable onPress={this.sendComment} language={screen.language}/>
+							<TextButton label={screen.language.send} loadable onPress={this.sendComment} language={screen.language} />
 						</SafeAreaView>
 
 						<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>

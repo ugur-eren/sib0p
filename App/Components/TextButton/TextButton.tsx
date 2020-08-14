@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ViewStyle, TextStyle } from 'react-native'
 import { Text, useTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'

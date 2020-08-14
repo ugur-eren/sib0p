@@ -154,23 +154,10 @@ const Post = (props: Props) => {
 	return (
 		<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
 			{post.postType === 'resib' && post.resibber ? (
-				<View
-					style={{
-						paddingHorizontal: 10,
-						paddingVertical: 5,
-						flexDirection: 'row',
-						alignItems: 'center',
-						marginBottom: 3,
-						borderBottomColor: theme.colors.background,
-						borderBottomWidth: 0.5,
-					}}
-				>
+				<View style={[styles.resibTop, { borderBottomColor: theme.colors.background }]}>
 					<Feather name='repeat' size={16} color={theme.colors.main} />
-					<FastImage
-						source={{ uri: post.resibber.profilePhoto }}
-						style={{ width: 25, height: 25, borderRadius: 25, marginHorizontal: 10 }}
-					/>
-					<Text style={{ fontFamily: 'FiraSans-SemiBold' }}>{post.resibber.username}</Text>
+					<FastImage source={{ uri: post.resibber.profilePhoto }} style={styles.resibPP} />
+					<Text style={styles.resibUsername}>{post.resibber.username}</Text>
 				</View>
 			) : (
 				<></>
@@ -186,7 +173,7 @@ const Post = (props: Props) => {
 					}}
 					post={post}
 					navigation={navigation}
-					noUserTouchable={props.noUserTouchable}
+					noUserTouchable={props.noUserTouchable && !(post.postType === 'resib' && post.resibber)}
 					openModal={props.openModal}
 				/>
 			) : (
@@ -206,12 +193,18 @@ const Post = (props: Props) => {
 				<View style={styles.buttons}>
 					<LikeButton type='like' active={countState.hasLiked} count={countState.likesCount} onPress={_likePost} />
 					<LikeButton type='dislike' active={countState.hasDisliked} count={countState.dislikesCount} onPress={_dislikePost} />
-					<LikeButton type='resib' active={countState.hasResibed} count={countState.resibCount} onPress={_resibPost} />
+					{!post.isMine ? (
+						<LikeButton type='resib' active={countState.hasResibed} count={countState.resibCount} onPress={_resibPost} />
+					) : (
+						<></>
+					)}
 				</View>
 
 				<View style={styles.commentsButton}>
 					<TouchableOpacity onPress={_navigateToComments} style={styles.commentsButtonInner}>
-						<Text>{post.commentsCount} {screen.language.comments_count}</Text>
+						<Text>
+							{post.commentsCount} {screen.language.comments_count}
+						</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

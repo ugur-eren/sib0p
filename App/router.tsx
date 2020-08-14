@@ -74,44 +74,44 @@ const bottomStack = createMaterialBottomTabNavigator(
 	{
 		Explore: {
 			screen: Explore,
-			navigationOptions: {
+			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('compass'),
-				title: 'Keşfet',
-			},
+				title: navigation.getScreenProps().language.explore,
+			})) as any,
 			params: {
 				type: 'explore'
 			}
 		},
 		Follows: {
 			screen: Explore,
-			navigationOptions: {
+			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('users'),
-				title: 'Takip',
-			},
+				title: navigation.getScreenProps().language.follows,
+			})) as any,
 			params: {
 				type: 'follows'
 			}
 		},
 		ShareInitiator: {
 			screen: ShareInitiator,
-			navigationOptions: {
+			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('plus-square'),
-				title: 'Paylaş',
-			},
+				title: navigation.getScreenProps().language.share,
+			})) as any,
 		},
 		Notifications: {
 			screen: Notifications,
-			navigationOptions: {
+			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('bell'),
-				title: 'Bildirimler',
-			},
+				title: navigation.getScreenProps().language.notifications,
+			})) as any,
 		},
 		Profile: {
 			screen: UserProfile,
-			navigationOptions: {
+			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('user'),
-				title: 'Profil',
-			},
+				title: navigation.getScreenProps().language.profile,
+			})) as any,
 		},
 	},
 	{

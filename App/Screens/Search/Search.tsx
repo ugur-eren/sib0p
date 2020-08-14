@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, FlatList } from 'react-native'
-import { IconButton, withTheme, Divider } from 'react-native-paper'
+import { View, FlatList, SafeAreaView } from 'react-native'
+import { IconButton, withTheme, Divider, Appbar } from 'react-native-paper'
 import { TextInput } from 'react-native-gesture-handler'
 import EmptyList from '../../Components/EmptyList/EmptyList'
 import Relation from '../Relations/Relation'
@@ -74,7 +74,8 @@ class Search extends React.PureComponent<Props, State> {
 		let { theme } = this.props
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				<View style={[styles.topContainer, { backgroundColor: theme.colors.primary }]}>
+				<SafeAreaView style={[styles.topContainer, { backgroundColor: theme.colors.primary }]}>
+					<Appbar.BackAction color={theme.dark ? undefined : '#242424'} onPress={() => this.props.navigation.goBack()} />
 					<TextInput
 						value={this.state.searchValue}
 						onChangeText={this._onValueChange}
@@ -84,7 +85,7 @@ class Search extends React.PureComponent<Props, State> {
 					/>
 
 					<IconButton icon='search' onPress={this.search} />
-				</View>
+				</SafeAreaView>
 
 				{this.state.loading ? (
 					<Loader theme={theme} />

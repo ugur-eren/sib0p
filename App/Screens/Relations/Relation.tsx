@@ -10,7 +10,8 @@ import { RelationStyles as styles } from './styles'
 interface Props {
 	navigation: Types.Navigation
 	user: UserTypes.Relations
-	noFollow?: boolean
+	onFollow?: () => Promise<void>
+	unblock?: (username: string) => Promise<void>
 }
 
 const Relation = (props: Props) => {
@@ -19,7 +20,12 @@ const Relation = (props: Props) => {
 	}
 
 	let screen = props.navigation.getScreenProps()
+	let isMyself = screen.user.username === props.user.username
 
+	const onUnblock = async () => {
+		await props.unblock(props.user.username)
+	}
+	
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity containerStyle={styles.touchableContainer} style={styles.touchable} onPress={_handleProfilePress}>
@@ -33,11 +39,22 @@ const Relation = (props: Props) => {
 				</View>
 			</TouchableOpacity>
 
-			{!props.noFollow ? (
+			{props.onFollow && !isMyself ? (
 				<TextButton
+					loadable
 					label={props.user.isFollowed ? screen.language.unfollow : screen.language.follow}
 					language={screen.language}
 					onPress={() => {}}
+				/>
+			) : (
+				<></>
+			)}
+			{props.unblock ? (
+				<TextButton
+					loadable
+					label={screen.language.unblock}
+					language={screen.language}
+					onPress={onUnblock}
 				/>
 			) : (
 				<></>

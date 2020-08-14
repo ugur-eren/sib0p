@@ -1,10 +1,10 @@
 import React from 'react'
 import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle, FlatListProps } from 'react-native'
-import { List, withTheme, Dialog, Paragraph, Button } from 'react-native-paper'
+import { List, withTheme, Dialog, Paragraph, Button, Divider, RadioButton } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
-
 import Config from '../../Includes/Config'
+import CustomButton from '../../Components/Button/Button'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import styles from './styles'
@@ -30,10 +30,12 @@ interface State {
 	refreshing: boolean
 	focused: boolean
 	activePost: PostTypes.Post
-	reportPostActive: boolean
 	reportPostLoading: boolean
+	selectedReportType: Types.ReportTypes
+	reportDialog: false | Types.ReportTypes
 	deletePostActive: boolean
 	deletePostLoading: boolean
+	hidePostLoading: boolean
 }
 
 class Posts extends React.PureComponent<Props, State> {
@@ -45,10 +47,12 @@ class Posts extends React.PureComponent<Props, State> {
 			refreshing: false,
 			focused: true,
 			activePost: null,
-			reportPostActive: false,
 			reportPostLoading: false,
+			selectedReportType: 'spam',
+			reportDialog: false,
 			deletePostActive: false,
 			deletePostLoading: false,
+			hidePostLoading: false,
 		}
 	}
 
@@ -59,6 +63,7 @@ class Posts extends React.PureComponent<Props, State> {
 	private focusListener: any = null
 	private blurListener: any = null
 	private modalRef: any = null
+	private reportModalRef: any = null
 
 	componentDidMount() {
 		this.focusListener = this.props.navigation.addListener('didFocus', () => {
@@ -107,6 +112,10 @@ class Posts extends React.PureComponent<Props, State> {
 		this.modalRef = ref
 	}
 
+	_setReportModalizeRef = (ref: any) => {
+		this.reportModalRef = ref
+	}
+
 	openModal = (post: PostTypes.Post) => {
 		this.setState({ activePost: post }, () => {
 			this.modalRef?.open()
@@ -123,12 +132,21 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	reportPost = () => {
-		this.setState({ reportPostActive: true })
 		this.modalRef?.close()
+		this.reportModalRef?.open()
 	}
 
-	hideReportPost = () => {
-		this.setState({ reportPostActive: false })
+	reportPostSpam = () => {
+		this.setState({ selectedReportType: 'spam' })
+	}
+	reportPostAbusive = () => {
+		this.setState({ selectedReportType: 'abusive' })
+	}
+	reportPostObjectionable = () => {
+		this.setState({ selectedReportType: 'objectionable' })
+	}
+	reportPostSexual = () => {
+		this.setState({ selectedReportType: 'sexual' })
 	}
 
 	deletePost = () => {
@@ -138,6 +156,10 @@ class Posts extends React.PureComponent<Props, State> {
 
 	hideDeletePost = () => {
 		this.setState({ deletePostActive: false })
+	}
+
+	hideReportPostDialog = () => {
+		this.setState({ reportDialog: false })
 	}
 
 	_deletePost = async () => {
@@ -171,25 +193,60 @@ class Posts extends React.PureComponent<Props, State> {
 	}
 
 	_reportPost = async () => {
-		this.setState({ reportPostActive: true })
-
+		this.setState({ reportPostLoading: true })
 		let screen = this.props.navigation.getScreenProps()
 
 		let response = await Api.doAction({
 			token: screen.user.token,
 			type: 'report',
 			post: this.state.activePost.id,
+			report_type: this.state.selectedReportType,
 		})
+
+		this.reportModalRef?.close()
 		if (response) {
 			if (response.status) {
-				this.setState({ reportPostActive: false })
-				this.props.navigation.goBack()
-				screen.error(screen.language.report_success)
+				this.setState({ reportPostLoading: false, reportDialog: response.report_type })
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
+				} else if (response.error === 'already_reported') {
+					screen.error(screen.language.already_reported)
+				} else {
+					screen.unknown_error(response.error)
+				}
+				this.setState({ reportPostLoading: false })
+			}
+		} else {
+			screen.unknown_error()
+			this.setState({ reportPostLoading: false })
+		}
+	}
+
+	_hidePost = async () => {
+		this.setState({ hidePostLoading: true })
+		let screen = this.props.navigation.getScreenProps()
+
+		let response = await Api.doAction({
+			token: screen.user.token,
+			type: 'hide_post',
+			post: this.state.activePost.id,
+		})
+
+		if (response) {
+			if (response.status) {
+				this.setState({ hidePostLoading: false, reportDialog: false })
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'no_post') {
+					screen.error(screen.language.no_post_error)
+				} else if (response.error === 'not_reported') {
+					screen.error(screen.language.not_reported)
+				} else if (response.error === 'already_hidden') {
+					screen.error(screen.language.already_hidden)
 				} else {
 					screen.unknown_error(response.error)
 				}
@@ -223,7 +280,11 @@ class Posts extends React.PureComponent<Props, State> {
 
 				<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>
 					<List.Section>
-						<List.Item title={screen.language.share} onPress={this.sharePost} left={(props) => <List.Icon {...props} style={{}} icon='share-2' />} />
+						<List.Item
+							title={screen.language.share}
+							onPress={this.sharePost}
+							left={(props) => <List.Icon {...props} style={{}} icon='share-2' />}
+						/>
 						{!this.state.activePost?.isMine ? (
 							<List.Item
 								title={screen.language.report}
@@ -234,28 +295,100 @@ class Posts extends React.PureComponent<Props, State> {
 							<></>
 						)}
 						{this.state.activePost?.isMine ? (
-							<List.Item title={screen.language.delete} onPress={this.deletePost} left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />} />
+							<List.Item
+								title={screen.language.delete}
+								onPress={this.deletePost}
+								left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />}
+							/>
 						) : (
 							<></>
 						)}
 					</List.Section>
 				</Modalize>
 
-				<Dialog visible={this.state.reportPostActive} onDismiss={this.hideReportPost}>
-						<Dialog.Title>{screen.language.delete}</Dialog.Title>
+				<Modalize ref={this._setReportModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>
+					<Paragraph style={{ paddingHorizontal: 20, paddingVertical: 10, fontFamily: Config.fonts.semi }}>
+						{screen.language.report_dialog}
+					</Paragraph>
+					<Divider />
+
+					<List.Section>
+						<List.Item
+							title={screen.language.spam}
+							onPress={this.reportPostSpam}
+							left={(props) => (
+								<RadioButton
+									{...props}
+									value={'spam'}
+									status={this.state.selectedReportType === 'spam' ? 'checked' : 'unchecked'}
+									onPress={this.reportPostSpam}
+									color={this.props.theme.colors.main}
+								/>
+							)}
+						/>
+						<List.Item
+							title={screen.language.abusive}
+							onPress={this.reportPostAbusive}
+							left={(props) => (
+								<RadioButton
+									{...props}
+									value={'abusive'}
+									status={this.state.selectedReportType === 'abusive' ? 'checked' : 'unchecked'}
+									onPress={this.reportPostAbusive}
+									color={this.props.theme.colors.main}
+								/>
+							)}
+						/>
+						<List.Item
+							title={screen.language.objectionable}
+							onPress={this.reportPostObjectionable}
+							left={(props) => (
+								<RadioButton
+									{...props}
+									value={'objectionable'}
+									status={this.state.selectedReportType === 'objectionable' ? 'checked' : 'unchecked'}
+									onPress={this.reportPostObjectionable}
+									color={this.props.theme.colors.main}
+								/>
+							)}
+						/>
+						<List.Item
+							title={screen.language.sexual}
+							onPress={this.reportPostSexual}
+							left={(props) => (
+								<RadioButton
+									{...props}
+									value={'sexual'}
+									status={this.state.selectedReportType === 'sexual' ? 'checked' : 'unchecked'}
+									onPress={this.reportPostSexual}
+									color={this.props.theme.colors.main}
+								/>
+							)}
+						/>
+					</List.Section>
+
+					<CustomButton label={screen.language.report} onPress={this._reportPost} loading={this.state.reportPostLoading} />
+				</Modalize>
+
+				<Dialog visible={!!this.state.reportDialog} onDismiss={this.hideReportPostDialog}>
+					<Dialog.Title>{screen.language.success}</Dialog.Title>
 					<Dialog.Content>
-						<Paragraph>{screen.language.report_dialog}</Paragraph>
+						<Paragraph>
+							{screen.language.report_success} {screen.language[this.state.reportDialog || 'spam']}
+							{'\n'}
+							{screen.language.report_success_hide}
+						</Paragraph>
 					</Dialog.Content>
 					<Dialog.Actions>
 						<Button
-							onPress={this.state.reportPostLoading ? undefined : this._reportPost}
+							onPress={this.state.hidePostLoading ? undefined : this._hidePost}
 							color={this.props.theme.colors.main}
-							loading={this.state.reportPostLoading}
+							loading={this.state.hidePostLoading}
 							style={{ marginRight: 15 }}
 						>
-							{screen.language.report}
+							{screen.language.hide}
 						</Button>
-						<Button onPress={this.hideReportPost} color={this.props.theme.colors.contrast}>
+						<Button onPress={this.hideReportPostDialog} color={this.props.theme.colors.contrast}>
 							{screen.language.cancel}
 						</Button>
 					</Dialog.Actions>

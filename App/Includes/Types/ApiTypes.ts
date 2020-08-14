@@ -2,6 +2,7 @@ import PostTypes from './PostTypes'
 import CommentTypes from './CommentTypes'
 import UserTypes from './UserTypes'
 import NotificationTypes from './NotificationTypes'
+import Types from './Types'
 
 declare namespace ApiTypes {
 	type Init<T = string> = {
@@ -96,15 +97,12 @@ declare namespace ApiTypes {
 	}
 
 	export interface DoActionRequest extends Request {
-		type: 'like' | 'dislike' | 'resib' | 'comment' | 'comment_like' | 'comment_dislike' | 'follow' | 'delete_post' | 'delete_comment' | 'block' | 'unblock' | 'report'
+		type: 'like' | 'dislike' | 'resib' | 'comment' | 'comment_like' | 'comment_dislike' | 'follow' | 'delete_post' | 'delete_comment' | 'block' | 'unblock' | 'report' | 'report_user' | 'hide_post'
 		post?: number
 		username?: string
 		commentId?: number
 		comment?: string
-	}
-
-	export interface GetBlockedUsersResponse extends Init {
-		users: UserTypes.Relations[]
+		report_type?: Types.ReportTypes
 	}
 
 	export interface DoActionResponse extends Init {
@@ -114,11 +112,17 @@ declare namespace ApiTypes {
 		likesCount?: number
 		dislikesCount?: number
 		resibCount?: number
-
+		
 		isFollowed?: boolean
 		followersCount?: number
+
+		report_type?: Types.ReportTypes
 	}
 
+	export interface GetBlockedUsersResponse extends Init {
+		users: UserTypes.Relations[]
+	}
+	
 	export interface RequestCaptchaResponse extends Init {
 		token: string
 		captcha: string

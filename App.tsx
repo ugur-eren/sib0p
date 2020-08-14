@@ -156,7 +156,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		if (allSettings.language === 'system') {
 			stateObject = {
 				...stateObject,
-				language: DefaultLanguage === 'tr' || DefaultLanguage === 'en' ? DefaultLanguage : 'en',
+				language: DefaultLanguage,
 			}
 		} else {
 			stateObject = {
@@ -257,6 +257,32 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 	}
 
+	setLanguage = (language: 'tr' | 'en' | 'system', callback?: () => void) => {
+		Storage.set('language', language)
+
+		let setLanguage: 'tr' | 'en' = null
+
+		if (language === 'system') {
+			setLanguage = DefaultLanguage
+		} else if (language === 'tr') {
+			setLanguage = 'tr'
+		} else {
+			setLanguage = 'en'
+		}
+
+		if (this.state.language !== setLanguage) {
+			this.setState({ language: setLanguage }, () => {
+				if (callback) {
+					callback()
+				}
+			})
+		} else {
+			if (callback) {
+				callback()
+			}
+		}
+	}
+
 	setIsVideoMuted = (isMuted: boolean) => {
 		this.isVideoMuted = isMuted
 	}
@@ -335,6 +361,14 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			},
 		}
 	}
+	removeProfileDataCache = (username: string) => {
+		let profiles = this.DataCache.profiles
+		profiles[username] = undefined
+		this.DataCache = {
+			...this.DataCache,
+			profiles: profiles,
+		}
+	}
 	setCurrentTime = (currentTime: number) => {
 		this.DataCache = {
 			...this.DataCache,
@@ -365,7 +399,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					}}
 					theme={Theme[this.state.theme]}
 				>
-					<PostSharer language={Languages[this.state.language]} sharePost={this.setSharePost} token={this.state.user.token} />
+					<PostSharer language={Languages['en']} sharePost={this.setSharePost} token={this.state.user.token} />
 					{this.state.ready ? (
 						<AppRouter
 							ref={this._setNavigationRef}
@@ -373,8 +407,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 							screenProps={
 								{
 									theme: Theme[this.state.theme],
-									language: Languages[this.state.language],
-									activeLanguage: this.state.language,
+									language: Languages['en'],
+									activeLanguage: 'en',
 									user: this.state.user,
 									notification: this.state.notification,
 									selectedTheme: this.state.selectedTheme,
@@ -395,6 +429,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 									DataCache: this.getDataCache,
 									setProfileDataCache: this.setProfileDataCache,
+									removeProfileDataCache: this.removeProfileDataCache,
 									setCurrentTime: this.setCurrentTime,
 								} as Types.ScreenProps
 							}

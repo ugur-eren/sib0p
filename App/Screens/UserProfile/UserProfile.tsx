@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar, Dialog, Button, Paragraph } from 'react-native-paper'
+import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar, Dialog, Button, Paragraph, List } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker, { Image as ImageType } from 'react-native-image-crop-picker'
@@ -16,6 +16,7 @@ import Loader from './Loader'
 import EmptyList from '../../Components/EmptyList/EmptyList'
 import Header from '../../Components/Header/Header'
 import UserTagTypes from '../../Includes/Types/UserTagTypes'
+import { Modalize } from 'react-native-modalize'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -35,6 +36,8 @@ interface State {
 	error: false | string
 	blockUserActive: boolean
 	blockUserLoading: boolean
+	reportUserActive: boolean
+	reportUserLoading: boolean
 }
 
 class UserProfile extends React.PureComponent<Props, State> {
@@ -51,8 +54,12 @@ class UserProfile extends React.PureComponent<Props, State> {
 			error: false,
 			blockUserActive: false,
 			blockUserLoading: false,
+			reportUserActive: false,
+			reportUserLoading: false,
 		}
 	}
+
+	private modalizeRef: any = null
 
 	componentDidMount() {
 		this.init()
@@ -167,8 +174,16 @@ class UserProfile extends React.PureComponent<Props, State> {
 		this.setState({ blockUserActive: true })
 	}
 
+	onReportPress = () => {
+		this.setState({ reportUserActive: true })
+	}
+
 	hideBlockDialog = () => {
 		this.setState({ blockUserActive: false })
+	}
+
+	hideReportDialog = () => {
+		this.setState({ reportUserActive: false })
 	}
 
 	blockUser = async () => {
@@ -183,6 +198,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 		})
 		if (response) {
 			if (response.status) {
+				this.modalizeRef?.close()
+				this.props.navigation.getScreenProps().removeProfileDataCache(this.state.user.username)
 				this.setState({ blockUserLoading: false })
 				this.props.navigation.goBack()
 				screen.error(screen.language.user_block_success)
@@ -232,6 +249,39 @@ class UserProfile extends React.PureComponent<Props, State> {
 					screen.logout(true)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username_error)
+				} else if (response.error === 'no_user') {
+					screen.error(screen.language.no_user_error)
+				} else {
+					screen.unknown_error(response.error)
+				}
+			}
+		} else {
+			screen.unknown_error()
+		}
+	}
+
+	reportUser = async () => {
+		this.setState({ blockUserLoading: true })
+
+		let screen = this.props.navigation.getScreenProps()
+
+		let response = await Api.doAction({
+			token: screen.user.token,
+			type: 'report_user',
+			username: this.state.user.username,
+		})
+		if (response) {
+			if (response.status) {
+				this.modalizeRef?.close()
+				this.props.navigation.getScreenProps().removeProfileDataCache(this.state.user.username)
+				this.setState({ blockUserLoading: false })
+				this.props.navigation.goBack()
+				screen.error(screen.language.user_report_success)
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'wrong_username') {
+					screen.error(screen.language.wrong_username)
 				} else if (response.error === 'no_user') {
 					screen.error(screen.language.no_user_error)
 				} else {
@@ -351,7 +401,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 					<TransparentHeader
 						title={user.username}
 						onSettings={isMyself ? this.onSettingsPress : undefined}
-						onMore={isMyself ? undefined : this.onBlockPress}
+						onMore={isMyself ? undefined : this.openModalize}
 					/>
 				</View>
 				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
@@ -389,7 +439,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 				<View style={[styles.centerContainer, { backgroundColor: theme.colors.surface }]}>
 					<View style={styles.postsCount}>
-						<Text>Gönderiler</Text>
+						<Text>{screen.language.posts}</Text>
 						<Text style={styles.centerText}>{user.postsCount}</Text>
 					</View>
 
@@ -425,6 +475,14 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 	dismissError = () => {
 		this.setState({ error: false })
+	}
+
+	_setModalizeRef = (ref: any) => {
+		this.modalizeRef = ref
+	}
+
+	openModalize = () => {
+		this.modalizeRef?.open()
 	}
 
 	render() {
@@ -464,7 +522,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 				</Portal>
 				<Portal>
 					<Dialog visible={this.state.blockUserActive} onDismiss={this.hideBlockDialog}>
-						<Dialog.Title>Engelle</Dialog.Title>
+						<Dialog.Title>{screen.language.block}</Dialog.Title>
 						<Dialog.Content>
 							<Paragraph>{screen.language.block_user_dialog}</Paragraph>
 						</Dialog.Content>
@@ -483,6 +541,43 @@ class UserProfile extends React.PureComponent<Props, State> {
 						</Dialog.Actions>
 					</Dialog>
 				</Portal>
+
+				<Portal>
+					<Dialog visible={this.state.reportUserActive} onDismiss={this.hideReportDialog}>
+						<Dialog.Title>{screen.language.report}</Dialog.Title>
+						<Dialog.Content>
+							<Paragraph>{screen.language.report_user_dialog}</Paragraph>
+						</Dialog.Content>
+						<Dialog.Actions>
+							<Button
+								onPress={this.state.reportUserLoading ? undefined : this.reportUser}
+								color={theme.colors.main}
+								loading={this.state.reportUserLoading}
+								style={{ marginRight: 15 }}
+							>
+								{screen.language.report}
+							</Button>
+							<Button onPress={this.hideReportDialog} color={theme.colors.contrast}>
+								{screen.language.cancel}
+							</Button>
+						</Dialog.Actions>
+					</Dialog>
+				</Portal>
+
+				<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>
+					<List.Section>
+						<List.Item
+							title={screen.language.block}
+							onPress={this.onBlockPress}
+							left={(props) => <List.Icon {...props} style={{}} icon='slash' />}
+						/>
+						<List.Item
+							title={screen.language.report}
+							onPress={this.onReportPress}
+							left={(props) => <List.Icon {...props} style={{}} icon='alert-circle' />}
+						/>
+					</List.Section>
+				</Modalize>
 			</View>
 		)
 	}

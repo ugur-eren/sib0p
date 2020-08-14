@@ -2,12 +2,8 @@ import { NativeModules, Platform } from 'react-native'
 import Config from './Config'
 import Types from './Types/Types'
 
-const defaultLanguage = Config.defaultLanguage
-let selectedLanguage = defaultLanguage
-
-console.log(NativeModules.SettingsManager.settings.AppleLocale)
-console.log(NativeModules.SettingsManager.settings.AppleLanguages)
-console.log(NativeModules.SettingsManager.settings.AppleLanguages[0])
+const defaultLanguage = Config.defaultLanguage as any
+let selectedLanguage: 'en' | 'tr' = defaultLanguage
 
 const deviceLanguage: string =
 	Platform.OS === 'ios'
@@ -34,7 +30,7 @@ const Languages = {
 		delete: 'Sil',
 		cancel: 'İptal',
 		delete_post: 'Gönderiyi Sil',
-		report_dialog: 'Bu gönderiyi şikayet etmek istediğinize emin misiniz?',
+		report_dialog: 'Bu gönderiyi şikayet etmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
 		delete_dialog: 'Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
 		no_post_error: 'Gönderi bulunamadı, silinmiş olabilir..',
 		no_comment_error: 'Yorum bulunamadı, silinmiş olabilir..',
@@ -43,7 +39,8 @@ const Languages = {
 		comments_count: 'Yorum',
 		video_load_error: "Video yüklenemedi{'\n'}Tekrar denemek için dokunun",
 		post_auth_error: 'Bu gönderiyi, sadece gönderiyi paylaşan kullanıcı silebilir.',
-		report_success: 'Gönderi başarılı bir şekilde raporlandı. Yöneticilerimiz isteğinizi en kısa sürede inceleyecektir.',
+		report_success: 'Gönderi başarılı bir şekilde raporlandı. Yöneticilerimiz isteğinizi en kısa sürede inceleyecektir. Rapor tipi: ',
+		report_success_hide: 'Bu gönderiyi gizlemek ister misiniz? Bu işlem geri alınamaz ve bu gönderiyi bir daha asla göremezsiniz.',
 		post_share_success: 'Gönderiniz başarıyla paylaşıldı.',
 		post_share_error: 'Gönderiniz paylaşırken bilinmeyen bir sorun oluştu. Lütfen daha sonra tekrar deneyiniz.',
 		wrong_username_error: 'Hatalı bir kullanıcı adı ile işlem yapmaya çalışıyorsunuz. Lütfen daha sonra tekrar deneyiniz.',
@@ -153,6 +150,7 @@ const Languages = {
 		tags: 'Etiketler',
 		share_dialog: 'Gönderinizi paylaşmak istediğinize emin misiniz?',
 		user_block_success: 'Kullanıcı başarılı bir şekilde engellendi. Kullanıcının engelini ayarlar sayfasından kaldırabilirsiniz.',
+		user_unblock_success: 'Kullanıcının engeli başarılı bir şekilde kaldırıldı.',
 		pp_photo_success: 'Profil fotoğrafı başarıyla güncellendi.',
 		bg_photo_success: 'Arkaplan fotoğrafı başarıyla güncellendi.',
 		no_image: 'Fotoğraf seçilmedi. Lütfen tekrar deneyiniz.',
@@ -167,6 +165,22 @@ const Languages = {
 			'Bu kullanıcıyı engellemek istediğinize emin misiniz? Engeli kaldırana kadar bu kullanıcı ile ilişkili gönderileri ve yorumları göremezsiniz.',
 		block: 'Engelle',
 		check_network: 'Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.',
+		settings: 'Ayarlar',
+		explore: 'Keşfet',
+		profile: 'Profil',
+		posts: 'Gönderiler',
+		unblock: 'Engeli Kaldır',
+		spam: 'Spam',
+		abusive: 'Aşırı Küfürlü',
+		objectionable: 'Sakıncalı',
+		sexual: 'Cinsel İçerik',
+		already_reported: 'Bu gönderiyi daha önce zaten şikayet etmiştiniz.',
+		hide: 'Gizle',
+		not_reported: 'Bir gönderiyi gizlemek için önce şikayet etmeniz gerekmektedir.',
+		already_hidden: 'Bu gönderiyi daha önce zaten gizlediniz.',
+		report_user_dialog:
+			'Bu kullanıcıyı şikayet etmek istediğinize emin misiniz? Bu işlem geri alınamaz. Eğer sadece paylaşılan içeriği beğenmiyorsanız lütfen \'Engelle\' seçeneğini seçiniz.',
+		user_report_success: 'Kullanıcı başarıyla şikayet edildi. Yöneticilerimiz isteğinizi en kısa sürede inceleyecektir.',
 	},
 
 	en: {
@@ -182,7 +196,7 @@ const Languages = {
 		delete: 'Delete',
 		cancel: 'Cancel',
 		delete_post: 'Delete Post',
-		report_dialog: 'Are you sure you want to report this post?',
+		report_dialog: 'Are you sure you want to report this post? This action cannot be undone.',
 		delete_dialog: 'Are you sure you want to delete this post? This action cannot be undone.',
 		comments_count: 'Comments',
 		no_post_error: "Post couldn't be found, it might be deleted..",
@@ -191,7 +205,8 @@ const Languages = {
 		no_comments: 'There are no comments',
 		video_load_error: "Video couldn't be loaded{'\n'}Press to try again",
 		post_auth_error: 'Only the author of the post can delete the post.',
-		report_success: 'This post has been successfully reported. Our moderators will investigate your request.',
+		report_success: 'This post has been successfully reported. Our moderators will investigate your request. Report type: ',
+		report_success_hide: 'Do you want to hide this post? This action cannot be undone and you can not see this post again.',
 		post_share_success: 'Your post has been successfully shared.',
 		post_share_error: 'There has been an unknown error while sharing your post. Please try again later.',
 		wrong_username_error: 'You are trying to make a request with wrong username. Please try again later.',
@@ -201,7 +216,7 @@ const Languages = {
 		username_less: 'Username cannot be less than 4 characters',
 		password_empty: 'Password cannot be empty.',
 		couldnt_take_login_info: "Login information couldn't be found. Please try again later.",
-		wrong_username: 'Your username can only contain english characters, numbers, dot or dash.',
+		wrong_username: 'Your username can only contain english characters, numbers, dots or dashes.',
 		no_user: 'There are no users with this username. Please check your username and try again.',
 		wrong_password: 'You have entered wrong password. Please check your password and try again.',
 		username: 'Username',
@@ -250,7 +265,7 @@ const Languages = {
 		delete_comment_dialog: 'Are you sure you want to delete this comment? This action cannot be undone.',
 		unknown: 'Unknown',
 		no_connection: 'Could not connect to server. \n\n Please check your network connection and try again.',
-		try_again: 'Try Again',
+		try_again: 'TRY AGAIN',
 		notifications: 'Notifications',
 		notif_commented: 'made a comment on your post',
 		notif_liked_comment: 'liked your comment',
@@ -303,6 +318,7 @@ const Languages = {
 		tags: 'Tags',
 		share_dialog: 'Are you sure you want to share your post?',
 		user_block_success: 'User has been successfully blocked. You can unblock this user in the settings page.',
+		user_unblock_success: 'User has been successfully unblocked.',
 		pp_photo_success: 'Profile Photo has been successfully changed.',
 		bg_photo_success: 'Background Photo has been successfully changed.',
 		no_image: 'No images selected. Please try again.',
@@ -314,9 +330,25 @@ const Languages = {
 		not_found: 'Not Found',
 		user_not_found: "This user could not be found. It might be changed it's username",
 		block_user_dialog:
-			'Are you sure you want to block this user? You can no longer see any posts or comments related to this user until you unblock this users.',
+			'Are you sure you want to block this user? You can no longer see any posts or comments related to this user until you unblock this user.',
 		block: 'Block',
 		check_network: 'Please check your network connection and try again.',
+		settings: 'Settings',
+		explore: 'Explore',
+		profile: 'Profile',
+		posts: 'Posts',
+		unblock: 'Unblock',
+		spam: 'Spam',
+		abusive: 'Abusive',
+		objectionable: 'Objectionable',
+		sexual: 'Sexual Content',
+		already_reported: 'You have already reported this post.',
+		hide: 'Hide',
+		not_reported: 'You have to report the post before hiding it.',
+		already_hidden: 'You already hide this post.',
+		report_user_dialog:
+			"Are you sure you want to report this user? This action cannot be undone. If you just don't like the content that this user shares, please select 'Block' option.",
+		user_report_success: 'User has successfully reported. Our moderator team will investigate your request as soon as possible.',
 	},
 }
 

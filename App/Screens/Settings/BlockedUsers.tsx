@@ -58,7 +58,38 @@ class BlockedUsers extends React.PureComponent<Props, State> {
 		}
 	}
 
-	_renderItem = ({ item }: { item: UserTypes.Relations }) => <Relation navigation={this.props.navigation} user={item} noFollow />
+	unblock = async (username: string) => {
+		let screen = this.props.navigation.getScreenProps()
+
+		let response = await Api.doAction({
+			token: screen.user.token,
+			type: 'unblock',
+			username: username,
+		})
+		if (response) {
+			if (response.status) {
+				let users = this.state.users
+				users = users.filter((val) => val.username !== username)
+				this.setState({ users: users })
+				this.props.navigation.getScreenProps().removeProfileDataCache(username)
+				screen.error(screen.language.user_unblock_success)
+			} else {
+				if (response.error === 'no_login') {
+					screen.logout(true)
+				} else if (response.error === 'wrong_username') {
+					screen.error(screen.language.wrong_username)
+				} else if (response.error === 'no_user') {
+					screen.error(screen.language.no_user_error)
+				} else {
+					screen.unknown_error(response.error)
+				}
+			}
+		} else {
+			screen.unknown_error()
+		}
+	}
+
+	_renderItem = ({ item }: { item: UserTypes.Relations }) => <Relation navigation={this.props.navigation} user={item} unblock={this.unblock} />
 	_keyExtractor = (item: UserTypes.Relations) => item.username
 	_itemSeperator = () => <Divider />
 	_emptyComponent = () => (

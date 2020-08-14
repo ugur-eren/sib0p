@@ -69,7 +69,11 @@ const Relations = (props: Props) => {
 		})()
 	}, [])
 
-	const _renderItem = ({ item }: { item: UserTypes.Relations }) => <Relation navigation={props.navigation} user={item} />
+	const onFollow = async () => {
+
+	}
+
+	const _renderItem = ({ item }: { item: UserTypes.Relations }) => <Relation navigation={props.navigation} user={item} onFollow={onFollow} />
 	const _itemSeperator = () => <Divider />
 	const _keyExtractor = (item: UserTypes.Relations) => item.username
 	const _emptyComponent = () => (
@@ -88,7 +92,7 @@ const Relations = (props: Props) => {
 			{state.loading ? (
 				<Loader theme={theme} />
 			) : state.noUser ? (
-				<EmptyList image={require('../../Assets/Images/no-comments.png')} title={props.navigation.getScreenProps().no_user_error} />
+				<EmptyList image={require('../../Assets/Images/no-comments.png')} title={props.navigation.getScreenProps().language.no_user_error} />
 			) : (
 				<View style={styles.listContainer}>
 					<FlatList

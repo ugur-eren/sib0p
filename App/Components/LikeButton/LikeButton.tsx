@@ -32,7 +32,7 @@ const LikeButton = (props: Props) => {
 				<ActivityIndicator size={22} color={theme.colors.main} style={styles.loading} />
 			) : (
 				<IconButton
-					icon={props.type == 'like' ? 'thumbs-up' : props.type == 'dislike' ? 'thumbs-down' : 'git-pull-request'}
+					icon={props.type == 'like' ? 'thumbs-up' : props.type == 'dislike' ? 'thumbs-down' : 'repeat'}
 					color={props.active ? (props.type == 'dislike' ? theme.colors.error : theme.colors.success) : theme.colors.contrast}
 					onPress={_onPress}
 					size={22}

@@ -63,7 +63,7 @@ class Settings extends React.PureComponent<Props, State> {
 
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
-				<Header title='Ayarlar' />
+				<Header title={screen.language.settings} />
 
 				<ScrollView style={styles.container}>
 					<List.Section>
@@ -92,7 +92,7 @@ class Settings extends React.PureComponent<Props, State> {
 							style={styles.clearListStyle}
 							title={screen.language.notifications}
 							left={(props) => <List.Icon {...props} style={{}} icon='bell' />}
-							onPress={() => this.props.navigation.navigate('ChangePassword')}
+							onPress={this.toggleNotification}
 							right={() => (
 								<Switch
 									value={this.props.navigation.getScreenProps().notification}

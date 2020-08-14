@@ -54,4 +54,21 @@ export default StyleSheet.create({
 	tagName: {
 		fontFamily: Config.fonts.semi,
 	},
+	resibTop: {
+		paddingHorizontal: 10,
+		paddingVertical: 5,
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginBottom: 3,
+		borderBottomWidth: 0.5,
+	},
+	resibPP: {
+		width: 25,
+		height: 25,
+		borderRadius: 25,
+		marginHorizontal: 10,
+	},
+	resibUsername: {
+		fontFamily: Config.fonts.semi,
+	},
 })
