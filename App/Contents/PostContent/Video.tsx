@@ -56,6 +56,7 @@ const Video = (props: Props) => {
 					resizeMode='contain'
 					onReadyForDisplay={_videoReady}
 					onError={_videoError}
+					mixWithOthers="duck"
 				/>
 			) : (
 				<></>

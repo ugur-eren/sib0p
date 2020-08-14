@@ -244,7 +244,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			selectedTheme = theme === 'dark' ? 'dark' : 'light'
 		}
 
-		if (this.state.selectedTheme !== theme && this.state.theme !== selectedTheme) {
+		if (this.state.selectedTheme !== theme || this.state.theme !== selectedTheme) {
 			this.setState({ selectedTheme: theme, theme: selectedTheme }, () => {
 				if (callback) {
 					callback()
@@ -270,8 +270,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			setLanguage = 'en'
 		}
 
-		if (this.state.language !== setLanguage) {
-			this.setState({ language: setLanguage }, () => {
+		if (this.state.language !== setLanguage || this.state.selectedLanguage !== language) {
+			this.setState({ language: setLanguage, selectedLanguage: language }, () => {
 				if (callback) {
 					callback()
 				}
@@ -407,8 +407,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 							screenProps={
 								{
 									theme: Theme[this.state.theme],
-									language: Languages['en'],
-									activeLanguage: 'en',
+									language: Languages[this.state.language],
+									activeLanguage: this.state.language,
+									selectedLanguage: this.state.selectedLanguage,
 									user: this.state.user,
 									notification: this.state.notification,
 									selectedTheme: this.state.selectedTheme,
@@ -422,6 +423,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 
 									setUserData: this.setUserData,
 									setTheme: this.setTheme,
+									setLanguage: this.setLanguage,
 									setNotification: this.setNotification,
 									setIsVideoMuted: this.setIsVideoMuted,
 

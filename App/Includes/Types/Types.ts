@@ -15,6 +15,7 @@ declare namespace Types {
 		theme: Theme
 		language: Language
 		activeLanguage: string
+		selectedLanguage: 'en' | 'tr' | 'system'
 		user: ScreenPropsUser
 		notification: boolean
 		selectedTheme: SupportedThemes
@@ -28,6 +29,7 @@ declare namespace Types {
 
 		setUserData: (user: ScreenPropsUser, callback?: () => void) => void
 		setTheme: (theme: SupportedThemes, callback?: () => void) => void
+		setLanguage: (language: 'en' | 'tr' | 'system', callback?: () => void) => void
 		setNotification: (active: boolean) => void
 		setIsVideoMuted: (isMuted: boolean) => void
 

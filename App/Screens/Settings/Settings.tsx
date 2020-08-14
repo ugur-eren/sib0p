@@ -31,6 +31,10 @@ class Settings extends React.PureComponent<Props, State> {
 		this.props.navigation.getScreenProps().setTheme(key)
 	}
 
+	onLanguageSelect = (key: 'en' | 'tr' | 'system') => {
+		this.props.navigation.getScreenProps().setLanguage(key)
+	}
+
 	hideLogoutDialog = () => {
 		this.setState({ logoutDialog: false })
 	}
@@ -61,6 +65,12 @@ class Settings extends React.PureComponent<Props, State> {
 			system: screen.language.theme_system,
 		}
 
+		const SupportedLanguages = {
+			tr: 'Türkçe',
+			en: 'English',
+			system: screen.language.theme_system,
+		}
+
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
 				<Header title={screen.language.settings} />
@@ -86,6 +96,14 @@ class Settings extends React.PureComponent<Props, State> {
 							anchorTitle={SupportedThemes[this.props.navigation.getScreenProps().selectedTheme]}
 							selectItem={this.onThemeSelect}
 							data={SupportedThemes}
+						/>
+
+						<ListMenu
+							title={screen.language.language}
+							iconName='flag'
+							anchorTitle={SupportedLanguages[this.props.navigation.getScreenProps().selectedLanguage]}
+							selectItem={this.onLanguageSelect}
+							data={SupportedLanguages}
 						/>
 
 						<List.Item

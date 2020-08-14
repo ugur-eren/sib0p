@@ -20,6 +20,7 @@ const Languages = {
 	tr: {
 		code: 'tr',
 		langName: 'Türkçe',
+		language: 'Dil',
 		success: 'Başarılı!',
 		error: 'Hata!',
 		ok: 'Tamam',
@@ -186,6 +187,7 @@ const Languages = {
 	en: {
 		code: 'en',
 		langName: 'English',
+		language: 'Language',
 		success: 'Success!',
 		error: 'Error!',
 		ok: 'Ok',

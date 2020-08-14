@@ -1,10 +1,10 @@
 const Config = {
 	defaultLanguage: 'tr',
-	siteUri: 'http://192.168.1.26/',
+	siteUri: 'https://sib0p.com/',
 
 	api: {
 		version: '1',
-		uri: 'http://192.168.1.26/api/v1/',
+		uri: 'https://sib0p.com/api/v1/',
 	},
 
 	fonts: {
