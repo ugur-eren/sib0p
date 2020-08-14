@@ -220,7 +220,7 @@ class Register extends React.PureComponent<Props, State> {
 	_gizlilikPolitikasi = () => {
 		this.props.navigation.navigate('PasswordRecovery', {
 			title: this.props.navigation.getScreenProps().language.privacy_policy,
-			uri: Config.siteUri + 'gizlilik-politikasi.html',
+			uri: Config.siteUri + 'gizlilik-politikasi.' + this.props.navigation.getScreenProps().language.code + '.html',
 		})
 	}
 
