@@ -65,6 +65,8 @@ declare namespace Types {
 		active: boolean
 		username: string
 		token: string
+		profilePhoto?: string
+		notifCount?: number
 	}
 
 	export interface Theme {

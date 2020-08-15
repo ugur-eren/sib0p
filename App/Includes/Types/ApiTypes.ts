@@ -16,6 +16,8 @@ declare namespace ApiTypes {
 
 	export interface CheckLoginResponse extends Init {
 		username: string
+		profilePhoto?: string
+		notifCount?: number
 	}
 
 	export interface LoginResponse extends Init {

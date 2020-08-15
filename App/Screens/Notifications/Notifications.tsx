@@ -39,11 +39,12 @@ class Notifications extends React.PureComponent<Props, State> {
 	}
 
 	init = async (refresh?: boolean, nextPage?: boolean) => {
+		let screen = this.props.navigation.getScreenProps()
 		if (!refresh && !this.state.loading) {
 			this.setState({ loading: true })
 		}
 		let notifs = await Api.getNotifications({
-			token: this.props.navigation.getScreenProps().user.token,
+			token: screen.user.token,
 			last: nextPage ? this.state.notifications[this.state.notifications.length - 1].id : 0,
 		})
 		let stateObject = {}
@@ -54,16 +55,21 @@ class Notifications extends React.PureComponent<Props, State> {
 					notifications: nextPage ? [...this.state.notifications, ...notifs.notifications] : notifs.notifications,
 					currentTime: notifs.currentTime,
 				}
-				this.props.navigation.getScreenProps().setCurrentTime(notifs.currentTime)
+				screen.setCurrentTime(notifs.currentTime)
+
+				screen.setUserData({
+					...screen.user,
+					notifCount: 0,
+				})
 			} else {
 				if (notifs.error === 'no_login') {
-					this.props.navigation.getScreenProps().logout(true)
+					screen.logout(true)
 				} else {
-					this.props.navigation.getScreenProps().unknown_error(notifs.error)
+					screen.unknown_error(notifs.error)
 				}
 			}
 		} else {
-			this.props.navigation.getScreenProps().unknown_error()
+			screen.unknown_error()
 		}
 
 		stateObject = { ...stateObject, loading: false }

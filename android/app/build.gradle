@@ -143,8 +143,8 @@ android {
         applicationId "net.ugureren.sib0p"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 20
+        versionName "2.0.0"
 
         multiDexEnabled true
     }

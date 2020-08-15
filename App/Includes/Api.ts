@@ -37,11 +37,8 @@ export default new (class Functions {
 				},
 				body: joinedBody,
 			})
-				.then((response) => response.text())
-				.then((data) => {
-					console.log(method, data)
-					resolve(JSON.parse(data))
-				})
+				.then((response) => response.json())
+				.then((data) => resolve(data))
 				.catch((err) => {
 					console.log('api error', this.uri + method + '.php', err)
 					resolve(false)

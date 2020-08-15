@@ -1,4 +1,5 @@
 import React from 'react'
+import { StyleSheet } from 'react-native'
 
 import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 import { createStackNavigator } from 'react-navigation-stack'
@@ -14,7 +15,6 @@ import PasswordRecoveryTemp from './Screens/Auth/PasswordRecovery/PasswordRecove
 import PasswordRecoveryFirst from './Screens/Auth/PasswordRecovery/PasswordRecoveryFirst'
 import PasswordRecoverySecond from './Screens/Auth/PasswordRecovery/PasswordRecoverySecond'
 
-
 import ShareInitiator from './Screens/ShareInitiator/ShareInitiator'
 import Share from './Screens/Share/Share'
 
@@ -29,6 +29,9 @@ import ChangePassword from './Screens/Settings/ChangePassword'
 import BlockedUsers from './Screens/Settings/BlockedUsers'
 import Search from './Screens/Search/Search'
 import SinglePost from './Screens/SinglePost/SinglePost'
+import FastImage from 'react-native-fast-image'
+import { Badge } from 'react-native-paper'
+import Config from './Includes/Config'
 
 const passwordRecoveryStack = createSwitchNavigator(
 	{
@@ -68,6 +71,27 @@ const authStack = createStackNavigator(
 )
 
 const tabBarIcon = (name: string) => ({ tintColor }) => <Feather name={name} color={tintColor} size={20} />
+const tabBarIconBadge = (name: string, count: number, theme: Types.Theme) => ({ tintColor }) => (
+	<>
+		<Feather name={name} color={tintColor} size={20} />
+		<Badge style={[styles.notifBadge, { backgroundColor: theme.colors.main, color: theme.colors.primary }]}>{count}</Badge>
+	</>
+)
+const profilePhoto = (uri: string) => () => <FastImage source={{ uri: uri }} style={styles.profilePhotoImage} />
+const styles = StyleSheet.create({
+	profilePhotoImage: {
+		width: 22,
+		height: 22,
+		borderRadius: 22,
+	},
+	notifBadge: {
+		position: 'absolute',
+		top: -10,
+		right: -5,
+		fontFamily: Config.fonts.semi,
+		textAlignVertical: 'center',
+	},
+})
 
 var lastFocusedRoute: string | false = false
 const bottomStack = createMaterialBottomTabNavigator(
@@ -79,8 +103,8 @@ const bottomStack = createMaterialBottomTabNavigator(
 				title: navigation.getScreenProps().language.explore,
 			})) as any,
 			params: {
-				type: 'explore'
-			}
+				type: 'explore',
+			},
 		},
 		Follows: {
 			screen: Explore,
@@ -89,8 +113,8 @@ const bottomStack = createMaterialBottomTabNavigator(
 				title: navigation.getScreenProps().language.follows,
 			})) as any,
 			params: {
-				type: 'follows'
-			}
+				type: 'follows',
+			},
 		},
 		ShareInitiator: {
 			screen: ShareInitiator,
@@ -102,14 +126,18 @@ const bottomStack = createMaterialBottomTabNavigator(
 		Notifications: {
 			screen: Notifications,
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
-				tabBarIcon: tabBarIcon('bell'),
+				tabBarIcon: navigation.getScreenProps().user.notifCount
+					? tabBarIconBadge('bell', navigation.getScreenProps().user.notifCount, navigation.getScreenProps().theme)
+					: tabBarIcon('bell'),
 				title: navigation.getScreenProps().language.notifications,
 			})) as any,
 		},
 		Profile: {
 			screen: UserProfile,
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
-				tabBarIcon: tabBarIcon('user'),
+				tabBarIcon: navigation.getScreenProps().user.profilePhoto
+					? profilePhoto(navigation.getScreenProps().user.profilePhoto)
+					: tabBarIcon('user'),
 				title: navigation.getScreenProps().language.profile,
 			})) as any,
 		},
@@ -132,8 +160,8 @@ const mainStack = createStackNavigator(
 		CustomPosts: {
 			screen: Explore,
 			params: {
-				type: 'tags'
-			}
+				type: 'tags',
+			},
 		},
 		Comments: {
 			screen: Comments,
@@ -151,10 +179,10 @@ const mainStack = createStackNavigator(
 			screen: EditProfile,
 		},
 		ChangePassword: {
-			screen: ChangePassword
+			screen: ChangePassword,
 		},
 		BlockedUsers: {
-			screen: BlockedUsers
+			screen: BlockedUsers,
 		},
 		Share: {
 			screen: Share,
@@ -164,7 +192,7 @@ const mainStack = createStackNavigator(
 		},
 		SinglePost: {
 			screen: SinglePost,
-		}
+		},
 	},
 	{
 		defaultNavigationOptions: {
@@ -183,10 +211,10 @@ const rootStack = createSwitchNavigator(
 			screen: authStack,
 		},
 		NoConnection: {
-			screen: NoConnection
+			screen: NoConnection,
 		},
 		EmptyPage: {
-			screen: () => <></>
+			screen: () => <></>,
 		},
 	},
 	{
