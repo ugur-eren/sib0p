@@ -172,14 +172,16 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
 			})
 		}
-
-		if (!loggedIn.username) {
+		
+		if (!loggedIn.username && !loggedIn.profilePhoto) {
 			stateObject = {
 				...stateObject,
 				user: {
 					active: false,
 					token: '',
 					username: '',
+					profilePhoto: '',
+					notifCount: 0
 				},
 			}
 
@@ -194,9 +196,14 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					active: true,
 					token: stateObject.user.token,
 					username: loggedIn.username,
+					profilePhoto: loggedIn.profilePhoto,
+					notifCount: loggedIn.notifCount
 				},
 			}
-			Storage.set('username', loggedIn.username || '')
+			Storage.setMultiple({
+				username: loggedIn.username || '',
+				profilePhoto: loggedIn.profilePhoto || '',
+			})
 		}
 
 		this.setState(stateObject, () => {

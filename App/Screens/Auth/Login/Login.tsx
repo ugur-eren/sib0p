@@ -90,7 +90,7 @@ class Login extends React.PureComponent<Props, State> {
 						: login.error === 'no_user'
 						? screen.language.no_user
 						: login.error === 'wrong_password'
-						? screen.language.wrong_username
+						? screen.language.wrong_password
 						: screen.language.unknown_error + login.error
 				)
 		}

@@ -39,8 +39,9 @@ const Relations = (props: Props) => {
 	const type = props.navigation.getParam('type')
 
 	useEffect(() => {
+		let screen = props.navigation.getScreenProps()
 		;(async () => {
-			let relations = await Api.getRelations({ token: props.navigation.getScreenProps().user.token, type: type, username: username })
+			let relations = await Api.getRelations({ token: screen.user.token, type: type, username: username })
 			if (relations) {
 				if (relations.status) {
 					setState({
@@ -58,13 +59,13 @@ const Relations = (props: Props) => {
 							relations: [],
 						})
 					} else if (relations.error === 'no_login') {
-						props.navigation.getScreenProps().logout(true)
+						screen.logout(true)
 					} else {
-						props.navigation.getScreenProps().unknown_error(relations.error)
+						screen.unknown_error(relations.error)
 					}
 				}
 			} else {
-				props.navigation.getScreenProps().unknown_error()
+				screen.unknown_error()
 			}
 		})()
 	}, [])
