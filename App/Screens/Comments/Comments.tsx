@@ -1,6 +1,6 @@
 import React from 'react'
-import { View, FlatList, SafeAreaView, TextInput, RefreshControl, KeyboardAvoidingView } from 'react-native'
-import { Divider, withTheme, List, Dialog, Button, Paragraph } from 'react-native-paper'
+import { View, FlatList, SafeAreaView, TextInput, RefreshControl, KeyboardAvoidingView, Platform } from 'react-native'
+import { Divider, withTheme, List, Dialog, Button, Paragraph, Portal } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Header from '../../Components/Header/Header'
 import TextButton from '../../Components/TextButton/TextButton'
@@ -223,7 +223,7 @@ class Comments extends React.PureComponent<Props, State> {
 							onEndReached={this.getNextPage}
 							ListHeaderComponent={this.props.customHeader}
 						/>
-						<KeyboardAvoidingView enabled behavior='position'>
+						<KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior='position'>
 							<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
 								<TextInput
 									value={this.state.commentInput}
@@ -238,19 +238,25 @@ class Comments extends React.PureComponent<Props, State> {
 							</SafeAreaView>
 						</KeyboardAvoidingView>
 
-						<Modalize ref={this._setModalizeRef} adjustToContentHeight modalStyle={{ backgroundColor: this.props.theme.colors.surface }}>
-							<List.Section>
-								{this.state.activeComment?.isMine ? (
-									<List.Item
-										title={screen.language.delete}
-										onPress={this.deleteComment}
-										left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />}
-									/>
-								) : (
-									<></>
-								)}
-							</List.Section>
-						</Modalize>
+						<Portal>
+							<Modalize
+								ref={this._setModalizeRef}
+								adjustToContentHeight
+								modalStyle={{ backgroundColor: this.props.theme.colors.surface }}
+							>
+								<List.Section>
+									{this.state.activeComment?.isMine ? (
+										<List.Item
+											title={screen.language.delete}
+											onPress={this.deleteComment}
+											left={(props) => <List.Icon {...props} style={{}} icon='trash-2' />}
+										/>
+									) : (
+										<></>
+									)}
+								</List.Section>
+							</Modalize>
+						</Portal>
 
 						<Dialog visible={this.state.deleteCommentActive} onDismiss={this.hideDeleteComment}>
 							<Dialog.Title>{screen.language.delete_comment}</Dialog.Title>
