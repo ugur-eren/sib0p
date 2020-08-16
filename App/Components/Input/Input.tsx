@@ -22,6 +22,7 @@ interface Props extends TextInputProps {
 	leftIcon?: string
 	rightIcon?: string
 
+	small?: boolean
 	multiline?: boolean
 	password?: boolean
 	number?: boolean
@@ -91,6 +92,7 @@ class Input extends React.PureComponent<Props, State> {
 						keyboardAppearance={theme.dark ? 'dark' : 'default'}
 						secureTextEntry={this.props.password && !this.state.passwordShown}
 						keyboardType={this.props.number ? 'number-pad' : this.props.email ? 'email-address' : 'default'}
+						autoCapitalize={this.props.small ? 'none' : 'sentences'}
 						{...inputProps}
 					/>
 

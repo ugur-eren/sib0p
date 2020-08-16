@@ -75,7 +75,7 @@ class Search extends React.PureComponent<Props, State> {
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<SafeAreaView style={[styles.topContainer, { backgroundColor: theme.colors.primary }]}>
-					<Appbar.BackAction color={theme.dark ? undefined : '#242424'} onPress={() => this.props.navigation.goBack()} />
+					<Appbar.BackAction color={theme.colors.contrast} onPress={() => this.props.navigation.goBack()} />
 					<TextInput
 						value={this.state.searchValue}
 						onChangeText={this._onValueChange}

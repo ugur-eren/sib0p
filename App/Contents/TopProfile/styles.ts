@@ -32,6 +32,7 @@ export default StyleSheet.create({
 	},
 	username: {
 		fontFamily: Config.fonts.semi,
+		fontWeight: undefined,
 	},
 	usertag: {
 		marginLeft: 5,

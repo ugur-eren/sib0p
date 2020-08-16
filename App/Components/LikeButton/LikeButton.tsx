@@ -33,7 +33,15 @@ const LikeButton = (props: Props) => {
 			) : (
 				<IconButton
 					icon={props.type == 'like' ? 'thumbs-up' : props.type == 'dislike' ? 'thumbs-down' : 'repeat'}
-					color={props.active ? (props.type == 'dislike' ? theme.colors.error : theme.colors.success) : theme.colors.contrast}
+					color={
+						props.active
+							? props.type == 'dislike'
+								? theme.colors.error
+								: props.type == 'resib'
+								? theme.colors.main
+								: theme.colors.success
+							: theme.colors.contrast
+					}
 					onPress={_onPress}
 					size={22}
 				/>

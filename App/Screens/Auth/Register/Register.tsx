@@ -252,6 +252,7 @@ class Register extends React.PureComponent<Props, State> {
 								value={this.state.username}
 								error={this.state.usernameError}
 								onChangeText={this._onUsernameChange}
+								small
 							/>
 							<Input
 								placeholder={screen.language.name}
@@ -274,6 +275,7 @@ class Register extends React.PureComponent<Props, State> {
 								value={this.state.email}
 								error={this.state.emailError}
 								onChangeText={this._onEmailChange}
+								small
 							/>
 							<Input
 								placeholder={screen.language.password + ' *'}
@@ -282,6 +284,7 @@ class Register extends React.PureComponent<Props, State> {
 								value={this.state.password}
 								error={this.state.passwordError}
 								onChangeText={this._onPasswordChange}
+								small
 							/>
 							<Input
 								placeholder={screen.language.password_again + ' *'}
@@ -289,6 +292,7 @@ class Register extends React.PureComponent<Props, State> {
 								password
 								value={this.state.passwordCheck}
 								onChangeText={this._onPasswordCheckChange}
+								small
 							/>
 
 							<View style={{ flexDirection: 'row', marginBottom: 21 }}>

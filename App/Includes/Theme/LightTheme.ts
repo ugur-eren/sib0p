@@ -9,19 +9,19 @@ export default <Types.Theme>{
 	fonts: {
 		regular: {
 			fontFamily: Config.fonts.regular,
-			fontWeight: DefaultTheme.fonts.regular.fontWeight,
+			fontWeight: undefined,
 		},
 		medium: {
 			fontFamily: Config.fonts.semi,
-			fontWeight: DefaultTheme.fonts.medium.fontWeight,
+			fontWeight: undefined,
 		},
 		light: {
 			fontFamily: Config.fonts.regular,
-			fontWeight: DefaultTheme.fonts.light.fontWeight,
+			fontWeight: undefined,
 		},
 		thin: {
 			fontFamily: Config.fonts.regular,
-			fontWeight: DefaultTheme.fonts.thin.fontWeight,
+			fontWeight: undefined,
 		},
 	},
 	colors: {

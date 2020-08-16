@@ -213,18 +213,17 @@ class Comments extends React.PureComponent<Props, State> {
 					<Loader theme={theme} />
 				) : (
 					<>
-						
-							<FlatList
-								data={this.state.comments}
-								keyExtractor={this._keyExtractor}
-								ItemSeparatorComponent={this._itemSeperator}
-								renderItem={this._renderItem}
-								refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
-								ListEmptyComponent={this._emptyComponent}
-								onEndReached={this.getNextPage}
-								ListHeaderComponent={this.props.customHeader}
-							/>
-<KeyboardAvoidingView enabled behavior='position'>
+						<FlatList
+							data={this.state.comments}
+							keyExtractor={this._keyExtractor}
+							ItemSeparatorComponent={this._itemSeperator}
+							renderItem={this._renderItem}
+							refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
+							ListEmptyComponent={this._emptyComponent}
+							onEndReached={this.getNextPage}
+							ListHeaderComponent={this.props.customHeader}
+						/>
+						<KeyboardAvoidingView enabled behavior='position'>
 							<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
 								<TextInput
 									value={this.state.commentInput}

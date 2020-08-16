@@ -125,6 +125,7 @@ class Login extends React.PureComponent<Props, State> {
 						value={this.state.username}
 						onChangeText={this._onUsernameChange}
 						error={this.state.usernameError}
+						small
 					/>
 					<Input
 						placeholder={screen.language.password}
@@ -133,6 +134,7 @@ class Login extends React.PureComponent<Props, State> {
 						value={this.state.password}
 						onChangeText={this._onPasswordChange}
 						error={this.state.passwordError}
+						small
 					/>
 
 					<TouchableOpacity onPress={this.navigateToPasswordRecovery}>
