@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { View } from 'react-native'
-import { Text, Divider, useTheme } from 'react-native-paper'
+import { Text, Divider, withTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Feather from 'react-native-vector-icons/Feather'
 import FastImage from 'react-native-fast-image'
@@ -16,6 +16,7 @@ import styles from './styles'
 
 interface Props {
 	navigation: Types.Navigation
+	theme: Types.Theme
 	post: PostTypes.Post
 	isVisible: boolean
 	currentTime: number
@@ -25,52 +26,60 @@ interface Props {
 	commentsVisible?: boolean
 }
 
-const Post = (props: Props) => {
-	let screen = props.navigation.getScreenProps()
-	const theme: Types.Theme = useTheme() as any
-	let { post, navigation } = props
+interface State {
+	hasLiked: boolean
+	hasDisliked: boolean
+	hasResibed: boolean
+	likesCount: number
+	dislikesCount: number
+	resibCount: number
+}
 
-	const [countState, setCountState] = useState({
-		hasLiked: post.hasLiked,
-		hasDisliked: post.hasDisliked,
-		hasResibed: post.hasResibed,
-		likesCount: post.likesCount,
-		dislikesCount: post.dislikesCount,
-		resibCount: post.resibCount,
-	})
+class Post extends React.PureComponent<Props, State> {
+	constructor(props: Props) {
+		super(props)
 
-	useEffect(() => {
-		setCountState({
-			...countState,
-			hasLiked: post.hasLiked,
-			hasDisliked: post.hasDisliked,
-			hasResibed: post.hasResibed,
-			likesCount: post.likesCount,
-			dislikesCount: post.dislikesCount,
-			resibCount: post.resibCount,
-		})
-	}, [props.post])
-
-	const _navigateToComments = () => {
-		props.navigation.push('Comments', { post: post.id })
+		this.state = {
+			hasLiked: props.post.hasLiked,
+			hasDisliked: props.post.hasDisliked,
+			hasResibed: props.post.hasResibed,
+			likesCount: props.post.likesCount,
+			dislikesCount: props.post.dislikesCount,
+			resibCount: props.post.resibCount,
+		}
 	}
 
-	const _likePost = async () => {
+	componentDidUpdate(prevProps: Props) {
+		if (prevProps.post !== this.props.post) {
+			this.setState({
+				hasLiked: this.props.post.hasLiked,
+				hasDisliked: this.props.post.hasDisliked,
+				hasResibed: this.props.post.hasResibed,
+				likesCount: this.props.post.likesCount,
+				dislikesCount: this.props.post.dislikesCount,
+				resibCount: this.props.post.resibCount,
+			})
+		}
+	}
+
+	_navigateToComments = () => {
+		this.props.navigation.push('Comments', { post: this.props.post.id })
+	}
+
+	_likePost = async () => {
+		let screen = this.props.navigation.getScreenProps()
 		let response = await Api.doAction({
 			token: screen.user.token,
 			type: 'like',
-			post: post.id,
+			post: this.props.post.id,
 		})
 		if (response) {
 			if (response.status) {
-				setCountState((countState) => {
-					return {
-						...countState,
-						hasLiked: response ? response.hasLiked : false,
-						hasDisliked: response ? response.hasDisliked : false,
-						likesCount: response ? response.likesCount : NaN,
-						dislikesCount: response ? response.dislikesCount : NaN,
-					}
+				this.setState({
+					hasLiked: response ? response.hasLiked : false,
+					hasDisliked: response ? response.hasDisliked : false,
+					likesCount: response ? response.likesCount : NaN,
+					dislikesCount: response ? response.dislikesCount : NaN,
 				})
 			} else {
 				if (response.error === 'no_login') {
@@ -86,22 +95,20 @@ const Post = (props: Props) => {
 		}
 	}
 
-	const _dislikePost = async () => {
+	_dislikePost = async () => {
+		let screen = this.props.navigation.getScreenProps()
 		let response = await Api.doAction({
 			token: screen.user.token,
 			type: 'dislike',
-			post: post.id,
+			post: this.props.post.id,
 		})
 		if (response) {
 			if (response.status) {
-				setCountState((countState) => {
-					return {
-						...countState,
-						hasLiked: response ? response.hasLiked : false,
-						hasDisliked: response ? response.hasDisliked : false,
-						likesCount: response ? response.likesCount : NaN,
-						dislikesCount: response ? response.dislikesCount : NaN,
-					}
+				this.setState({
+					hasLiked: response ? response.hasLiked : false,
+					hasDisliked: response ? response.hasDisliked : false,
+					likesCount: response ? response.likesCount : NaN,
+					dislikesCount: response ? response.dislikesCount : NaN,
 				})
 			} else {
 				if (response.error === 'no_login') {
@@ -117,25 +124,23 @@ const Post = (props: Props) => {
 		}
 	}
 
-	const _resibPost = async () => {
+	_resibPost = async () => {
+		let screen = this.props.navigation.getScreenProps()
 		let response = await Api.doAction({
 			token: screen.user.token,
 			type: 'resib',
-			post: post.id,
+			post: this.props.post.id,
 		})
 		if (response) {
 			if (response.status) {
-				setCountState((countState) => {
-					return {
-						...countState,
-						hasLiked: response ? response.hasLiked : false,
-						hasDisliked: response ? response.hasDisliked : false,
-						likesCount: response ? response.likesCount : NaN,
-						dislikesCount: response ? response.dislikesCount : NaN,
+				this.setState({
+					hasLiked: response ? response.hasLiked : false,
+					hasDisliked: response ? response.hasDisliked : false,
+					likesCount: response ? response.likesCount : NaN,
+					dislikesCount: response ? response.dislikesCount : NaN,
 
-						hasResibed: response ? response.hasResibed : false,
-						resibCount: response ? response.resibCount : NaN,
-					}
+					hasResibed: response ? response.hasResibed : false,
+					resibCount: response ? response.resibCount : NaN,
 				})
 			} else {
 				if (response.error === 'no_login') {
@@ -151,99 +156,103 @@ const Post = (props: Props) => {
 		}
 	}
 
-	return (
-		<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-			{post.postType === 'resib' && post.resibber ? (
-				<View style={[styles.resibTop, { borderBottomColor: theme.colors.background }]}>
-					<Feather name='repeat' size={16} color={theme.colors.main} />
-					<FastImage source={{ uri: post.resibber.profilePhoto }} style={styles.resibPP} />
-					<Text style={styles.resibUsername}>{post.resibber.username}</Text>
-				</View>
-			) : (
-				<></>
-			)}
-			{!props.noUser ? (
-				<TopProfile
-					user={{
-						username: post.user.username,
-						profilePhoto: post.user.profilePhoto,
-						time: Functions.convertTime(post.time, props.currentTime, screen.language),
-						tags: post.user.tags,
-						isFollowed: post.user.isFollowed,
-					}}
-					post={post}
-					navigation={navigation}
-					noUserTouchable={props.noUserTouchable && !(post.postType === 'resib' && post.resibber)}
-					openModal={props.openModal}
-				/>
-			) : (
-				<></>
-			)}
+	render() {
+		let screen = this.props.navigation.getScreenProps()
+		let { post, theme, navigation } = this.props
 
-			{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
-			{post.tags ? <RenderTags tags={post.tags} navigation={navigation} /> : <></>}
+		return (
+			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
+				{post.postType === 'resib' && post.resibber ? (
+					<View style={[styles.resibTop, { borderBottomColor: theme.colors.background }]}>
+						<Feather name='repeat' size={16} color={theme.colors.main} />
+						<FastImage source={{ uri: post.resibber.profilePhoto }} style={styles.resibPP} />
+						<Text style={styles.resibUsername}>{post.resibber.username}</Text>
+					</View>
+				) : (
+					<></>
+				)}
+				{!this.props.noUser ? (
+					<TopProfile
+						user={post.user}
+						time={Functions.convertTime(post.time, this.props.currentTime, screen.language)}
+						post={post}
+						navigation={navigation}
+						noUserTouchable={this.props.noUserTouchable && !(post.postType === 'resib' && post.resibber)}
+						openModal={this.props.openModal}
+					/>
+				) : (
+					<></>
+				)}
 
-			{post.postData.length > 0 ? (
-				<PostContainer like={_likePost} postData={post.postData} navigation={navigation} isVisible={props.isVisible} />
-			) : (
-				<></>
-			)}
+				{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
+				{post.tags ? <RenderTags tags={post.tags} navigation={navigation} /> : <></>}
 
-			<View style={styles.bottomContainer}>
-				<View style={styles.buttons}>
-					<LikeButton type='like' active={countState.hasLiked} count={countState.likesCount} onPress={_likePost} />
-					<LikeButton type='dislike' active={countState.hasDisliked} count={countState.dislikesCount} onPress={_dislikePost} />
-					{!post.isMine ? (
-						<LikeButton type='resib' active={countState.hasResibed} count={countState.resibCount} onPress={_resibPost} />
-					) : (
-						<></>
-					)}
-				</View>
+				{post.postData.length > 0 ? (
+					<PostContainer like={this._likePost} postData={post.postData} navigation={navigation} isVisible={this.props.isVisible} />
+				) : (
+					<></>
+				)}
 
-				<View style={styles.commentsButton}>
-					<TouchableOpacity onPress={_navigateToComments} style={styles.commentsButtonInner}>
-						<Text>
-							{post.commentsCount} {screen.language.comments_count}
-						</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
-
-			{props.commentsVisible ? (
-				<></>
-			) : (
-				<>
-					<Divider style={styles.bottomDivider} />
-					<TouchableOpacity style={styles.commentsContainer} onPress={_navigateToComments}>
-						{post.commentsCount > 0 ? (
-							<FeaturedComments comments={post.featuredComments} />
+				<View style={styles.bottomContainer}>
+					<View style={styles.buttons}>
+						<LikeButton type='like' active={this.state.hasLiked} count={this.state.likesCount} onPress={this._likePost} />
+						<LikeButton type='dislike' active={this.state.hasDisliked} count={this.state.dislikesCount} onPress={this._dislikePost} />
+						{!post.isMine ? (
+							<LikeButton type='resib' active={this.state.hasResibed} count={this.state.resibCount} onPress={this._resibPost} />
 						) : (
-							<Text style={styles.noComments}>{screen.language.no_comments}</Text>
+							<></>
 						)}
-					</TouchableOpacity>
-				</>
-			)}
-		</View>
-	)
+					</View>
+
+					<View style={styles.commentsButton}>
+						<TouchableOpacity onPress={this._navigateToComments} style={styles.commentsButtonInner}>
+							<Text>
+								{post.commentsCount} {screen.language.comments_count}
+							</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+
+				{this.props.commentsVisible ? (
+					<></>
+				) : (
+					<>
+						<Divider style={styles.bottomDivider} />
+						<TouchableOpacity style={styles.commentsContainer} onPress={this._navigateToComments}>
+							{post.commentsCount > 0 ? (
+								<FeaturedComments comments={post.featuredComments} />
+							) : (
+								<Text style={styles.noComments}>{screen.language.no_comments}</Text>
+							)}
+						</TouchableOpacity>
+					</>
+				)}
+			</View>
+		)
+	}
 }
 
-const RenderTags = React.memo((props: { tags: PostTypes.Tag[]; navigation: Types.Navigation }) => {
-	let renderTag = (tag: PostTypes.Tag) => <RenderTag key={tag.id.toString()} tag={tag} navigation={props.navigation} />
+class RenderTags extends React.PureComponent<{ tags: PostTypes.Tag[]; navigation: Types.Navigation }> {
+	renderTag = (tag: PostTypes.Tag) => <RenderTag key={tag.id.toString()} tag={tag} navigation={this.props.navigation} />
 
-	return <View style={styles.tags}>{props.tags.map(renderTag)}</View>
-})
-const RenderTag = React.memo((props: { tag: PostTypes.Tag; navigation: Types.Navigation }) => {
-	const navigate = () => {
-		props.navigation.push('CustomPosts', { type: 'tags', tag: props.tag })
+	render() {
+		return <View style={styles.tags}>{this.props.tags.map(this.renderTag)}</View>
+	}
+}
+class RenderTag extends React.PureComponent<{ tag: PostTypes.Tag; navigation: Types.Navigation }> {
+	navigate = () => {
+		this.props.navigation.push('CustomPosts', { type: 'tags', tag: this.props.tag })
 	}
 
-	return (
-		<TouchableOpacity onPress={navigate} style={styles.tagContainer}>
-			<Text style={styles.tag}>
-				#<Text style={styles.tagName}>{props.tag.name}</Text>
-			</Text>
-		</TouchableOpacity>
-	)
-})
+	render() {
+		return (
+			<TouchableOpacity onPress={this.navigate} style={styles.tagContainer}>
+				<Text style={styles.tag}>
+					#<Text style={styles.tagName}>{this.props.tag.name}</Text>
+				</Text>
+			</TouchableOpacity>
+		)
+	}
+}
 
-export default React.memo(Post)
+export default withTheme(Post)

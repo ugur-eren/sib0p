@@ -26,17 +26,18 @@ export default StyleSheet.create({
 	profilePhotoContainer: {
 		width: 100,
 		height: 100,
-		backgroundColor :'red',
+		backgroundColor: 'red',
 		borderRadius: 100,
 		top: -25,
 		borderWidth: 0.5,
-		overflow: 'hidden'
+		overflow: 'hidden',
+		position: 'relative'
 	},
 	profilePhoto: {
 		width: 100,
 		height: 100,
 		borderRadius: 100,
-		overflow: 'hidden'
+		overflow: 'hidden',
 	},
 	userInfo: {
 		paddingHorizontal: 10,
@@ -70,7 +71,7 @@ export default StyleSheet.create({
 	},
 	centerTouchable: {
 		alignItems: 'center',
-		flex: 1
+		flex: 1,
 	},
 	postsDivider: {
 		width: '100%',
@@ -93,5 +94,14 @@ export default StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		width: '100%',
+	},
+	ppbgLoading: {
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		width: '100%',
+		height: '100%',
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 })

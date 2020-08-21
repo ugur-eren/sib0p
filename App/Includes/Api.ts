@@ -16,7 +16,6 @@ export default new (class Functions {
 				.then((response) => response.json())
 				.then((data) => resolve(data))
 				.catch((err) => {
-					console.log('api error', method, err)
 					resolve(false)
 				})
 		})
@@ -37,10 +36,11 @@ export default new (class Functions {
 				},
 				body: joinedBody,
 			})
-				.then((response) => response.json())
-				.then((data) => resolve(data))
+				.then((response) => response.text())
+				.then((res) => {
+					resolve(JSON.parse(res))
+				})
 				.catch((err) => {
-					console.log('api error', this.uri + method + '.php', err)
 					resolve(false)
 				})
 		})
@@ -137,11 +137,9 @@ export default new (class Functions {
 					onUploadProgress: onUploadProgress,
 				})
 				.then((res) => {
-					console.log(res)
 					resolve(res.data instanceof Object ? res.data : false)
 				})
 				.catch((err) => {
-					console.log(err)
 					resolve(false)
 				})
 		})

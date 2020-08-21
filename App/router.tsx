@@ -121,6 +121,9 @@ const bottomStack = createMaterialBottomTabNavigator(
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('plus-square'),
 				title: navigation.getScreenProps().language.share,
+				tabBarOnPress: (({ navigation, defaultHandler }: { navigation: Types.Navigation, defaultHandler: any }) => {
+					navigation.navigate("Share")
+				}) as any,
 			})) as any,
 		},
 		Notifications: {
