@@ -109,13 +109,8 @@ class Comment extends React.PureComponent<Props, State> {
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
 				<TopProfile
-					user={{
-						username: comment.user.username,
-						profilePhoto: comment.user.profilePhoto,
-						time: Functions.convertTime(comment.time, this.props.currentTime, screen.language),
-						tags: comment.user.tags,
-						isFollowed: comment.user.isFollowed,
-					}}
+					user={comment.user}
+					time={Functions.convertTime(comment.time, this.props.currentTime, screen.language)}
 					navigation={navigation}
 					openModal={comment.isMine ? this.openModal : undefined}
 				/>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Dimensions, StyleProp, ImageStyle } from 'react-native'
-import { Text, useTheme } from 'react-native-paper'
+import { Text, withTheme } from 'react-native-paper'
 import { TouchableWithoutFeedback, TouchableOpacity } from 'react-native-gesture-handler'
 import RNVideo from 'react-native-video'
 import Feather from 'react-native-vector-icons/Feather'
@@ -11,80 +11,95 @@ import styles from './styles'
 
 interface Props {
 	navigation: Types.Navigation
+	theme: Types.Theme
 	post: PostTypes.PostData
 	isVisible: boolean
 	style?: StyleProp<ImageStyle>
 	muted: boolean
 }
 
-const Video = (props: Props) => {
-	const theme: Types.Theme = useTheme() as any
-	const screen = props.navigation.getScreenProps()
-	const [renderVideo, setRenderVideo] = useState(true)
-	const [ready, setReady] = useState(false)
-	const [error, setError] = useState(false)
+interface State {
+	renderVideo: boolean
+	ready: boolean
+	error: boolean
+}
 
-	const width = Dimensions.get('window').width
+class Video extends React.PureComponent<Props, State> {
+	constructor(props: Props) {
+		super(props)
 
-	const _videoError = (err: any) => {
-		if (err & err.error) {
-			setError(true)
+		this.state = {
+			renderVideo: true,
+			ready: false,
+			error: false,
 		}
 	}
 
-	const _videoReady = () => {
-		setReady(true)
+	private width = Dimensions.get('window').width
+
+	_videoError = (err: any) => {
+		if (err & err.error) {
+			this.setState({ error: true })
+		}
 	}
 
-	const _tryAgain = () => {
-		setRenderVideo(false)
-		setRenderVideo(true)
-		setReady(false)
-		setError(false)
+	_videoReady = () => {
+		this.setState({ ready: true })
 	}
 
-	return (
-		<>
-			{renderVideo ? (
-				<RNVideo
-					source={{ uri: props.post.uri }}
-					style={[props.style, { height: width / props.post.ratio, aspectRatio: props.post.ratio }]}
-					paused={!props.isVisible}
-					repeat={true}
-					muted={props.muted}
-					poster={props.post.poster}
-					resizeMode='contain'
-					onReadyForDisplay={_videoReady}
-					onError={_videoError}
-					mixWithOthers="duck"
-				/>
-			) : (
-				<></>
-			)}
+	_tryAgain = () => {
+		this.setState({ renderVideo: false }, () => {
+			this.setState({ renderVideo: true, ready: false, error: false })
+		})
+	}
 
-			{error ? (
-				<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
-					<TouchableOpacity onPress={_tryAgain} style={styles.errorTouchable}>
-						<Text style={styles.errorText}>{screen.language.video_load_error}</Text>
-					</TouchableOpacity>
-				</View>
-			) : !ready ? (
-				<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
-					<ActivityIndicator size={36} />
-				</View>
-			) : (
-				<></>
-			)}
+	render() {
+		let screen = this.props.navigation.getScreenProps()
+		let { theme } = this.props
 
-			{props.muted ? (
-				<View style={styles.mutedContainer}>
-					<Feather name='volume-x' size={24} color={'white'} style={styles.muted} />
-				</View>
-			) : (
-				<></>
-			)}
-		</>
-	)
+		return (
+			<>
+				{this.state.renderVideo ? (
+					<RNVideo
+						source={{ uri: this.props.post.uri }}
+						style={[this.props.style, { height: this.width / this.props.post.ratio, aspectRatio: this.props.post.ratio }]}
+						paused={!this.props.isVisible}
+						repeat={true}
+						muted={this.props.muted}
+						poster={this.props.post.poster}
+						resizeMode='contain'
+						onReadyForDisplay={this._videoReady}
+						onError={this._videoError}
+						mixWithOthers='duck'
+					/>
+				) : (
+					<></>
+				)}
+
+				{this.state.error ? (
+					<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
+						<TouchableOpacity onPress={this._tryAgain} style={styles.errorTouchable}>
+							<Text style={styles.errorText}>{screen.language.video_load_error}</Text>
+						</TouchableOpacity>
+					</View>
+				) : !this.state.ready ? (
+					<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
+						<ActivityIndicator size={36} />
+					</View>
+				) : (
+					<></>
+				)}
+
+				{this.props.muted ? (
+					<View style={styles.mutedContainer}>
+						<Feather name='volume-x' size={24} color={'white'} style={styles.muted} />
+					</View>
+				) : (
+					<></>
+				)}
+			</>
+		)
+	}
 }
 
-export default React.memo(Video)
+export default withTheme(Video)

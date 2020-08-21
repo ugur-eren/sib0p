@@ -16,14 +16,15 @@ import TextButton from '../../Components/TextButton/TextButton'
 interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
-	user: UserTypes.TopInfo
+	user: UserTypes.TopContent
+	time: string
 	post?: PostTypes.Post
 	openModal?: (post: PostTypes.Post) => void
 	noUserTouchable?: boolean
 }
 
 interface State {
-	user: UserTypes.TopInfo
+	user: UserTypes.TopContent
 }
 
 class Post extends React.PureComponent<Props, State> {
@@ -108,7 +109,7 @@ class Post extends React.PureComponent<Props, State> {
 							{this._renderUserTags()}
 						</View>
 
-						<Timer time={user.time} />
+						<Timer time={this.props.time} />
 					</ContainerComponent>
 					{noUserTouchable || user.username === this.props.navigation.getScreenProps().user.username || user.isFollowed ? (
 						<></>

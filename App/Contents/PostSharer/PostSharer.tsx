@@ -54,7 +54,6 @@ class PostSharer extends React.PureComponent<Props, State> {
 					let imageFile = await RNFS.readFile(image.content, 'base64')
 					allImages.push({ type: image.type, content: imageFile })
 				} catch (e) {
-					if (__DEV__) console.log('image read error', e)
 				}
 
 				LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))

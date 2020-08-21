@@ -38,6 +38,8 @@ interface State {
 	blockUserLoading: boolean
 	reportUserActive: boolean
 	reportUserLoading: boolean
+	ppLoading: boolean
+	bgLoading: boolean
 }
 
 class UserProfile extends React.PureComponent<Props, State> {
@@ -50,12 +52,14 @@ class UserProfile extends React.PureComponent<Props, State> {
 			posts: [],
 			currentTime: 0,
 			noUser: false,
-			hasPage: false,
+			hasPage: true,
 			error: false,
 			blockUserActive: false,
 			blockUserLoading: false,
 			reportUserActive: false,
 			reportUserLoading: false,
+			ppLoading: false,
+			bgLoading: false,
 		}
 	}
 
@@ -319,8 +323,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 		ImagePicker.openPicker({
 			mediaType: 'photo',
 			multiple: false,
-			width: 500,
-			height: type === 'pp' ? 500 : 250,
+			width: type === 'pp' ? 500 : 2520,
+			height: type === 'pp' ? 500 : 1080,
 			cropping: true,
 			forceJpg: true,
 			freeStyleCropEnabled: false,
@@ -350,11 +354,23 @@ class UserProfile extends React.PureComponent<Props, State> {
 					if (im && im.data) {
 						let screen = this.props.navigation.getScreenProps()
 
+						if (type === 'pp') {
+							this.setState({ ppLoading: true })
+						} else {
+							this.setState({ bgLoading: true })
+						}
+
 						let response = await Api.changePhoto({
 							token: screen.user.token,
 							type: type,
 							image: im.data,
 						})
+
+						if (type === 'pp') {
+							this.setState({ ppLoading: false })
+						} else {
+							this.setState({ bgLoading: false })
+						}
 
 						if (response) {
 							if (response.status) {
@@ -396,7 +412,17 @@ class UserProfile extends React.PureComponent<Props, State> {
 						onPress={isMyself ? this._changeBG : undefined}
 						style={[styles.backgroundImage, { backgroundColor: 'red' }]}
 					>
-						<FastImage source={{ uri: user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
+						<View style={styles.backgroundImage}>
+							<FastImage source={{ uri: user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
+
+							{this.state.bgLoading ? (
+								<View style={[styles.ppbgLoading, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
+									<ActivityIndicator size='small' color={theme.colors.main} />
+								</View>
+							) : (
+								<></>
+							)}
+						</View>
 					</TouchableWithoutFeedback>
 					<TransparentHeader
 						title={user.username}
@@ -410,7 +436,17 @@ class UserProfile extends React.PureComponent<Props, State> {
 							onPress={isMyself ? this._changePP : undefined}
 							style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}
 						>
-							<FastImage source={{ uri: user.profilePhoto }} style={styles.profilePhoto} />
+							<View>
+								<FastImage source={{ uri: user.profilePhoto }} style={styles.profilePhoto} />
+
+								{this.state.ppLoading ? (
+									<View style={[styles.ppbgLoading, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
+										<ActivityIndicator size='small' color={theme.colors.main} />
+									</View>
+								) : (
+									<></>
+								)}
+							</View>
 						</TouchableWithoutFeedback>
 					</View>
 
