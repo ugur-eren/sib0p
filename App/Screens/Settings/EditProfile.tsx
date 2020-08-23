@@ -113,6 +113,8 @@ class EditProfile extends React.PureComponent<Props, State> {
 				this.setState({
 					loading: false,
 					isErrorVisible: true,
+					usernameError: '',
+					emailError: '',
 				})
 			} else {
 				if (response.error === 'wrong_username') {
