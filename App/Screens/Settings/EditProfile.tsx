@@ -83,7 +83,7 @@ class EditProfile extends React.PureComponent<Props, State> {
 		this.setState({ bio: text })
 	}
 
-	_onLoginPress = async () => {
+	_onEditPress = async () => {
 		let screen = this.props.navigation.getScreenProps()
 		if (!this.state.username) {
 			return this.setState({ usernameError: screen.language.username_empty })
@@ -113,13 +113,6 @@ class EditProfile extends React.PureComponent<Props, State> {
 				this.setState({
 					loading: false,
 					isErrorVisible: true,
-					username: '',
-					name: '',
-					surname: '',
-					email: '',
-					bio: '',
-					usernameError: '',
-					emailError: '',
 				})
 			} else {
 				if (response.error === 'wrong_username') {
@@ -203,7 +196,7 @@ class EditProfile extends React.PureComponent<Props, State> {
 									label={screen.language.edit_profile}
 									loading={true}
 									containerStyle={styles.buttonContainer}
-									onPress={this._onLoginPress}
+									onPress={this._onEditPress}
 								/>
 							</View>
 
