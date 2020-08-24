@@ -96,6 +96,16 @@ const styles = StyleSheet.create({
 var lastFocusedRoute: string | false = false
 const bottomStack = createMaterialBottomTabNavigator(
 	{
+		Follows: {
+			screen: Explore,
+			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
+				tabBarIcon: tabBarIcon('users'),
+				title: navigation.getScreenProps().language.follows,
+			})) as any,
+			params: {
+				type: 'follows',
+			},
+		},
 		Explore: {
 			screen: Explore,
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
@@ -106,14 +116,14 @@ const bottomStack = createMaterialBottomTabNavigator(
 				type: 'explore',
 			},
 		},
-		Follows: {
+		MemeLord: {
 			screen: Explore,
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
-				tabBarIcon: tabBarIcon('users'),
-				title: navigation.getScreenProps().language.follows,
+				tabBarIcon: tabBarIcon('star'),
+				title: navigation.getScreenProps().language.memelord,
 			})) as any,
 			params: {
-				type: 'follows',
+				type: 'memelord',
 			},
 		},
 		ShareInitiator: {
@@ -146,7 +156,7 @@ const bottomStack = createMaterialBottomTabNavigator(
 		},
 	},
 	{
-		initialRouteName: 'Explore',
+		initialRouteName: 'Follows',
 		backBehavior: 'history',
 		shifting: true,
 		defaultNavigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({

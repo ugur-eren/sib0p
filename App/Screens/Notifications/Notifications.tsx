@@ -34,6 +34,8 @@ class Notifications extends React.PureComponent<Props, State> {
 		}
 	}
 
+	private newPageActive: boolean = false
+
 	componentDidMount() {
 		this.init()
 	}
@@ -64,6 +66,8 @@ class Notifications extends React.PureComponent<Props, State> {
 			} else {
 				if (notifs.error === 'no_login') {
 					screen.logout(true)
+				} else if (notifs.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else {
 					screen.unknown_error(notifs.error)
 				}
@@ -74,7 +78,9 @@ class Notifications extends React.PureComponent<Props, State> {
 
 		stateObject = { ...stateObject, loading: false }
 
-		this.setState(stateObject)
+		this.setState(stateObject, () => {
+			if (nextPage) this.newPageActive = false
+		})
 	}
 
 	refresh = async () => {
@@ -82,6 +88,8 @@ class Notifications extends React.PureComponent<Props, State> {
 	}
 
 	getNextPage = async () => {
+		if (this.newPageActive) return
+		this.newPageActive = true
 		return this.init(true, true)
 	}
 
@@ -96,6 +104,8 @@ class Notifications extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
+
+		console.log(this.state.notifications)
 
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>

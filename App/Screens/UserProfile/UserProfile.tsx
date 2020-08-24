@@ -63,6 +63,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 		}
 	}
 
+	private newPageActive = false
 	private modalizeRef: any = null
 
 	componentDidMount() {
@@ -105,6 +106,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 					} else {
 						if (user.error === 'no_login') {
 							screen.logout(true)
+						} else if (user.error === 'too_fast_action') {
+							screen.error(screen.language.too_fast_action)
 						} else {
 							if (user.error === 'no_user') {
 								stateObject = { ...stateObject, noUser: true }
@@ -133,12 +136,16 @@ class UserProfile extends React.PureComponent<Props, State> {
 							posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
 							currentTime: posts.currentTime,
 						}
-						screen.setProfileDataCache(stateObject.user, posts.posts)
+						if (!nextPage) {
+							screen.setProfileDataCache(stateObject.user, posts.posts)
+						}
 						screen.setCurrentTime(posts.currentTime)
 					}
 				} else {
 					if (posts.error === 'no_login') {
 						screen.logout(true)
+					} else if (posts.error === 'too_fast_action') {
+						screen.error(screen.language.too_fast_action)
 					} else {
 						screen.unknown_error(posts.error)
 					}
@@ -149,11 +156,15 @@ class UserProfile extends React.PureComponent<Props, State> {
 		}
 
 		stateObject = { ...stateObject, loading: false }
-		this.setState(stateObject)
+		this.setState(stateObject, () => {
+			if (nextPage) this.newPageActive = false
+		})
 	}
 
 	getNextPage = () => {
 		if (this.state.hasPage) {
+			if (this.newPageActive) return
+			this.newPageActive = true
 			return this.init(true, true)
 		}
 	}
@@ -210,6 +221,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username)
 				} else if (response.error === 'no_user') {
@@ -251,6 +264,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username_error)
 				} else if (response.error === 'no_user') {
@@ -284,6 +299,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username)
 				} else if (response.error === 'no_user') {

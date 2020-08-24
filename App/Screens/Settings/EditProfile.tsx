@@ -58,6 +58,8 @@ class EditProfile extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else {
 					screen.unknown_error(response.error)
 				}

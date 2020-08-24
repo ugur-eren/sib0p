@@ -41,8 +41,9 @@ class SinglePost extends React.PureComponent<Props, State> {
 	}
 
 	init = async () => {
+		let screen = this.props.navigation.getScreenProps()
 		let post = await Api.getExplore({
-			token: this.props.navigation.getScreenProps().user.token,
+			token: screen.user.token,
 			type: 'single',
 			post: this.props.navigation.getParam('post'),
 		})
@@ -54,16 +55,18 @@ class SinglePost extends React.PureComponent<Props, State> {
 					post: post.posts.length > 0 ? post.posts[0] : null,
 					currentTime: post.currentTime,
 				}
-				this.props.navigation.getScreenProps().setCurrentTime(post.currentTime)
+				screen.setCurrentTime(post.currentTime)
 			} else {
 				if (post.error === 'no_login') {
-					this.props.navigation.getScreenProps().logout(true)
+					screen.logout(true)
+				} else if (post.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else {
-					this.props.navigation.getScreenProps().unknown_error(post.error)
+					screen.unknown_error(post.error)
 				}
 			}
 		} else {
-			this.props.navigation.getScreenProps().unknown_error()
+			screen.unknown_error()
 		}
 
 		stateObject = { ...stateObject, loading: false }

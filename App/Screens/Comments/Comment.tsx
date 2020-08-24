@@ -53,6 +53,8 @@ class Comment extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_comment') {
 					screen.error(screen.language.no_comment_error)
 				} else {
@@ -87,6 +89,8 @@ class Comment extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_comment') {
 					screen.error(screen.language.no_comment_error)
 				} else {
@@ -113,6 +117,7 @@ class Comment extends React.PureComponent<Props, State> {
 					time={Functions.convertTime(comment.time, this.props.currentTime, screen.language)}
 					navigation={navigation}
 					openModal={comment.isMine ? this.openModal : undefined}
+					small
 				/>
 
 				<Text style={styles.content}>{Functions.replaceTags(comment.content, navigation, true)}</Text>
@@ -124,6 +129,7 @@ class Comment extends React.PureComponent<Props, State> {
 						count={comment.likesCount}
 						onPress={this.likeComment}
 						containerStyle={styles.likeButton}
+						small
 					/>
 					<LikeButton
 						type='dislike'
@@ -131,6 +137,7 @@ class Comment extends React.PureComponent<Props, State> {
 						count={comment.dislikesCount}
 						onPress={this.dislikeComment}
 						containerStyle={styles.likeButton}
+						small
 					/>
 				</View>
 			</View>

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
 import Config from '../../Includes/Config'
 
 export default StyleSheet.create({
@@ -21,7 +21,7 @@ export default StyleSheet.create({
 		flex: 1,
 		justifyContent: 'flex-end',
 		flexDirection: 'row',
-		marginRight: 20,
+		marginRight: 10,
 	},
 	commentsButtonInner: {
 		padding: 10,
@@ -70,5 +70,12 @@ export default StyleSheet.create({
 	},
 	resibUsername: {
 		fontFamily: Config.fonts.semi,
+	},
+	adMobContainer: {
+		width: '100%',
+		height: (Dimensions.get('window').width / 300) * 250,
+		alignItems: 'center',
+		justifyContent: 'center',
+		transform: [{ scale: Dimensions.get('window').width / 300 }],
 	},
 })

@@ -4,6 +4,7 @@ import { Text, Divider, withTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Feather from 'react-native-vector-icons/Feather'
 import FastImage from 'react-native-fast-image'
+import { AdMobBanner } from 'react-native-admob'
 import PostContainer from '../PostContainer/PostContainer'
 import TopProfile from '../TopProfile/TopProfile'
 import FeaturedComments from '../FeaturedComments/FeaturedComments'
@@ -84,6 +85,8 @@ class Post extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else {
@@ -113,6 +116,8 @@ class Post extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else {
@@ -145,6 +150,8 @@ class Post extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else {
@@ -162,69 +169,91 @@ class Post extends React.PureComponent<Props, State> {
 
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
-				{post.postType === 'resib' && post.resibber ? (
-					<View style={[styles.resibTop, { borderBottomColor: theme.colors.background }]}>
-						<Feather name='repeat' size={16} color={theme.colors.main} />
-						<FastImage source={{ uri: post.resibber.profilePhoto }} style={styles.resibPP} />
-						<Text style={styles.resibUsername}>{post.resibber.username}</Text>
+				{post.postType === 'adMob' ? (
+					<View>
+						<View style={[styles.resibTop, { borderBottomColor: theme.colors.background }]}>
+							<Feather name='star' size={16} color={theme.colors.main} />
+							<Text style={styles.resibUsername}> {screen.language.sponsored}</Text>
+						</View>
+						<View style={styles.adMobContainer}>
+							<AdMobBanner
+								adSize='mediumRectangle'
+								adUnitID="ca-app-pub-8794045781059689/1095546593"
+							/>
+						</View>
 					</View>
 				) : (
-					<></>
-				)}
-				{!this.props.noUser ? (
-					<TopProfile
-						user={post.user}
-						time={Functions.convertTime(post.time, this.props.currentTime, screen.language)}
-						post={post}
-						navigation={navigation}
-						noUserTouchable={this.props.noUserTouchable && !(post.postType === 'resib' && post.resibber)}
-						openModal={this.props.openModal}
-					/>
-				) : (
-					<></>
-				)}
-
-				{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
-				{post.tags ? <RenderTags tags={post.tags} navigation={navigation} /> : <></>}
-
-				{post.postData.length > 0 ? (
-					<PostContainer like={this._likePost} postData={post.postData} navigation={navigation} isVisible={this.props.isVisible} />
-				) : (
-					<></>
-				)}
-
-				<View style={styles.bottomContainer}>
-					<View style={styles.buttons}>
-						<LikeButton type='like' active={this.state.hasLiked} count={this.state.likesCount} onPress={this._likePost} />
-						<LikeButton type='dislike' active={this.state.hasDisliked} count={this.state.dislikesCount} onPress={this._dislikePost} />
-						{!post.isMine ? (
-							<LikeButton type='resib' active={this.state.hasResibed} count={this.state.resibCount} onPress={this._resibPost} />
+					<>
+						{post.postType === 'resib' && post.resibber ? (
+							<View style={[styles.resibTop, { borderBottomColor: theme.colors.background }]}>
+								<Feather name='repeat' size={16} color={theme.colors.main} />
+								<FastImage source={{ uri: post.resibber.profilePhoto }} style={styles.resibPP} />
+								<Text style={styles.resibUsername}>{post.resibber.username}</Text>
+							</View>
 						) : (
 							<></>
 						)}
-					</View>
+						{!this.props.noUser ? (
+							<TopProfile
+								user={post.user}
+								time={Functions.convertTime(post.time, this.props.currentTime, screen.language)}
+								post={post}
+								navigation={navigation}
+								noUserTouchable={this.props.noUserTouchable && !(post.postType === 'resib' && post.resibber)}
+								openModal={this.props.openModal}
+							/>
+						) : (
+							<></>
+						)}
 
-					<View style={styles.commentsButton}>
-						<TouchableOpacity onPress={this._navigateToComments} style={styles.commentsButtonInner}>
-							<Text>
-								{post.commentsCount} {screen.language.comments_count}
-							</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
+						{post.description ? <Text style={styles.description}>{Functions.replaceTags(post.description, navigation)}</Text> : <></>}
+						{post.tags ? <RenderTags tags={post.tags} navigation={navigation} /> : <></>}
 
-				{this.props.commentsVisible ? (
-					<></>
-				) : (
-					<>
-						<Divider style={styles.bottomDivider} />
-						<TouchableOpacity style={styles.commentsContainer} onPress={this._navigateToComments}>
-							{post.commentsCount > 0 ? (
-								<FeaturedComments comments={post.featuredComments} />
-							) : (
-								<Text style={styles.noComments}>{screen.language.no_comments}</Text>
-							)}
-						</TouchableOpacity>
+						{post.postData.length > 0 ? (
+							<PostContainer like={this._likePost} postData={post.postData} navigation={navigation} isVisible={this.props.isVisible} />
+						) : (
+							<></>
+						)}
+
+						<View style={styles.bottomContainer}>
+							<View style={styles.buttons}>
+								<LikeButton type='like' active={this.state.hasLiked} count={this.state.likesCount} onPress={this._likePost} />
+								<LikeButton
+									type='dislike'
+									active={this.state.hasDisliked}
+									count={this.state.dislikesCount}
+									onPress={this._dislikePost}
+								/>
+								{!post.isMine ? (
+									<LikeButton type='resib' active={this.state.hasResibed} count={this.state.resibCount} onPress={this._resibPost} />
+								) : (
+									<></>
+								)}
+							</View>
+
+							<View style={styles.commentsButton}>
+								<TouchableOpacity onPress={this._navigateToComments} style={styles.commentsButtonInner}>
+									<Text>
+										{post.commentsCount} {screen.language.comments_count}
+									</Text>
+								</TouchableOpacity>
+							</View>
+						</View>
+
+						{this.props.commentsVisible ? (
+							<></>
+						) : (
+							<>
+								<Divider style={styles.bottomDivider} />
+								<TouchableOpacity style={styles.commentsContainer} onPress={this._navigateToComments}>
+									{post.commentsCount > 0 ? (
+										<FeaturedComments comments={post.featuredComments} />
+									) : (
+										<Text style={styles.noComments}>{screen.language.no_comments}</Text>
+									)}
+								</TouchableOpacity>
+							</>
+						)}
 					</>
 				)}
 			</View>

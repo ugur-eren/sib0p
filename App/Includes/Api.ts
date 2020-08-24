@@ -38,6 +38,7 @@ export default new (class Functions {
 			})
 				.then((response) => response.text())
 				.then((res) => {
+					console.log(res)
 					resolve(JSON.parse(res))
 				})
 				.catch((err) => {

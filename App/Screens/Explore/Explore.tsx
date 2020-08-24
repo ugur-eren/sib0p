@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Dimensions } from 'react-native'
 import { withTheme, ActivityIndicator } from 'react-native-paper'
 import MainHeader from '../../Components/MainHeader/MainHeader'
 import Posts from '../../Contents/Posts/Posts'
@@ -12,7 +12,7 @@ import Header from '../../Components/Header/Header'
 
 interface Props {
 	navigation: Types.Navigation<{
-		type: 'explore' | 'follows' | 'tags'
+		type: 'explore' | 'follows' | 'tags' | 'memelord'
 		tag?: PostTypes.Tag
 	}>
 	theme: Types.Theme
@@ -37,18 +37,20 @@ class Explore extends React.PureComponent<Props, State> {
 
 	private newPageActive: boolean = false
 	private pageType = this.props.navigation.getParam('type')
+	private postsRef: any = null
 
 	async componentDidMount() {
 		this.init()
 	}
 
 	init = async (refresh?: boolean, nextPage?: boolean) => {
+		let screen = this.props.navigation.getScreenProps()
 		if (!refresh && !this.state.loading) {
 			this.setState({ loading: true })
 		}
 		let tag = this.props.navigation.getParam('tag')
 		let posts = await Api.getExplore({
-			token: this.props.navigation.getScreenProps().user.token,
+			token: screen.user.token,
 			last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
 			type: this.pageType,
 			...(tag ? { tag: tag.id } : {}),
@@ -59,21 +61,25 @@ class Explore extends React.PureComponent<Props, State> {
 		if (posts) {
 			if (posts.status) {
 				stateObject = { posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts, currentTime: posts.currentTime }
-				this.props.navigation.getScreenProps().setCurrentTime(posts.currentTime)
+				screen.setCurrentTime(posts.currentTime)
 			} else {
 				if (posts.error === 'no_login') {
-					this.props.navigation.getScreenProps().logout(true)
+					screen.logout(true)
+				} else if (posts.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else {
-					this.props.navigation.getScreenProps().unknown_error(posts.error)
+					screen.unknown_error(posts.error)
 				}
 			}
 		} else {
-			return this.props.navigation.getScreenProps().unknown_error()
+			return screen.unknown_error()
 		}
 
 		stateObject = { ...stateObject, loading: false }
 
-		this.setState(stateObject)
+		this.setState(stateObject, () => {
+			if (nextPage) this.newPageActive = false
+		})
 	}
 
 	refresh = () => {
@@ -81,6 +87,8 @@ class Explore extends React.PureComponent<Props, State> {
 	}
 
 	getNextPage = () => {
+		if (this.newPageActive) return
+		this.newPageActive = true
 		return this.init(true, true)
 	}
 
@@ -89,6 +97,19 @@ class Explore extends React.PureComponent<Props, State> {
 			<ActivityIndicator size={24} color={this.props.theme.colors.main} />
 		</View>
 	)
+
+	setPostsRef = (ref: any) => {
+		this.postsRef = ref
+	}
+
+	onLogoPress = () => {
+		if (this.postsRef) {
+			this.postsRef.scrollToOffset({
+				animated: true,
+				offset: 0,
+			})
+		}
+	}
 
 	render() {
 		let screen = this.props.navigation.getScreenProps()
@@ -101,9 +122,10 @@ class Explore extends React.PureComponent<Props, State> {
 						{this.pageType === 'tags' ? (
 							<Header title={'Tag: #' + (this.props.navigation.getParam('tag')?.name || screen.language.unknown)} />
 						) : (
-							<MainHeader />
+							<MainHeader onLogoPress={this.onLogoPress} />
 						)}
 						<Posts
+							flatlistRef={this.setPostsRef}
 							navigation={this.props.navigation}
 							refresh={this.refresh}
 							getNextPage={this.getNextPage}

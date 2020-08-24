@@ -1,9 +1,8 @@
 import React from 'react'
-import { View, FlatList, SafeAreaView, TextInput, RefreshControl, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, FlatList, RefreshControl } from 'react-native'
 import { Divider, withTheme, List, Dialog, Button, Paragraph, Portal } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Header from '../../Components/Header/Header'
-import TextButton from '../../Components/TextButton/TextButton'
 import EmptyList from '../../Components/EmptyList/EmptyList'
 import Types from '../../Includes/Types/Types'
 import CommentTypes from '../../Includes/Types/CommentTypes'
@@ -11,6 +10,7 @@ import Api from '../../Includes/Api'
 import Comment from './Comment'
 import Loader from './Loader'
 import { CommentsStyles as styles } from './styles'
+import WriteComment from './WriteComment'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -26,7 +26,6 @@ interface State {
 	refreshing: boolean
 	comments: CommentTypes.Comment[]
 	currentTime: number
-	commentInput: string
 	activeComment: CommentTypes.Comment
 	deleteCommentActive: boolean
 	deleteCommentLoading: boolean
@@ -41,7 +40,6 @@ class Comments extends React.PureComponent<Props, State> {
 			refreshing: false,
 			comments: [],
 			currentTime: 0,
-			commentInput: '',
 			activeComment: null,
 			deleteCommentActive: false,
 			deleteCommentLoading: false,
@@ -62,23 +60,25 @@ class Comments extends React.PureComponent<Props, State> {
 		if (!refresh && !this.state.loading) {
 			this.setState({ loading: true })
 		}
-		let isOk = false
 		let comments = await Api.getComments({
 			token: screen.user.token,
 			post: this.postId,
 			last: nextPage ? this.state.comments[this.state.comments.length - 1].time : 0,
 		})
+		let stateObject = {}
+
 		if (comments) {
 			if (comments.status) {
-				isOk = true
-				this.setState({
+				stateObject = {
 					comments: nextPage ? [...this.state.comments, ...comments.comments] : comments.comments,
 					currentTime: comments.currentTime,
-				})
+				}
 				screen.setCurrentTime(comments.currentTime)
 			} else {
 				if (comments.error === 'no_login') {
 					screen.logout(true)
+				} else if (comments.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else {
 					this.props.navigation
 						.getScreenProps()
@@ -89,9 +89,11 @@ class Comments extends React.PureComponent<Props, State> {
 			screen.unknown_error()
 		}
 
-		if (isOk) {
-			this.setState({ loading: false, refreshing: false })
-		}
+		stateObject = { ...stateObject, loading: false, refreshing: false }
+		
+		this.setState(stateObject, () => {
+			if (nextPage) this.newPageActive = false
+		})
 	}
 
 	refresh = () => {
@@ -101,47 +103,9 @@ class Comments extends React.PureComponent<Props, State> {
 	}
 
 	getNextPage = async () => {
-		if (!this.newPageActive) {
-			this.newPageActive = true
-
-			this.init(true, true)
-
-			this.newPageActive = false
-		}
-	}
-
-	handleCommentChange = (text: string) => {
-		this.setState({ commentInput: text })
-	}
-
-	sendComment = async () => {
-		let screen = this.props.navigation.getScreenProps()
-
-		let response = await Api.doAction({
-			post: this.postId,
-			token: screen.user.token,
-			type: 'comment',
-			comment: this.state.commentInput,
-		})
-
-		if (response) {
-			if (response.status) {
-				this.setState({ commentInput: '' })
-				this.refresh()
-			} else {
-				if (response.error === 'no_login') {
-					screen.logout(true)
-				} else if (response.error === 'no_post') {
-					screen.error(screen.language.no_post_error)
-				} else if (response.error === 'same_comment') {
-					screen.error(screen.language.same_comment_error)
-				} else {
-					screen.unknown_error(response.error)
-				}
-			}
-		} else {
-			screen.unknown_error()
-		}
+		if (this.newPageActive) return
+		this.newPageActive = true
+		return this.init(true, true)
 	}
 
 	_setModalizeRef = (ref: any) => {
@@ -180,6 +144,8 @@ class Comments extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_comment') {
 					screen.error(screen.language.no_comment_error)
 				} else if (response.error === 'no_auth') {
@@ -223,20 +189,8 @@ class Comments extends React.PureComponent<Props, State> {
 							onEndReached={this.getNextPage}
 							ListHeaderComponent={this.props.customHeader}
 						/>
-						<KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior='position'>
-							<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
-								<TextInput
-									value={this.state.commentInput}
-									onChangeText={this.handleCommentChange}
-									placeholder={screen.language.your_comment}
-									placeholderTextColor={theme.colors.halfContrast}
-									style={[styles.writeCommentInput, { color: theme.colors.contrast }]}
-									keyboardAppearance={this.props.theme.dark ? 'dark' : 'default'}
-								/>
 
-								<TextButton label={screen.language.send} loadable onPress={this.sendComment} language={screen.language} />
-							</SafeAreaView>
-						</KeyboardAvoidingView>
+						<WriteComment postId={this.postId} refresh={this.refresh} screen={screen} />
 
 						<Portal>
 							<Modalize

@@ -31,7 +31,7 @@ class Settings extends React.PureComponent<Props, State> {
 		this.props.navigation.getScreenProps().setTheme(key)
 	}
 
-	onLanguageSelect = (key: 'en' | 'tr' | 'system') => {
+	onLanguageSelect = (key: Types.SupportedLanguages | 'system') => {
 		this.props.navigation.getScreenProps().setLanguage(key)
 	}
 
@@ -68,6 +68,7 @@ class Settings extends React.PureComponent<Props, State> {
 		const SupportedLanguages = {
 			tr: 'Türkçe',
 			en: 'English',
+			ru: 'русский',
 			system: screen.language.theme_system,
 		}
 

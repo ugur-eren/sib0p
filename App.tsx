@@ -161,7 +161,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		} else {
 			stateObject = {
 				...stateObject,
-				language: allSettings.language === 'tr' ? 'tr' : 'en',
+				language: allSettings.language || 'tr',
 			}
 		}
 
@@ -264,17 +264,15 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 	}
 
-	setLanguage = (language: 'tr' | 'en' | 'system', callback?: () => void) => {
+	setLanguage = (language: Types.SupportedLanguages | 'system', callback?: () => void) => {
 		Storage.set('language', language)
 
-		let setLanguage: 'tr' | 'en' = null
+		let setLanguage: Types.SupportedLanguages = null
 
 		if (language === 'system') {
 			setLanguage = DefaultLanguage
-		} else if (language === 'tr') {
-			setLanguage = 'tr'
 		} else {
-			setLanguage = 'en'
+			setLanguage = language || 'tr'
 		}
 
 		if (this.state.language !== setLanguage || this.state.selectedLanguage !== language) {
@@ -406,7 +404,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					}}
 					theme={Theme[this.state.theme]}
 				>
-					<PostSharer language={Languages['en']} sharePost={this.setSharePost} token={this.state.user.token} />
+					<PostSharer language={Languages[this.state.language]} sharePost={this.setSharePost} token={this.state.user.token} />
 					{this.state.ready ? (
 						<AppRouter
 							ref={this._setNavigationRef}

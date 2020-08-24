@@ -156,7 +156,7 @@ class Register extends React.PureComponent<Props, State> {
 				} else if (register.error == 'some_empty') {
 					this.props.navigation.getScreenProps().error(screen.language.some_empty)
 				} else if (register.error == 'username_in_use') {
-					this.props.navigation.getScreenProps().error(screen.language.email_in_use)
+					this.props.navigation.getScreenProps().error(screen.language.username_in_use)
 				} else if (register.error == 'username_not_allowed') {
 					this.props.navigation.getScreenProps().error(screen.language.username_not_allowed)
 				} else if (register.error == 'username_short') {
@@ -181,7 +181,7 @@ class Register extends React.PureComponent<Props, State> {
 	}
 
 	_onUsernameChange = (text: string) => {
-		this.setState({ username: text })
+		this.setState({ username: text.replace(/[^a-zA-Z0-9.\-_]/g, '') })
 	}
 	_onNameChange = (text: string) => {
 		this.setState({ name: text })

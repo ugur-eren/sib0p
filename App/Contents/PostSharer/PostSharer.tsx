@@ -53,8 +53,7 @@ class PostSharer extends React.PureComponent<Props, State> {
 				try {
 					let imageFile = await RNFS.readFile(image.content, 'base64')
 					allImages.push({ type: image.type, content: imageFile })
-				} catch (e) {
-				}
+				} catch (e) {}
 
 				LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))
 				this.setState({ progress: 55 / (images.length / i) })
@@ -84,14 +83,10 @@ class PostSharer extends React.PureComponent<Props, State> {
 			if (sharePost.status) {
 				Alert.alert(this.props.language.success, this.props.language.post_share_success, [{ style: 'cancel', text: 'Tamam' }])
 			} else {
-				Alert.alert(this.props.language.error, this.props.language.post_share_error, [
-					{ style: 'cancel', text: this.props.language.ok },
-				])
+				Alert.alert(this.props.language.error, this.props.language.post_share_error, [{ style: 'cancel', text: this.props.language.ok }])
 			}
 		} else {
-			Alert.alert(this.props.language.error, this.props.language.post_share_error, [
-				{ style: 'cancel', text: this.props.language.ok },
-			])
+			Alert.alert(this.props.language.error, this.props.language.post_share_error, [{ style: 'cancel', text: this.props.language.ok }])
 		}
 
 		LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))

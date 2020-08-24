@@ -264,7 +264,7 @@ class Share extends React.PureComponent<Props, State> {
 								<View style={styles.topContainer}>
 									<View style={styles.topInner}>
 										<Feather color={theme.colors.contrast} name='edit-3' size={24} style={styles.topIcon} />
-										<Text style={styles.topTitle}>Detay</Text>
+										<Text style={styles.topTitle}>{screen.language.detail}</Text>
 									</View>
 									<Divider style={styles.divider} />
 								</View>
@@ -310,7 +310,7 @@ class Share extends React.PureComponent<Props, State> {
 								<View style={styles.topContainer}>
 									<View style={styles.topInner}>
 										<Feather color={theme.colors.contrast} name='image' size={24} style={styles.topIcon} />
-										<Text style={styles.topTitle}>Medya</Text>
+										<Text style={styles.topTitle}>{screen.language.media}</Text>
 									</View>
 									<Divider style={styles.divider} />
 								</View>
@@ -338,7 +338,7 @@ class Share extends React.PureComponent<Props, State> {
 							<TouchableRipple onPress={this.onSubmit} style={styles.submitButtonTouchable}>
 								<>
 									<Feather name='upload' size={24} color={this.props.theme.colors.main} style={styles.submitIcon} />
-									<Text style={[styles.submitText, { color: this.props.theme.colors.main }]}>Paylaş</Text>
+									<Text style={[styles.submitText, { color: this.props.theme.colors.main }]}>{screen.language.share}</Text>
 								</>
 							</TouchableRipple>
 						</SafeAreaView>
@@ -354,7 +354,9 @@ class Share extends React.PureComponent<Props, State> {
 									>
 										<>
 											<Feather name='image' size={24} color={theme.colors.contrast} />
-											<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Resim</Text>
+											<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>
+												{screen.language.picture}
+											</Text>
 										</>
 									</TouchableRipple>
 
@@ -364,7 +366,7 @@ class Share extends React.PureComponent<Props, State> {
 									>
 										<>
 											<Feather name='video' size={24} color={theme.colors.contrast} />
-											<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>Video</Text>
+											<Text style={[styles.selectorOptionItem, { color: theme.colors.contrast }]}>{screen.language.video}</Text>
 										</>
 									</TouchableRipple>
 								</View>

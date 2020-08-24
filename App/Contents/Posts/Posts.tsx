@@ -17,6 +17,7 @@ interface Props {
 	currentTime: number
 	refresh: () => Promise<any>
 	getNextPage: () => Promise<any>
+	flatlistRef?: React.LegacyRef<FlatList<PostTypes.Post>>
 	noUserTouchable?: boolean
 	ListHeaderComponent?: React.ComponentType
 	ListEmptyComponent?: React.ComponentType
@@ -179,6 +180,8 @@ class Posts extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'no_auth') {
@@ -210,6 +213,8 @@ class Posts extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'already_reported') {
@@ -241,6 +246,8 @@ class Posts extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'not_reported') {
@@ -261,6 +268,7 @@ class Posts extends React.PureComponent<Props, State> {
 		return (
 			<>
 				<FlatList
+					ref={this.props.flatlistRef}
 					data={this.props.posts}
 					keyExtractor={this._keyExtractor}
 					ItemSeparatorComponent={this._itemSeperatorComponent}

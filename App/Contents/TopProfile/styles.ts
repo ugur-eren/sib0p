@@ -17,9 +17,23 @@ export default StyleSheet.create({
 		height: 50,
 		borderRadius: 50,
 	},
+	smallImageContainer: {
+		width: 35,
+		height: 35,
+	},
+	smallImage: {
+		width: 35,
+		height: 35,
+		borderRadius: 35,
+	},
 	outerContent: {
 		flex: 1,
 		marginLeft: 10,
+		flexDirection: 'row',
+	},
+	smallOuterContent: {
+		flex: 1,
+		marginLeft: 0,
 		flexDirection: 'row',
 	},
 	innerContent: {
@@ -32,7 +46,6 @@ export default StyleSheet.create({
 	},
 	username: {
 		fontFamily: Config.fonts.semi,
-		fontWeight: undefined,
 	},
 	usertag: {
 		marginLeft: 5,
