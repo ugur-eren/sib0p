@@ -301,6 +301,7 @@ declare namespace Types {
 		picture: string
 		video: string
 		sponsored: string
+		image_thin: string
 	}
 
 	export type SupportedLanguages = 'tr' | 'en' | 'ru'

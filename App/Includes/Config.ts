@@ -3,7 +3,7 @@ const Config = {
 	siteUri: 'https://sib0p.com/',
 
 	api: {
-		version: '1',
+		version: '2',
 		uri: 'https://sib0p.com/api/v2/',
 	},
 

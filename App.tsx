@@ -172,7 +172,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
 			})
 		}
-		
+
 		if (!loggedIn.username && !loggedIn.profilePhoto) {
 			stateObject = {
 				...stateObject,
@@ -181,7 +181,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					token: '',
 					username: '',
 					profilePhoto: '',
-					notifCount: 0
+					notifCount: 0,
 				},
 			}
 
@@ -190,6 +190,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 				SplashScreen.hide()
 			})
 		} else {
+			OneSignal.sendTag('token', loggedIn.notif_token)
+
 			stateObject = {
 				...stateObject,
 				user: {
@@ -197,7 +199,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					token: stateObject.user.token,
 					username: loggedIn.username,
 					profilePhoto: loggedIn.profilePhoto,
-					notifCount: loggedIn.notifCount
+					notifCount: loggedIn.notifCount,
 				},
 			}
 			Storage.setMultiple({

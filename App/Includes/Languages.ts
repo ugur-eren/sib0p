@@ -194,6 +194,7 @@ const Languages: Types.Languages = {
 		picture: 'Resim',
 		video: 'Video',
 		sponsored: 'Sponsorlu',
+		image_thin: 'Yüklediğiniz resim çok ince veya çok uzun. Boyut oranı en fazla 1:2 veya 2:1 olabilir.',
 	},
 	en: {
 		code: 'en',
@@ -370,6 +371,7 @@ const Languages: Types.Languages = {
 		picture: 'Picture',
 		video: 'Video',
 		sponsored: 'Sponsored',
+		image_thin: 'The image you have uploaded is too thin or too thick. Image ratio must be between 1:2 and 2:1.',
 	},
 	ru: {
 		code: 'ru',
@@ -545,6 +547,7 @@ const Languages: Types.Languages = {
 		picture: 'Картина',
 		video: 'видео',
 		sponsored: 'Спонсируемый',
+		image_thin: 'Загруженное изображение слишком тонкое или слишком толстое. Соотношение сторон изображения должно быть от 1:2 до 2:1.',
 	},
 }
 
