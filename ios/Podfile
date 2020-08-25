@@ -12,6 +12,8 @@ target 'sib0p' do
 
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
 
+  pod 'Google-Mobile-Ads-SDK'
+
   target 'sib0pTests' do
     inherit! :complete
     # Pods for testing

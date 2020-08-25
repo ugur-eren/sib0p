@@ -26,6 +26,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-8794045781059689~4766256345</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -47,6 +49,13 @@
 	<string>Sib0p uygulaması, size daha doğru veriler sunabilmek ve bildirim gönderebilmek için konum izininizi istemektedir.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Sib0p uygulaması, gönderi paylaşabilmeniz ve profilinizi düzenleyebilmeniz için dosya izini istemektedir.</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>earworm.ttf</string>
