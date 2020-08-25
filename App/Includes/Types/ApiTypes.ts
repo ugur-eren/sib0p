@@ -17,6 +17,7 @@ declare namespace ApiTypes {
 	export interface CheckLoginResponse extends Init {
 		username: string
 		profilePhoto?: string
+		notif_token?: string
 		notifCount?: number
 	}
 
@@ -48,6 +49,7 @@ declare namespace ApiTypes {
 			| 'email_in_use'
 		> {
 		token?: string
+		notif_token?: string
 		username?: string
 	}
 

@@ -3,6 +3,7 @@ import { View, Image, ScrollView, RefreshControl, ActivityIndicator } from 'reac
 import { withTheme, Text, Checkbox } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import FastImage from 'react-native-fast-image'
+import OneSignal from 'react-native-onesignal'
 import Button from '../../../Components/Button/Button'
 import Input from '../../../Components/Input/Input'
 import Api from '../../../Includes/Api'
@@ -140,6 +141,8 @@ class Register extends React.PureComponent<Props, State> {
 					token: register.token,
 					username: register.username,
 				})
+
+				OneSignal.sendTag('token', register.notif_token)
 
 				this.props.navigation.getScreenProps().setUserData({
 					active: true,
@@ -355,7 +358,12 @@ class Register extends React.PureComponent<Props, State> {
 						</View>
 
 						<View style={styles.bottomContainer}>
-							<Button label={screen.language.register} loading={true} containerStyle={styles.buttonContainer} onPress={this.onRegisterPress} />
+							<Button
+								label={screen.language.register}
+								loading={true}
+								containerStyle={styles.buttonContainer}
+								onPress={this.onRegisterPress}
+							/>
 							<TouchableOpacity onPress={this.navigateToLogin}>
 								<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
 									{screen.language.have_an_account}{' '}

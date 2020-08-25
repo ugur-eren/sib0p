@@ -83,7 +83,17 @@ class PostSharer extends React.PureComponent<Props, State> {
 			if (sharePost.status) {
 				Alert.alert(this.props.language.success, this.props.language.post_share_success, [{ style: 'cancel', text: 'Tamam' }])
 			} else {
-				Alert.alert(this.props.language.error, this.props.language.post_share_error, [{ style: 'cancel', text: this.props.language.ok }])
+				if (sharePost.error === 'file_too_big'){
+					Alert.alert(this.props.language.error, this.props.language.image_size_more, [{ style: 'cancel', text: this.props.language.ok }])
+				} else if (sharePost.error === 'no_data'){
+					Alert.alert(this.props.language.error, this.props.language.no_post_data, [{ style: 'cancel', text: this.props.language.ok }])
+				} else if (sharePost.error === 'video_not_supported') {
+					Alert.alert(this.props.language.error, this.props.language.file_not_supported, [{ style: 'cancel', text: this.props.language.ok }])
+				} else if (sharePost.error === 'file_too_thin') {
+					Alert.alert(this.props.language.error, this.props.language.image_thin, [{ style: 'cancel', text: this.props.language.ok }])
+				} else {
+					Alert.alert(this.props.language.error, this.props.language.post_share_error, [{ style: 'cancel', text: this.props.language.ok }])
+				}
 			}
 		} else {
 			Alert.alert(this.props.language.error, this.props.language.post_share_error, [{ style: 'cancel', text: this.props.language.ok }])
