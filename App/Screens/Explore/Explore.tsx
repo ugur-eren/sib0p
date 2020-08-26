@@ -52,6 +52,7 @@ class Explore extends React.PureComponent<Props, State> {
 		let posts = await Api.getExplore({
 			token: screen.user.token,
 			last: nextPage ? this.state.posts[this.state.posts.length - 1].time : 0,
+			points: nextPage && this.pageType === 'memelord' ? this.state.posts[this.state.posts.length - 1].points : 0,
 			type: this.pageType,
 			...(tag ? { tag: tag.id } : {}),
 		})
