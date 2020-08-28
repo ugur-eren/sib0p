@@ -11,8 +11,8 @@ interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
 	post: PostTypes.PostData
-	isVisible: boolean
 	style?: StyleProp<ImageStyle>
+	setVisibleRef: (ref: { setVisible: (visible: boolean) => void }) => void
 }
 
 interface State {
@@ -26,10 +26,14 @@ class Image extends React.PureComponent<Props, State> {
 		this.state = {
 			imageProgress: 0,
 		}
+
+		props.setVisibleRef({ setVisible: this._setVisible })
 	}
-
+	
 	private width = Dimensions.get('window').width
-
+	
+	_setVisible = () => {}
+	
 	_ImageLoading = (event: OnProgressEvent) => {
 		if (event.nativeEvent.loaded / event.nativeEvent.total >= this.state.imageProgress + 0.2) {
 			this.setState({ imageProgress: event.nativeEvent.loaded / event.nativeEvent.total })

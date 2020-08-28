@@ -11,9 +11,9 @@ interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
 	post: PostTypes.PostData
-	isVisible: boolean
 	like: () => Promise<void>
 	style?: StyleProp<ImageStyle>
+	setVisibleRef: (ref: { setVisible: (visible: boolean) => void }) => void
 }
 
 interface State {
@@ -45,13 +45,18 @@ class PostContent extends React.PureComponent<Props, State> {
 		return (
 			<TouchableOpacity onPress={this.onPress}>
 				{this.props.post.type === 'image' ? (
-					<Image navigation={this.props.navigation} post={this.props.post} isVisible={this.props.isVisible} style={this.props.style} />
+					<Image
+						setVisibleRef={this.props.setVisibleRef}
+						navigation={this.props.navigation}
+						post={this.props.post}
+						style={this.props.style}
+					/>
 				) : this.props.post.type === 'video' ? (
 					<Video
+						setVisibleRef={this.props.setVisibleRef}
 						muted={this.state.muted}
 						navigation={this.props.navigation}
 						post={this.props.post}
-						isVisible={this.props.isVisible}
 						style={this.props.style}
 					/>
 				) : (

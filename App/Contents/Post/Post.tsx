@@ -19,8 +19,8 @@ interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
 	post: PostTypes.Post
-	isVisible: boolean
 	currentTime: number
+	setVisibleRef: (ref: { setVisible: (visible: boolean) => void; key: number }) => void
 	openModal?: (post: PostTypes.Post) => void
 	noUser?: boolean
 	noUserTouchable?: boolean
@@ -176,10 +176,7 @@ class Post extends React.PureComponent<Props, State> {
 							<Text style={styles.resibUsername}> {screen.language.sponsored}</Text>
 						</View>
 						<View style={styles.adMobContainer}>
-							<AdMobBanner
-								adSize='mediumRectangle'
-								adUnitID="ca-app-pub-8794045781059689/1095546593"
-							/>
+							<AdMobBanner adSize='mediumRectangle' adUnitID='ca-app-pub-8794045781059689/1095546593' />
 						</View>
 					</View>
 				) : (
@@ -210,7 +207,13 @@ class Post extends React.PureComponent<Props, State> {
 						{post.tags ? <RenderTags tags={post.tags} navigation={navigation} /> : <></>}
 
 						{post.postData.length > 0 ? (
-							<PostContainer like={this._likePost} postData={post.postData} navigation={navigation} isVisible={this.props.isVisible} />
+							<PostContainer
+								setVisibleRef={this.props.setVisibleRef}
+								postId={this.props.post.id}
+								like={this._likePost}
+								postData={post.postData}
+								navigation={navigation}
+							/>
 						) : (
 							<></>
 						)}

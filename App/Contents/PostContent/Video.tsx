@@ -13,15 +13,16 @@ interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
 	post: PostTypes.PostData
-	isVisible: boolean
 	style?: StyleProp<ImageStyle>
 	muted: boolean
+	setVisibleRef: (ref: { setVisible: (visible: boolean) => void }) => void
 }
 
 interface State {
 	renderVideo: boolean
 	ready: boolean
 	error: boolean
+	isVisible: boolean
 }
 
 class Video extends React.PureComponent<Props, State> {
@@ -32,6 +33,15 @@ class Video extends React.PureComponent<Props, State> {
 			renderVideo: true,
 			ready: false,
 			error: false,
+			isVisible: false,
+		}
+
+		props.setVisibleRef({ setVisible: this._setVisible })
+	}
+
+	_setVisible = (visible: boolean) => {
+		if (this.state.isVisible !== visible) {
+			this.setState({ isVisible: visible })
 		}
 	}
 
@@ -63,7 +73,7 @@ class Video extends React.PureComponent<Props, State> {
 					<RNVideo
 						source={{ uri: this.props.post.uri }}
 						style={[this.props.style, { height: this.width / this.props.post.ratio, aspectRatio: this.props.post.ratio }]}
-						paused={!this.props.isVisible}
+						paused={!this.state.isVisible}
 						repeat={true}
 						muted={this.props.muted}
 						poster={this.props.post.poster}

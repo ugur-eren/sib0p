@@ -12,7 +12,8 @@ interface Props {
 	theme: Types.Theme
 	postData: PostTypes.PostData[]
 	like: () => Promise<void>
-	isVisible: boolean
+	postId: number
+	setVisibleRef: (ref: { setVisible: (visible: boolean) => void; key: number }) => void
 }
 
 interface State {
@@ -26,10 +27,25 @@ class PostContainer extends React.PureComponent<Props, State> {
 		this.state = {
 			activeSlide: 0,
 		}
+
+		props.setVisibleRef({ setVisible: this._setVisibility, key: props.postId })
 	}
 
 	private width = Dimensions.get('window').width
 	private _carouselRef: any = null
+	private PostContentRefs: { setVisible: (visible: boolean) => void }[] = []
+
+	_setPostContentRef = (ref: any) => {
+		this.PostContentRefs.push(ref)
+	}
+
+	_setVisibility = (visible: boolean) => {
+		this.PostContentRefs.map((item) => {
+			item.setVisible(false)
+		})
+
+		this.PostContentRefs[this.state.activeSlide].setVisible(visible)
+	}
 
 	renderCarouselItem = ({ item, index }: { item: PostTypes.PostData; index: number }) => (
 		<PostContent
@@ -38,11 +54,13 @@ class PostContainer extends React.PureComponent<Props, State> {
 			like={this.props.like}
 			style={styles.post}
 			navigation={this.props.navigation}
-			isVisible={this.props.isVisible && index === this.state.activeSlide}
+			setVisibleRef={this._setPostContentRef}
 		/>
 	)
 
 	onCarouselSnap = (index: number) => {
+		this.PostContentRefs.map((item) => item.setVisible(false))
+		this.PostContentRefs[index].setVisible(true)
 		this.setState({ activeSlide: index })
 	}
 
@@ -91,7 +109,7 @@ class PostContainer extends React.PureComponent<Props, State> {
 					like={this.props.like}
 					style={[styles.post, { height: this.width / postData[0].ratio }]}
 					navigation={this.props.navigation}
-					isVisible={this.props.isVisible}
+					setVisibleRef={this._setPostContentRef}
 				/>
 			)
 		}

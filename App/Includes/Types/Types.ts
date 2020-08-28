@@ -304,7 +304,7 @@ declare namespace Types {
 		image_thin: string
 	}
 
-	export type SupportedLanguages = 'tr' | 'en' | 'ru'
+	export type SupportedLanguages = 'tr' | 'en' | 'ru' | 'de'
 }
 
 export default Types

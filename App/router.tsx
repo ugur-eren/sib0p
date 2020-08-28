@@ -90,6 +90,9 @@ const styles = StyleSheet.create({
 		right: -5,
 		fontFamily: Config.fonts.semi,
 		textAlignVertical: 'center',
+		textAlign: 'center',
+		justifyContent: 'center',
+		alignItems: 'center'
 	},
 })
 

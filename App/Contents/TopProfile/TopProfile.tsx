@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Platform } from 'react-native'
-import { Text, IconButton, withTheme } from 'react-native-paper'
+import { Text, IconButton } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Feather from 'react-native-vector-icons/Feather'
@@ -15,7 +15,6 @@ import TextButton from '../../Components/TextButton/TextButton'
 
 interface Props {
 	navigation: Types.Navigation
-	theme: Types.Theme
 	user: UserTypes.TopContent
 	time: string
 	post?: PostTypes.Post
@@ -92,10 +91,12 @@ class Post extends React.PureComponent<Props, State> {
 	}
 
 	_renderUserTags = () => this.props.user.tags.map(this._renderUserTag)
-	_renderUserTag = (tag: UserTagTypes.Tag) => <Feather key={tag.id.toString()} name={tag.icon} size={this.props.small ? 12 : 16} color={tag.color} style={styles.usertag} />
+	_renderUserTag = (tag: UserTagTypes.Tag) => (
+		<Feather key={tag.id.toString()} name={tag.icon} size={this.props.small ? 12 : 16} color={tag.color} style={styles.usertag} />
+	)
 
 	render() {
-		let { theme, noUserTouchable, small } = this.props
+		let { noUserTouchable, small } = this.props
 		let { user } = this.state
 		let ContainerComponent = noUserTouchable ? TouchableWithoutFeedback : TouchableOpacity
 		let screen = this.props.navigation.getScreenProps()
@@ -108,7 +109,7 @@ class Post extends React.PureComponent<Props, State> {
 					<FastImage source={{ uri: user.profilePhoto }} style={small ? styles.smallImage : styles.image} />
 				</ContainerComponent>
 
-				<View style={small ? styles.smallOuterContent: styles.outerContent}>
+				<View style={small ? styles.smallOuterContent : styles.outerContent}>
 					<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.innerContent}>
 						<View style={styles.usernameContainer}>
 							<Text style={styles.username}>{user.username}</Text>
@@ -139,4 +140,4 @@ class Post extends React.PureComponent<Props, State> {
 	}
 }
 
-export default withTheme(Post)
+export default Post
