@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, Dimensions, StyleProp, ImageStyle } from 'react-native'
+import React from 'react'
+import { View, StyleProp, ImageStyle } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import FastImage, { OnProgressEvent } from 'react-native-fast-image'
 import { Circle as CircleProgress } from 'react-native-progress'
@@ -11,6 +11,7 @@ interface Props {
 	navigation: Types.Navigation
 	theme: Types.Theme
 	post: PostTypes.PostData
+	width: number
 	style?: StyleProp<ImageStyle>
 	setVisibleRef: (ref: { setVisible: (visible: boolean) => void }) => void
 }
@@ -29,11 +30,9 @@ class Image extends React.PureComponent<Props, State> {
 
 		props.setVisibleRef({ setVisible: this._setVisible })
 	}
-	
-	private width = Dimensions.get('window').width
-	
+
 	_setVisible = () => {}
-	
+
 	_ImageLoading = (event: OnProgressEvent) => {
 		if (event.nativeEvent.loaded / event.nativeEvent.total >= this.state.imageProgress + 0.2) {
 			this.setState({ imageProgress: event.nativeEvent.loaded / event.nativeEvent.total })
@@ -48,14 +47,18 @@ class Image extends React.PureComponent<Props, State> {
 		this.setState({ imageProgress: 1 })
 	}
 
+	height = { height: this.props.width / this.props.post.ratio }
+	imageStyle = [this.props.style, this.height]
+	imageSource = { uri: this.props.post.uri }
+
 	render() {
 		let { theme } = this.props
 
 		return (
 			<View>
 				<FastImage
-					source={{ uri: this.props.post.uri }}
-					style={[this.props.style, { height: this.width / this.props.post.ratio }]}
+					source={this.imageSource}
+					style={this.imageStyle}
 					onProgress={this._ImageLoading}
 					onLoadEnd={this._ImageLoadEnd}
 				/>

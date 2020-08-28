@@ -14,6 +14,7 @@ interface Props {
 	like: () => Promise<void>
 	postId: number
 	setVisibleRef: (ref: { setVisible: (visible: boolean) => void; key: number }) => void
+	width: number
 }
 
 interface State {
@@ -43,7 +44,7 @@ class PostContainer extends React.PureComponent<Props, State> {
 		this.PostContentRefs.map((item) => {
 			item.setVisible(false)
 		})
-
+		
 		this.PostContentRefs[this.state.activeSlide].setVisible(visible)
 	}
 
@@ -55,6 +56,7 @@ class PostContainer extends React.PureComponent<Props, State> {
 			style={styles.post}
 			navigation={this.props.navigation}
 			setVisibleRef={this._setPostContentRef}
+			width={this.props.width}
 		/>
 	)
 
@@ -107,9 +109,10 @@ class PostContainer extends React.PureComponent<Props, State> {
 				<PostContent
 					post={postData[0]}
 					like={this.props.like}
-					style={[styles.post, { height: this.width / postData[0].ratio }]}
+					style={styles.post}
 					navigation={this.props.navigation}
 					setVisibleRef={this._setPostContentRef}
+					width={this.props.width}
 				/>
 			)
 		}

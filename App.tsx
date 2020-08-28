@@ -67,155 +67,168 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	}
 
 	init = async () => {
-		let connected = await Api.checkConnection()
-		if (!connected || !connected.status) {
-			return this.setState({ ready: true }, () => {
-				SplashScreen.hide()
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
-			})
-		}
-
-		let settings = await Storage.getMultipleWithDefault({
-			theme: 'system',
-			notification: 'true',
-			language: 'system',
-			token: '',
-			username: '',
-		})
-		let allSettings: any = {}
-		let stateObject: any = {
-			ready: true,
-		}
-
-		if (!settings) {
-			allSettings = {
-				theme: 'system',
-				notification: 'true',
-				language: 'system',
-				token: '',
-				username: '',
-			}
-		} else {
-			allSettings = settings
-		}
-
-		// check and set notificaiton perm at settings
-		stateObject = {
-			...stateObject,
-			selectedTheme: allSettings.theme,
-			notification: allSettings.notification === 'true',
-			selectedLanguage: allSettings.language,
-		}
-
-		if (allSettings.token && allSettings.username) {
-			stateObject = {
-				...stateObject,
-				user: {
-					active: true,
-					token: allSettings.token,
-					username: allSettings.username,
-				},
-			}
-		} else {
-			stateObject = {
-				...stateObject,
-				user: {
-					active: false,
+		try {
+			let values = await Promise.all([
+				Api.checkConnection(),
+				Storage.getMultipleWithDefault({
+					theme: 'system',
+					notification: 'true',
+					language: 'system',
 					token: '',
 					username: '',
-				},
-			}
-		}
+				}),
+			])
 
-		// themeing
-		if (allSettings.theme === 'system') {
-			let colorScheme = Appearance.getColorScheme()
-			if (!colorScheme) {
-				colorScheme = 'light'
+			let connected = values[0]
+			let settings = values[1]
+
+			if (!connected || !connected.status) {
+				return this.setState({ ready: true }, () => {
+					SplashScreen.hide()
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+				})
 			}
 
-			stateObject = {
-				...stateObject,
-				theme: colorScheme,
+			let allSettings: any = {}
+			let stateObject: any = {
+				ready: true,
 			}
-		} else if (allSettings.theme === 'timed') {
-			let date = new Date()
-			let time = parseInt(date.getHours() + '' + date.getMinutes())
-			stateObject = {
-				...stateObject,
-				theme: time > 730 && time < 1730 ? 'light' : 'dark',
-			}
-		} else {
-			stateObject = {
-				...stateObject,
-				theme: allSettings.theme === 'dark' ? 'dark' : 'light',
-			}
-		}
 
-		// Language
-		if (allSettings.language === 'system') {
-			stateObject = {
-				...stateObject,
-				language: DefaultLanguage,
-			}
-		} else {
-			stateObject = {
-				...stateObject,
-				language: allSettings.language || 'tr',
-			}
-		}
-
-		let loggedIn = await Api.checkLogin({ token: stateObject.user.token })
-		if (!loggedIn) {
-			return this.setState({ ready: true }, () => {
-				SplashScreen.hide()
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
-			})
-		}
-
-		if (!loggedIn.username && !loggedIn.profilePhoto) {
-			stateObject = {
-				...stateObject,
-				user: {
-					active: false,
+			if (!settings) {
+				allSettings = {
+					theme: 'system',
+					notification: 'true',
+					language: 'system',
 					token: '',
 					username: '',
-					profilePhoto: '',
-					notifCount: 0,
-				},
-			}
-
-			return this.setState(stateObject, async () => {
-				await this.logout()
-				SplashScreen.hide()
-			})
-		} else {
-			OneSignal.sendTag('token', loggedIn.notif_token)
-
-			stateObject = {
-				...stateObject,
-				user: {
-					active: true,
-					token: stateObject.user.token,
-					username: loggedIn.username,
-					profilePhoto: loggedIn.profilePhoto,
-					notifCount: loggedIn.notifCount,
-				},
-			}
-			Storage.setMultiple({
-				username: loggedIn.username || '',
-				profilePhoto: loggedIn.profilePhoto || '',
-			})
-		}
-
-		this.setState(stateObject, () => {
-			SplashScreen.hide()
-			if (!this.state.user.active) {
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
+				}
 			} else {
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'mainStack' }))
+				allSettings = settings
 			}
-		})
+
+			// check and set notificaiton perm at settings
+			stateObject = {
+				...stateObject,
+				selectedTheme: allSettings.theme,
+				notification: allSettings.notification === 'true',
+				selectedLanguage: allSettings.language,
+			}
+
+			if (allSettings.token && allSettings.username) {
+				stateObject = {
+					...stateObject,
+					user: {
+						active: true,
+						token: allSettings.token,
+						username: allSettings.username,
+					},
+				}
+			} else {
+				stateObject = {
+					...stateObject,
+					user: {
+						active: false,
+						token: '',
+						username: '',
+					},
+				}
+			}
+
+			// themeing
+			if (allSettings.theme === 'system') {
+				let colorScheme = Appearance.getColorScheme()
+				if (!colorScheme) {
+					colorScheme = 'light'
+				}
+
+				stateObject = {
+					...stateObject,
+					theme: colorScheme,
+				}
+			} else if (allSettings.theme === 'timed') {
+				let date = new Date()
+				let time = parseInt(date.getHours() + '' + date.getMinutes())
+				stateObject = {
+					...stateObject,
+					theme: time > 730 && time < 1730 ? 'light' : 'dark',
+				}
+			} else {
+				stateObject = {
+					...stateObject,
+					theme: allSettings.theme === 'dark' ? 'dark' : 'light',
+				}
+			}
+
+			// Language
+			if (allSettings.language === 'system') {
+				stateObject = {
+					...stateObject,
+					language: DefaultLanguage,
+				}
+			} else {
+				stateObject = {
+					...stateObject,
+					language: allSettings.language || 'tr',
+				}
+			}
+
+			let loggedIn = await Api.checkLogin({ token: stateObject.user.token })
+			if (!loggedIn) {
+				return this.setState({ ready: true }, () => {
+					SplashScreen.hide()
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+				})
+			}
+
+			if (!loggedIn.username && !loggedIn.profilePhoto) {
+				stateObject = {
+					...stateObject,
+					user: {
+						active: false,
+						token: '',
+						username: '',
+						profilePhoto: '',
+						notifCount: 0,
+					},
+				}
+
+				return this.setState(stateObject, async () => {
+					await this.logout()
+					SplashScreen.hide()
+				})
+			} else {
+				OneSignal.sendTag('token', loggedIn.notif_token)
+
+				stateObject = {
+					...stateObject,
+					user: {
+						active: true,
+						token: stateObject.user.token,
+						username: loggedIn.username,
+						profilePhoto: loggedIn.profilePhoto,
+						notifCount: loggedIn.notifCount,
+					},
+				}
+				Storage.setMultiple({
+					username: loggedIn.username || '',
+					profilePhoto: loggedIn.profilePhoto || '',
+				})
+			}
+
+			this.setState(stateObject, () => {
+				SplashScreen.hide()
+				if (!this.state.user.active) {
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
+				} else {
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'mainStack' }))
+				}
+			})
+		} catch (e) {
+			return this.setState({ ready: true }, () => {
+				SplashScreen.hide()
+				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+			})
+		}
 	}
 
 	private isVideoMuted: boolean = false

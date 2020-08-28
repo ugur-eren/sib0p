@@ -20,6 +20,7 @@ interface Props {
 	theme: Types.Theme
 	post: PostTypes.Post
 	currentTime: number
+	width: number
 	setVisibleRef: (ref: { setVisible: (visible: boolean) => void; key: number }) => void
 	openModal?: (post: PostTypes.Post) => void
 	noUser?: boolean
@@ -213,6 +214,7 @@ class Post extends React.PureComponent<Props, State> {
 								like={this._likePost}
 								postData={post.postData}
 								navigation={navigation}
+								width={this.props.width}
 							/>
 						) : (
 							<></>

@@ -197,6 +197,8 @@ const Languages: Types.Languages = {
 		video: 'Video',
 		sponsored: 'Sponsorlu',
 		image_thin: 'Yüklediğiniz resim çok ince veya çok uzun. Boyut oranı en fazla 1:2 veya 2:1 olabilir.',
+		profile_photo: 'Profil Fotoğrafı',
+		background_photo: 'Arkaplan Fotoğrafı',
 	},
 	en: {
 		code: 'en',
@@ -374,6 +376,8 @@ const Languages: Types.Languages = {
 		video: 'Video',
 		sponsored: 'Sponsored',
 		image_thin: 'The image you have uploaded is too thin or too thick. Image ratio must be between 1:2 and 2:1.',
+		profile_photo: 'Profile Photo',
+		background_photo: 'Background Photo',
 	},
 	ru: {
 		code: 'ru',
@@ -550,6 +554,8 @@ const Languages: Types.Languages = {
 		video: 'видео',
 		sponsored: 'Спонсируемый',
 		image_thin: 'Загруженное изображение слишком тонкое или слишком толстое. Соотношение сторон изображения должно быть от 1:2 до 2:1.',
+		profile_photo: 'Изображение профиля',
+		background_photo: 'Фоновое фотография',
 	},
 	de: {
 		code: 'de',
@@ -688,7 +694,7 @@ const Languages: Types.Languages = {
 		user_block_success: 'Der Benutzer wurde erfolgreich blockiert. Sie können den Benutzer auf der Einstellungsseite entsperren.',
 		user_unblock_success: 'Der Benutzer wurde erfolgreich entsperrt.',
 		pp_photo_success: 'Das Profilbild wurde erfolgreich aktualisiert.',
-		bg_photo_success: 'Das Hintergrundfoto wurde erfolgreich aktualisiert.',
+		bg_photo_success: 'Das Hintergrund foto wurde erfolgreich aktualisiert.',
 		no_image: 'Es wurde kein Foto ausgewählt. Bitte versuche es erneut.',
 		file_not_supported: 'Das von Ihnen hochgeladene Dateiformat wird nicht unterstützt. Bitte versuchen Sie es erneut mit einer anderen Datei..',
 		file_open_error:
@@ -727,6 +733,8 @@ const Languages: Types.Languages = {
 		video: 'Video',
 		sponsored: 'Gesponsert',
 		image_thin: 'Das von Ihnen hochgeladene Bild ist zu dünn oder zu lang. Das Seitenverhältnis kann höchstens 1: 2 oder 2: 1 betragen.',
+		profile_photo: 'Profilbild',
+		background_photo: 'Hintergrund Foto',
 	},
 }
 

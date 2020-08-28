@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList, RefreshControl } from 'react-native'
+import { View, FlatList, RefreshControl, FlatListProperties, FlatListProps } from 'react-native'
 import { Divider, withTheme, List, Dialog, Button, Paragraph, Portal } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Header from '../../Components/Header/Header'
@@ -12,14 +12,15 @@ import Loader from './Loader'
 import { CommentsStyles as styles } from './styles'
 import WriteComment from './WriteComment'
 
-interface Props {
+type PropsCreator<T> = Pick<FlatListProps<T>, Exclude<keyof FlatListProps<T>, 'renderItem' | 'data'>> & {
 	navigation: Types.Navigation<{
 		post: number
 	}>
 	theme: Types.Theme
-	customHeader?: React.ComponentType
 	customPost?: number
 }
+
+type Props = PropsCreator<CommentTypes.Comment>
 
 interface State {
 	loading: boolean
@@ -90,7 +91,7 @@ class Comments extends React.PureComponent<Props, State> {
 		}
 
 		stateObject = { ...stateObject, loading: false, refreshing: false }
-		
+
 		this.setState(stateObject, () => {
 			if (nextPage) this.newPageActive = false
 		})
@@ -169,11 +170,11 @@ class Comments extends React.PureComponent<Props, State> {
 	)
 
 	render() {
-		let { theme } = this.props
+		let { theme, navigation, customPost, ...restProps } = this.props
 		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-				{this.props.customHeader ? <></> : <Header title={screen.language.comments} />}
+				{this.props.ListHeaderComponent ? <></> : <Header title={screen.language.comments} />}
 
 				{this.state.loading ? (
 					<Loader theme={theme} />
@@ -187,7 +188,7 @@ class Comments extends React.PureComponent<Props, State> {
 							refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.refresh} />}
 							ListEmptyComponent={this._emptyComponent}
 							onEndReached={this.getNextPage}
-							ListHeaderComponent={this.props.customHeader}
+							{...restProps}
 						/>
 
 						<WriteComment postId={this.postId} refresh={this.refresh} screen={screen} />

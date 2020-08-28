@@ -27,7 +27,7 @@ interface State {
 	user: UserTypes.TopContent
 }
 
-class Post extends React.PureComponent<Props, State> {
+class TopProfile extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
@@ -140,4 +140,4 @@ class Post extends React.PureComponent<Props, State> {
 	}
 }
 
-export default Post
+export default TopProfile

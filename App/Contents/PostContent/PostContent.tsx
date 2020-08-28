@@ -12,6 +12,7 @@ interface Props {
 	theme: Types.Theme
 	post: PostTypes.PostData
 	like: () => Promise<void>
+	width?: number
 	style?: StyleProp<ImageStyle>
 	setVisibleRef: (ref: { setVisible: (visible: boolean) => void }) => void
 }
@@ -46,6 +47,7 @@ class PostContent extends React.PureComponent<Props, State> {
 			<TouchableOpacity onPress={this.onPress}>
 				{this.props.post.type === 'image' ? (
 					<Image
+						width={this.props.width}
 						setVisibleRef={this.props.setVisibleRef}
 						navigation={this.props.navigation}
 						post={this.props.post}
@@ -53,6 +55,7 @@ class PostContent extends React.PureComponent<Props, State> {
 					/>
 				) : this.props.post.type === 'video' ? (
 					<Video
+						width={this.props.width}
 						setVisibleRef={this.props.setVisibleRef}
 						muted={this.state.muted}
 						navigation={this.props.navigation}

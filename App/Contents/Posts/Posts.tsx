@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle, FlatListProps } from 'react-native'
+import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle, FlatListProps, Dimensions } from 'react-native'
 import { List, withTheme, Dialog, Paragraph, Button, Divider, RadioButton } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
@@ -59,6 +59,7 @@ class Posts extends React.PureComponent<Props, State> {
 		viewAreaCoveragePercentThreshold: 60,
 	}
 
+	private width = Dimensions.get('window').width
 	private focusListener: any = null
 	private blurListener: any = null
 	private modalRef: any = null
@@ -92,6 +93,7 @@ class Posts extends React.PureComponent<Props, State> {
 			key={item.id.toString()}
 			setVisibleRef={this._setVisibleRef}
 			post={item}
+			width={this.width}
 			navigation={this.props.navigation}
 			currentTime={this.props.currentTime}
 			noUserTouchable={this.props.noUserTouchable}
