@@ -105,8 +105,6 @@ class Notifications extends React.PureComponent<Props, State> {
 	render() {
 		let { theme } = this.props
 
-		console.log(this.state.notifications)
-
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
 				<MainHeader />

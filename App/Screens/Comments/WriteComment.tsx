@@ -1,5 +1,5 @@
 import React from 'react'
-import { KeyboardAvoidingView, SafeAreaView, TextInput, Platform } from 'react-native'
+import { KeyboardAvoidingView, SafeAreaView, TextInput, KeyboardEvent, EmitterSubscription, Keyboard, Dimensions } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import TextButton from '../../Components/TextButton/TextButton'
 import { CommentsStyles as styles } from './styles'
@@ -15,6 +15,7 @@ interface Props {
 
 interface State {
 	commentInput: string
+	keyboardBottom: number
 }
 
 class WriteComment extends React.PureComponent<Props, State> {
@@ -23,7 +24,28 @@ class WriteComment extends React.PureComponent<Props, State> {
 
 		this.state = {
 			commentInput: '',
+			keyboardBottom: 0
 		}
+	}
+
+	private _keyboardDidShowListener: EmitterSubscription = null
+	private _keyboardDidHideListener: EmitterSubscription = null
+
+	componentDidMount(){
+		this._keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
+		this._keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
+	}
+
+	componentWillUnmount(){
+		if (this._keyboardDidShowListener) this._keyboardDidShowListener.remove()
+		if (this._keyboardDidHideListener) this._keyboardDidHideListener.remove()
+	}
+
+	_keyboardDidShow = (e: KeyboardEvent) => {
+		this.setState({keyboardBottom: e.endCoordinates.height})
+	}
+	_keyboardDidHide = (e: KeyboardEvent) => {
+		this.setState({keyboardBottom: 0})
 	}
 
 	handleCommentChange = (text: string) => {
@@ -70,20 +92,18 @@ class WriteComment extends React.PureComponent<Props, State> {
 		let { theme, screen } = this.props
 
 		return (
-			<KeyboardAvoidingView enabled={Platform.OS === 'ios'} behavior='position'>
-				<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary }]}>
-					<TextInput
-						value={this.state.commentInput}
-						onChangeText={this.handleCommentChange}
-						placeholder={screen.language.your_comment}
-						placeholderTextColor={theme.colors.halfContrast}
-						style={[styles.writeCommentInput, { color: theme.colors.contrast }]}
-						keyboardAppearance={theme.dark ? 'dark' : 'default'}
-					/>
+			<SafeAreaView style={[styles.writeCommentContainer, { backgroundColor: theme.colors.primary, marginBottom: this.state.keyboardBottom }]}>
+				<TextInput
+					value={this.state.commentInput}
+					onChangeText={this.handleCommentChange}
+					placeholder={screen.language.your_comment}
+					placeholderTextColor={theme.colors.halfContrast}
+					style={[styles.writeCommentInput, { color: theme.colors.contrast }]}
+					keyboardAppearance={theme.dark ? 'dark' : 'default'}
+				/>
 
-					<TextButton label={screen.language.send} loadable onPress={this.sendComment} language={screen.language} />
-				</SafeAreaView>
-			</KeyboardAvoidingView>
+				<TextButton label={screen.language.send} loadable onPress={this.sendComment} language={screen.language} />
+			</SafeAreaView>
 		)
 	}
 }
