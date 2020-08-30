@@ -24,15 +24,18 @@ class MainHeader extends React.Component<Props, State> {
 	onSearchPress = () => {
 		this.props.navigation.navigate('Search')
 	}
+	onChatPress = () => {
+		this.props.navigation.navigate('Chat')
+	}
 
 	render() {
 		return (
 			<Appbar.Header>
-				<Appbar.Action size={22} color={this.props.theme.colors.primary} icon='search' />
+				<Appbar.Action size={22} icon='search' color={this.props.theme.colors.contrast} onPress={this.onSearchPress} />
 				<TouchableOpacity onPress={this.props.onLogoPress} style={styles.logoContainer}>
 					<FastImage source={require('../../Assets/Images/logo-wide.png')} style={styles.logo} resizeMode='contain' />
 				</TouchableOpacity>
-				<Appbar.Action size={22} icon='search' color={this.props.theme.colors.contrast} onPress={this.onSearchPress} />
+				<Appbar.Action size={22} icon='send' color={this.props.theme.colors.contrast} onPress={this.onChatPress} />
 			</Appbar.Header>
 		)
 	}

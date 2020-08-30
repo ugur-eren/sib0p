@@ -45,6 +45,8 @@
 		"react-navigation-stack": "^2.8.2",
 		"react-navigation-tabs": "^2.9.0",
 		"rn-placeholder": "^3.0.1",
+		"socket.io": "^2.3.0",
+		"socket.io-client": "^2.3.0",
 		"v8-android-nointl": "^8.84.0"
 	},
 	"devDependencies": {
@@ -55,13 +57,13 @@
 		"@types/react-native": "^0.62.16",
 		"@welldone-software/why-did-you-render": "^4.2.7",
 		"babel-jest": "^26.2.1",
+		"babel-plugin-transform-remove-console": "^6.9.4",
 		"eslint": "^7.5.0",
 		"jest": "^26.2.1",
 		"metro-react-native-babel-preset": "^0.61.0",
 		"patch-package": "^6.2.2",
 		"postinstall-postinstall": "^2.1.0",
 		"react-test-renderer": "16.13.1",
-		"babel-plugin-transform-remove-console": "^6.9.4",
 		"typescript": "^3.9.6"
 	},
 	"jest": {

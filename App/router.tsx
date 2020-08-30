@@ -30,6 +30,7 @@ import BlockedUsers from './Screens/Settings/BlockedUsers'
 import Search from './Screens/Search/Search'
 import SinglePost from './Screens/SinglePost/SinglePost'
 import ImageViewer from './Screens/ImageViewer/ImageViewer'
+import Chat from './Screens/Chat/Chat'
 
 import FastImage from 'react-native-fast-image'
 import { Badge } from 'react-native-paper'
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
 		textAlignVertical: 'center',
 		textAlign: 'center',
 		justifyContent: 'center',
-		alignItems: 'center'
+		alignItems: 'center',
 	},
 })
 
@@ -136,8 +137,8 @@ const bottomStack = createMaterialBottomTabNavigator(
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('plus-square'),
 				title: navigation.getScreenProps().language.share,
-				tabBarOnPress: (({ navigation, defaultHandler }: { navigation: Types.Navigation, defaultHandler: any }) => {
-					navigation.navigate("Share")
+				tabBarOnPress: (({ navigation, defaultHandler }: { navigation: Types.Navigation; defaultHandler: any }) => {
+					navigation.navigate('Share')
 				}) as any,
 			})) as any,
 		},
@@ -212,8 +213,11 @@ const mainStack = createStackNavigator(
 			screen: SinglePost,
 		},
 		ImageViewer: {
-			screen: ImageViewer
-		}
+			screen: ImageViewer,
+		},
+		Chat: {
+			screen: Chat,
+		},
 	},
 	{
 		defaultNavigationOptions: {
