@@ -69,6 +69,7 @@ class Settings extends React.PureComponent<Props, State> {
 			tr: 'Türkçe',
 			en: 'English',
 			ru: 'русский',
+			de: 'Deutsch',
 			system: screen.language.theme_system,
 		}
 

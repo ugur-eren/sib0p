@@ -302,9 +302,11 @@ declare namespace Types {
 		video: string
 		sponsored: string
 		image_thin: string
+		profile_photo: string
+		background_photo: string
 	}
 
-	export type SupportedLanguages = 'tr' | 'en' | 'ru'
+	export type SupportedLanguages = 'tr' | 'en' | 'ru' | 'de'
 }
 
 export default Types

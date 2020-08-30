@@ -20,6 +20,7 @@ declare namespace PostTypes {
 		isMine: boolean
 		postType: 'media' | 'poll' | 'resib' | 'message' | 'adMob'
 		resibber?: UserTypes.TopContent
+		points?: number
 	}
 	
 	export interface PostData {

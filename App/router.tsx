@@ -29,6 +29,9 @@ import ChangePassword from './Screens/Settings/ChangePassword'
 import BlockedUsers from './Screens/Settings/BlockedUsers'
 import Search from './Screens/Search/Search'
 import SinglePost from './Screens/SinglePost/SinglePost'
+import ImageViewer from './Screens/ImageViewer/ImageViewer'
+import Chat from './Screens/Chat/Chat'
+
 import FastImage from 'react-native-fast-image'
 import { Badge } from 'react-native-paper'
 import Config from './Includes/Config'
@@ -90,22 +93,15 @@ const styles = StyleSheet.create({
 		right: -5,
 		fontFamily: Config.fonts.semi,
 		textAlignVertical: 'center',
+		textAlign: 'center',
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 })
 
 var lastFocusedRoute: string | false = false
 const bottomStack = createMaterialBottomTabNavigator(
 	{
-		Follows: {
-			screen: Explore,
-			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
-				tabBarIcon: tabBarIcon('users'),
-				title: navigation.getScreenProps().language.follows,
-			})) as any,
-			params: {
-				type: 'follows',
-			},
-		},
 		Explore: {
 			screen: Explore,
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
@@ -114,6 +110,16 @@ const bottomStack = createMaterialBottomTabNavigator(
 			})) as any,
 			params: {
 				type: 'explore',
+			},
+		},
+		Follows: {
+			screen: Explore,
+			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
+				tabBarIcon: tabBarIcon('users'),
+				title: navigation.getScreenProps().language.follows,
+			})) as any,
+			params: {
+				type: 'follows',
 			},
 		},
 		MemeLord: {
@@ -131,8 +137,8 @@ const bottomStack = createMaterialBottomTabNavigator(
 			navigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
 				tabBarIcon: tabBarIcon('plus-square'),
 				title: navigation.getScreenProps().language.share,
-				tabBarOnPress: (({ navigation, defaultHandler }: { navigation: Types.Navigation, defaultHandler: any }) => {
-					navigation.navigate("Share")
+				tabBarOnPress: (({ navigation, defaultHandler }: { navigation: Types.Navigation; defaultHandler: any }) => {
+					navigation.navigate('Share')
 				}) as any,
 			})) as any,
 		},
@@ -156,7 +162,7 @@ const bottomStack = createMaterialBottomTabNavigator(
 		},
 	},
 	{
-		initialRouteName: 'Follows',
+		initialRouteName: 'Explore',
 		backBehavior: 'history',
 		shifting: true,
 		defaultNavigationOptions: (({ navigation }: { navigation: Types.Navigation }) => ({
@@ -205,6 +211,12 @@ const mainStack = createStackNavigator(
 		},
 		SinglePost: {
 			screen: SinglePost,
+		},
+		ImageViewer: {
+			screen: ImageViewer,
+		},
+		Chat: {
+			screen: Chat,
 		},
 	},
 	{

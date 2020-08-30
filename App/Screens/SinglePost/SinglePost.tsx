@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, RefreshControl } from 'react-native'
-import { withTheme, ActivityIndicator, Divider } from 'react-native-paper'
-import { ScrollView } from 'react-native-gesture-handler'
+import { Dimensions } from 'react-native'
+import { withTheme, Divider } from 'react-native-paper'
 import Post from '../../Contents/Post/Post'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
@@ -9,6 +8,7 @@ import Api from '../../Includes/Api'
 import Comments from '../Comments/Comments'
 import Header from '../../Components/Header/Header'
 import Loader from './Loader'
+import EmptyList from '../../Components/EmptyList/EmptyList'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -35,6 +35,12 @@ class SinglePost extends React.PureComponent<Props, State> {
 			currentTime: 0,
 		}
 	}
+
+	private PostRef: { setVisible: (visible: boolean) => void; key: number } = null
+	private _viewabilityConfig = {
+		viewAreaCoveragePercentThreshold: 60,
+	}
+	private width = Dimensions.get('window').width
 
 	componentDidMount() {
 		this.init()
@@ -74,6 +80,22 @@ class SinglePost extends React.PureComponent<Props, State> {
 		this.setState(stateObject)
 	}
 
+	_setVisibleRef = (ref: any) => {
+		this.PostRef = ref
+	}
+
+	_viewableItemsChanged = ({ viewableItems }: { viewableItems: Array<{ index: number; isViewable: boolean; item: PostTypes.Post; key: any }> }) => {
+		if (viewableItems.length > 0) {
+			this.PostRef.setVisible(false)
+		} else {
+			this.PostRef.setVisible(true)
+		}
+	}
+
+	_onLayout = () => {
+		this.PostRef.setVisible(true)
+	}
+
 	render() {
 		return (
 			<>
@@ -81,15 +103,21 @@ class SinglePost extends React.PureComponent<Props, State> {
 
 				{this.state.loading ? (
 					<Loader theme={this.props.theme} />
+				) : !this.state.post ? (
+					<EmptyList image={require('../../Assets/Images/no-posts.png')} title={this.props.navigation.getScreenProps().language.no_posts} />
 				) : (
 					<Comments
 						navigation={this.props.navigation}
-						customHeader={() => (
+						viewabilityConfig={this._viewabilityConfig}
+						onViewableItemsChanged={this._viewableItemsChanged}
+						onLayout={this._onLayout}
+						ListHeaderComponent={() => (
 							<>
 								<Post
+									width={this.width}
 									post={this.state.post}
 									currentTime={this.state.currentTime}
-									isVisible={true}
+									setVisibleRef={this._setVisibleRef}
 									navigation={this.props.navigation}
 									commentsVisible
 								/>
