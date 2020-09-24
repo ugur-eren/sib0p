@@ -1,9 +1,13 @@
 import React from 'react'
-import { View, ScrollView, TextInput, TouchableOpacity } from 'react-native'
-import { Text, withTheme } from 'react-native-paper'
-import IO from 'socket.io-client'
+import { View, RefreshControl } from 'react-native'
+import { withTheme } from 'react-native-paper'
+import { FlatList } from 'react-native-gesture-handler'
+import ChatUser from './ChatUser'
 import Header from '../../Components/Header/Header'
+import Api from '../../Includes/Api'
 import Types from '../../Includes/Types/Types'
+import MessageTypes from '../../Includes/Types/MessageTypes'
+import styles from './styles'
 
 interface Props {
 	navigation: Types.Navigation
@@ -11,9 +15,9 @@ interface Props {
 }
 
 interface State {
-	connected: boolean
-	messages: string[]
-	messageValue: string
+	loading: boolean
+	refreshing: boolean
+	messageUsers: MessageTypes.MessageUser[]
 }
 
 class Chat extends React.PureComponent<Props, State> {
@@ -21,58 +25,101 @@ class Chat extends React.PureComponent<Props, State> {
 		super(props)
 
 		this.state = {
-			connected: false,
-			messages: [],
-			messageValue: '',
+			loading: true,
+			refreshing: false,
+			messageUsers: [],
 		}
 	}
 
-	private socket: any = null
+	private newPageActive: boolean = false
 
 	componentDidMount() {
-		console.log('connecting')
+		this.init()
 
-		this.socket = IO('http://34.65.221.236:3750', {
-			path: '/socket.io',
-			transports: ['websocket'],
-		})
-		this.socket.on('connect', () => {
-			this.setState({ connected: true })
-		})
-		this.socket.on('disconnect', function () {
-			this.setState({ connected: false })
-		})
+		let screen = this.props.navigation.getScreenProps()
 
-		this.socket.on('message', (msg: string) => {
-			this.setState({ messages: [...this.state.messages, msg] })
+		let socket = screen.getSocket()
+		
+		socket.on('new_message', (data: { message: string; from_user: number; time: number }) => {
+			this.state.messageUsers.map((user, index) => {
+				if (data.from_user === user.user_id) {
+					let messageUsers = [...this.state.messageUsers]
+					messageUsers[index].lastMessage = data.message
+					messageUsers[index].time = data.time
+					messageUsers[index].lastMessageSeen = false
+					this.setState({ messageUsers })
+				}
+			})
 		})
 	}
 
-	sendMessage = () => {
-		this.socket.emit('message', this.state.messageValue)
-		this.setState({ messages: [...this.state.messages, this.state.messageValue], messageValue: '' })
+	init = async (refresh?: boolean, nextPage?: boolean) => {
+		let screen = this.props.navigation.getScreenProps()
+		if (refresh && !this.state.refreshing) {
+			this.setState({ refreshing: true })
+		}
+		if (!refresh && !this.state.loading) {
+			this.setState({ loading: true })
+		}
+		let messageUsers = await Api.getMessageUsers({
+			token: screen.user.token,
+			last: nextPage ? this.state.messageUsers[this.state.messageUsers.length - 1].time : 0,
+		})
+
+		let stateObject = {}
+
+		if (messageUsers) {
+			if (messageUsers.status) {
+				stateObject = {
+					messageUsers: nextPage ? [...this.state.messageUsers, ...messageUsers.users] : messageUsers.users,
+					currentTime: messageUsers.currentTime,
+				}
+				screen.setCurrentTime(messageUsers.currentTime)
+			} else {
+				if (messageUsers.error === 'no_login') {
+					screen.logout(true)
+				} else if (messageUsers.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
+				} else {
+					screen.unknown_error(messageUsers.error)
+				}
+			}
+		} else {
+			return screen.unknown_error()
+		}
+
+		stateObject = { ...stateObject, loading: false, refreshing: false }
+
+		this.setState(stateObject, () => {
+			if (nextPage) this.newPageActive = false
+		})
 	}
 
-	_renderChats = () => this.state.messages.map(this._renderChat)
-	_renderChat = (message: string) => <Text>{message}</Text>
+	_renderItem = ({ item }: { item: MessageTypes.MessageUser }) => <ChatUser navigation={this.props.navigation} user={item} />
+	_keyExtractor = (item: MessageTypes.MessageUser) => item.username
+
+	onRefresh = () => {
+		return this.init(true)
+	}
+	getNewPage = () => {
+		if (this.newPageActive) return
+		this.newPageActive = true
+		return this.init(true, true)
+	}
 
 	render() {
 		return (
-			<View style={{ flex: 1 }}>
+			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
 				<Header title='Mesajlar' />
-				{this.state.connected ? <></> : <Text style={{ fontSize: 24, textAlign: 'center' }}>Bağlanılıyor...</Text>}
-				<ScrollView style={{ flex: 1 }}>{this._renderChats()}</ScrollView>
-				<View style={{ flexDirection: 'row', borderTopColor: 'red', borderTopWidth: 1 }}>
-					<TextInput
-						style={{ height: 59, flex: 1, borderRightColor: 'red', borderRightWidth: 1 }}
-						value={this.state.messageValue}
-						onChangeText={(text) => this.setState({ messageValue: text })}
-						placeholder='mesaj'
-					/>
-					<TouchableOpacity onPress={this.sendMessage}>
-						<Text>gönder</Text>
-					</TouchableOpacity>
-				</View>
+
+				<FlatList
+					data={this.state.messageUsers}
+					renderItem={this._renderItem}
+					keyExtractor={this._keyExtractor}
+					refreshing={this.state.refreshing || this.state.loading}
+					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+					// onEndReached={this.getNewPage}
+				/>
 			</View>
 		)
 	}

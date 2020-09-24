@@ -86,14 +86,14 @@ class SinglePost extends React.PureComponent<Props, State> {
 
 	_viewableItemsChanged = ({ viewableItems }: { viewableItems: Array<{ index: number; isViewable: boolean; item: PostTypes.Post; key: any }> }) => {
 		if (viewableItems.length > 0) {
-			this.PostRef.setVisible(false)
+			if (this.PostRef) this.PostRef.setVisible(false)
 		} else {
-			this.PostRef.setVisible(true)
+			if (this.PostRef) this.PostRef.setVisible(true)
 		}
 	}
 
 	_onLayout = () => {
-		this.PostRef.setVisible(true)
+		if (this.PostRef) this.PostRef.setVisible(true)
 	}
 
 	render() {

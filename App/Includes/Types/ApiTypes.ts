@@ -3,6 +3,7 @@ import CommentTypes from './CommentTypes'
 import UserTypes from './UserTypes'
 import NotificationTypes from './NotificationTypes'
 import Types from './Types'
+import MessageTypes from './MessageTypes'
 
 declare namespace ApiTypes {
 	type Init<T = string> = {
@@ -130,6 +131,16 @@ declare namespace ApiTypes {
 	export interface RequestCaptchaResponse extends Init {
 		token: string
 		captcha: string
+	}
+
+	export interface GetMessageUsersReponse extends Init {
+		users: MessageTypes.MessageUser[]
+		currentTime: number
+	}
+	
+	export interface GetMessagesReponse extends Init {
+		messages: MessageTypes.Message[]
+		currentTime: number
 	}
 }
 

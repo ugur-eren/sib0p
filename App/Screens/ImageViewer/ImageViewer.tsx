@@ -18,8 +18,6 @@ class ImageViewer extends React.PureComponent<Props> {
 	render() {
 		let { theme } = this.props
 
-		console.log(this.props.navigation.getParam('image'))
-
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<Header title={this.props.navigation.getParam('title')} />

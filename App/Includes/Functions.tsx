@@ -32,6 +32,32 @@ export default new (class Functions {
 		return Math.floor(past / 31104000) + language.years_ago
 	}
 
+	convertTimeNoAgo = (time: number, currentTime: number, language: Types.Language): string => {
+		let past = currentTime - time
+		if (past < 10) {
+			return language.just_now
+		}
+		if (past < 60) {
+			return past + language.seconds_no_ago
+		}
+		if (Math.floor(past / 60) < 60) {
+			return Math.floor(past / 60) + language.minutes_no_ago
+		}
+		if (Math.floor(past / 3600) < 24) {
+			return Math.floor(past / 3600) + language.hours_no_ago
+		}
+		if (Math.floor(past / 86400) < 7) {
+			return Math.floor(past / 86400) + language.days_no_ago
+		}
+		if (Math.floor(past / 86400) < 31) {
+			return Math.floor(past / 604800) + language.weeks_no_ago
+		}
+		if (Math.floor(past / 2592000) < 12) {
+			return Math.floor(past / 2592000) + language.months_no_ago
+		}
+		return Math.floor(past / 31104000) + language.years_no_ago
+	}
+
 	checkEmail = (value: string): boolean => {
 		let regex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]{2,}$/g
 		return value.match(regex) !== null

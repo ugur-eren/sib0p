@@ -31,6 +31,7 @@ import Search from './Screens/Search/Search'
 import SinglePost from './Screens/SinglePost/SinglePost'
 import ImageViewer from './Screens/ImageViewer/ImageViewer'
 import Chat from './Screens/Chat/Chat'
+import ChatMessage from './Screens/ChatMessage/ChatMessage'
 
 import FastImage from 'react-native-fast-image'
 import { Badge } from 'react-native-paper'
@@ -217,6 +218,9 @@ const mainStack = createStackNavigator(
 		},
 		Chat: {
 			screen: Chat,
+		},
+		ChatMessage: {
+			screen: ChatMessage,
 		},
 	},
 	{

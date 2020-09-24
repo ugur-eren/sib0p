@@ -116,15 +116,16 @@ class Explore extends React.PureComponent<Props, State> {
 		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
+				{this.pageType === 'tags' ? (
+					<Header title={'Tag: #' + (this.props.navigation.getParam('tag')?.name || screen.language.unknown)} />
+				) : (
+					<MainHeader onLogoPress={this.onLogoPress} />
+				)}
+
 				{this.state.loading ? (
 					<Loader theme={this.props.theme} />
 				) : (
 					<>
-						{this.pageType === 'tags' ? (
-							<Header title={'Tag: #' + (this.props.navigation.getParam('tag')?.name || screen.language.unknown)} />
-						) : (
-							<MainHeader onLogoPress={this.onLogoPress} />
-						)}
 						<Posts
 							flatlistRef={this.setPostsRef}
 							navigation={this.props.navigation}

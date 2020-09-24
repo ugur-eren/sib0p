@@ -1,5 +1,5 @@
 import React from 'react'
-import { KeyboardAvoidingView, SafeAreaView, TextInput, KeyboardEvent, EmitterSubscription, Keyboard, Dimensions } from 'react-native'
+import { KeyboardAvoidingView, SafeAreaView, TextInput, KeyboardEvent, EmitterSubscription, Keyboard, Dimensions, Platform } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import TextButton from '../../Components/TextButton/TextButton'
 import { CommentsStyles as styles } from './styles'
@@ -24,28 +24,30 @@ class WriteComment extends React.PureComponent<Props, State> {
 
 		this.state = {
 			commentInput: '',
-			keyboardBottom: 0
+			keyboardBottom: 0,
 		}
 	}
 
 	private _keyboardDidShowListener: EmitterSubscription = null
 	private _keyboardDidHideListener: EmitterSubscription = null
 
-	componentDidMount(){
+	componentDidMount() {
 		this._keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow)
 		this._keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
 	}
 
-	componentWillUnmount(){
+	componentWillUnmount() {
 		if (this._keyboardDidShowListener) this._keyboardDidShowListener.remove()
 		if (this._keyboardDidHideListener) this._keyboardDidHideListener.remove()
 	}
 
 	_keyboardDidShow = (e: KeyboardEvent) => {
-		this.setState({keyboardBottom: e.endCoordinates.height})
+		if (Platform.OS === 'ios') {
+			this.setState({ keyboardBottom: e.endCoordinates.height })
+		}
 	}
 	_keyboardDidHide = (e: KeyboardEvent) => {
-		this.setState({keyboardBottom: 0})
+		this.setState({ keyboardBottom: 0 })
 	}
 
 	handleCommentChange = (text: string) => {

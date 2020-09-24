@@ -7,13 +7,15 @@ import Feather from 'react-native-vector-icons/Feather'
 import { NavigationActions } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import OneSignal from 'react-native-onesignal'
+import IO from 'socket.io-client'
 import PostSharer from './App/Contents/PostSharer/PostSharer'
 import AppRouter from './App/router'
+import Api from './App/Includes/Api'
+import Config from './App/Includes/Config'
 import Storage from './App/Includes/Storage'
 import Theme from './App/Includes/Theme/Theme'
-import Types from './App/Includes/Types/Types'
-import Api from './App/Includes/Api'
 import { Languages, DefaultLanguage } from './App/Includes/Languages'
+import Types from './App/Includes/Types/Types'
 import UserTypes from './App/Includes/Types/UserTypes'
 import PostTypes from './App/Includes/Types/PostTypes'
 
@@ -62,8 +64,15 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		currentTime: 0,
 	}
 
+	public socket: SocketIOClient.Socket = null
+	public socketConnected: boolean = false
+
 	async componentDidMount() {
 		this.init()
+	}
+
+	componentWillUnmount() {
+		this.socket.disconnect()
 	}
 
 	init = async () => {
@@ -221,6 +230,20 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
 				} else {
 					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'mainStack' }))
+
+					this.socket = IO(Config.api.socketUri, {
+						path: '/socket.io',
+						transports: ['websocket'],
+					})
+					this.socket.on('connect', () => {
+						this.socket.emit('auth', this.state.user.token)
+					})
+					this.socket.on('disconnect', () => {
+						this.socketConnected = false
+					})
+					this.socket.on('auth', (data: { status: boolean }) => {
+						this.socketConnected = data.status
+					})
 				}
 			})
 		} catch (e) {
@@ -402,6 +425,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		this.setState({ notification: active })
 	}
 
+	getSocket = () => this.socket
+	isSocketConnected = () => this.socketConnected
+
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -436,6 +462,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 									logout: this.logout,
 									unknown_error: this.unknown_error,
 									error: this.error,
+
+									getSocket: this.getSocket,
+									isSocketConnected: this.isSocketConnected,
 
 									sharePost: this.sharePost,
 									isSharePostActive: this.isSharePostActive,

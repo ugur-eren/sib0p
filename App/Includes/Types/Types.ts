@@ -23,6 +23,9 @@ declare namespace Types {
 		unknown_error: (error?: string) => void
 		error: (error: string) => void
 
+		getSocket: () => SocketIOClient.Socket
+		isSocketConnected: () => boolean
+
 		sharePost: (message: string, tags: string[], images: { type: 'image' | 'video'; content: string }[]) => void
 		isSharePostActive: () => boolean
 		restart: () => any
@@ -203,6 +206,13 @@ declare namespace Types {
 		weeks_ago: string
 		months_ago: string
 		years_ago: string
+		seconds_no_ago: string
+		minutes_no_ago: string
+		hours_no_ago: string
+		days_no_ago: string
+		weeks_no_ago: string
+		months_no_ago: string
+		years_no_ago: string
 		no_post_data: string
 		same_comment_error: string
 		comment_auth_error: string

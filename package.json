@@ -53,6 +53,7 @@
 		"@react-native-community/eslint-config": "^2.0.0",
 		"@types/react": "^16.9.41",
 		"@types/react-native": "^0.62.16",
+		"@types/socket.io-client": "^1.4.33",
 		"@welldone-software/why-did-you-render": "^4.2.7",
 		"babel-jest": "^26.2.1",
 		"babel-plugin-transform-remove-console": "^6.9.4",

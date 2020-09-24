@@ -93,6 +93,7 @@ class Input extends React.PureComponent<Props, State> {
 						secureTextEntry={this.props.password && !this.state.passwordShown}
 						keyboardType={this.props.number ? 'number-pad' : this.props.email ? 'email-address' : 'default'}
 						autoCapitalize={this.props.small ? 'none' : 'sentences'}
+						underlineColorAndroid={'rgba(0,0,0,0)'}
 						{...inputProps}
 					/>
 

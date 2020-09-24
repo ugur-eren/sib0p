@@ -1,11 +1,13 @@
 import React from 'react'
-import { TouchableOpacity, ImageStyle, StyleProp } from 'react-native'
+import { ImageStyle, StyleProp } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import DoubleLike from './DoubleLike'
 import Image from './Image'
 import Video from './Video'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import styles from './styles'
 
 interface Props {
 	navigation: Types.Navigation
@@ -44,30 +46,32 @@ class PostContent extends React.PureComponent<Props, State> {
 
 	render() {
 		return (
-			<TouchableOpacity onPress={this.onPress}>
-				{this.props.post.type === 'image' ? (
-					<Image
-						width={this.props.width}
-						setVisibleRef={this.props.setVisibleRef}
-						navigation={this.props.navigation}
-						post={this.props.post}
-						style={this.props.style}
-					/>
-				) : this.props.post.type === 'video' ? (
-					<Video
-						width={this.props.width}
-						setVisibleRef={this.props.setVisibleRef}
-						muted={this.state.muted}
-						navigation={this.props.navigation}
-						post={this.props.post}
-						style={this.props.style}
-					/>
-				) : (
-					<></>
-				)}
+			<TouchableWithoutFeedback style={styles.postContent} onPress={this.onPress}>
+				<>
+					{this.props.post.type === 'image' ? (
+						<Image
+							width={this.props.width}
+							setVisibleRef={this.props.setVisibleRef}
+							navigation={this.props.navigation}
+							post={this.props.post}
+							style={this.props.style}
+						/>
+					) : this.props.post.type === 'video' ? (
+						<Video
+							width={this.props.width}
+							setVisibleRef={this.props.setVisibleRef}
+							muted={this.state.muted}
+							navigation={this.props.navigation}
+							post={this.props.post}
+							style={this.props.style}
+						/>
+					) : (
+						<></>
+					)}
 
-				<DoubleLike like={this.props.like} likeRef={this._setLikeRef} />
-			</TouchableOpacity>
+					<DoubleLike like={this.props.like} likeRef={this._setLikeRef} />
+				</>
+			</TouchableWithoutFeedback>
 		)
 	}
 }

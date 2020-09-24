@@ -72,10 +72,10 @@ class PostSharer extends React.PureComponent<Props, State> {
 
 		let sharePost = await Api.sharePost(
 			{
+				token: this.props.token,
 				message: message,
 				tags: JSON.stringify(tags),
 				images: JSON.stringify(allImages),
-				token: this.props.token,
 			},
 			onUploadProgress
 		)

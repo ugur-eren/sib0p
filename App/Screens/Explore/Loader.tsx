@@ -5,10 +5,6 @@ import Types from '../../Includes/Types/Types'
 
 const Loader = (props: { theme: Types.Theme }) => (
 	<View style={[styles.container, { backgroundColor: props.theme.colors.surface }]}>
-		<Placeholder Animation={Fade} style={styles.header}>
-			<PlaceholderLine height={60} />
-		</Placeholder>
-
 		<Placeholder
 			Animation={Fade}
 			style={styles.paddingHorizontal}
@@ -64,6 +60,7 @@ export default Loader
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		paddingTop: 10
 	},
 	header: {
 		marginBottom: -30,
