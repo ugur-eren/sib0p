@@ -206,6 +206,9 @@ const Languages: Types.Languages = {
 		image_thin: 'Yüklediğiniz resim çok ince veya çok uzun. Boyut oranı en fazla 1:2 veya 2:1 olabilir.',
 		profile_photo: 'Profil Fotoğrafı',
 		background_photo: 'Arkaplan Fotoğrafı',
+		messages: 'Mesajlar',
+		could_not_connect_to_message_socket: 'Mesaj servisine bağlanılamadı',
+		your_message: 'Mesajınız..',
 	},
 	en: {
 		code: 'en',
@@ -392,6 +395,9 @@ const Languages: Types.Languages = {
 		image_thin: 'The image you have uploaded is too thin or too thick. Image ratio must be between 1:2 and 2:1.',
 		profile_photo: 'Profile Photo',
 		background_photo: 'Background Photo',
+		messages: 'Messages',
+		could_not_connect_to_message_socket: 'Could not connect to the message service',
+		your_message: 'Your Message..',
 	},
 	ru: {
 		code: 'ru',
@@ -526,8 +532,10 @@ const Languages: Types.Languages = {
 		waiting_to_post: 'У вас уже имеется загрузка, ожидающая завершения. Дождитесь завершения загрузки перед публикацией нового поста',
 		perm_settings_error: 'При открытии настроек разрешений возникла проблема.',
 		share_post: 'Поделиться публикацией',
-		file_perm_unavailable: 'Чтобы продолжить, нам нужны права доступа к файлам. \n Но ваше устройство не поддерживает права доступа к файлам. \n Если вы считаете, что это ошибка, свяжитесь с нами.',
-		file_perm_ask: 'Чтобы продолжить, нам нужны права доступа к файлам. \n\n Мы используем права доступа к файлам только для хранения изображений или видео.',
+		file_perm_unavailable:
+			'Чтобы продолжить, нам нужны права доступа к файлам. \n Но ваше устройство не поддерживает права доступа к файлам. \n Если вы считаете, что это ошибка, свяжитесь с нами.',
+		file_perm_ask:
+			'Чтобы продолжить, нам нужны права доступа к файлам. \n\n Мы используем права доступа к файлам только для хранения изображений или видео.',
 		file_perm_open_settins: 'Открыть настройки приложения',
 		message: 'Сообщение',
 		tags: 'Теги',
@@ -544,7 +552,8 @@ const Languages: Types.Languages = {
 		no_posts: 'Постов не найдено',
 		not_found: 'Не найдено',
 		user_not_found: 'Этот пользователь не найден. Имя пользователя могло быть изменено.',
-		block_user_dialog: 'Вы уверены, что хотите заблокировать этого пользователя? Вы не сможете видеть посты и комментарии, связанные с этим пользователем, пока не разблокируете его.',
+		block_user_dialog:
+			'Вы уверены, что хотите заблокировать этого пользователя? Вы не сможете видеть посты и комментарии, связанные с этим пользователем, пока не разблокируете его.',
 		block: 'Заблокировать',
 		check_network: 'Пожалуйста, проверьте ваше интернет-соединение и попробуйте еще раз.',
 		settings: 'Настройки',
@@ -561,7 +570,8 @@ const Languages: Types.Languages = {
 		hide: 'Спрятать',
 		not_reported: 'Чтобы скрыть пост, вы должны сначала пожаловаться.',
 		already_hidden: 'Вы уже скрыли этот пост.',
-		report_user_dialog: "Вы уверены, что хотите пожаловаться на этого пользователя? Это действие не может быть отменено. Если вам просто не нравится общий контент, выберите опцию 'Заблокировать'",
+		report_user_dialog:
+			"Вы уверены, что хотите пожаловаться на этого пользователя? Это действие не может быть отменено. Если вам просто не нравится общий контент, выберите опцию 'Заблокировать'",
 		user_report_success: 'Вы пожаловались на пользователя. Наши модераторы рассмотрят ваш запрос в кратчайшие сроки.',
 		comment_empty: 'Ваш комментарий не может быть пустым.',
 		too_fast_action: 'Biraz hızlı işlem yapıyorsunuz. Lütfen daha sonra tekrar deneyiniz.',
@@ -573,6 +583,9 @@ const Languages: Types.Languages = {
 		image_thin: 'Загруженное изображение слишком узкое или слишком широкое. Соотношение сторон изображения должно быть от 1:2 до 2:1.',
 		profile_photo: 'Изображение профиля',
 		background_photo: 'Фоновое фотография',
+		messages: 'Сообщения',
+		could_not_connect_to_message_socket: 'Не удалось подключиться к службе сообщений',
+		your_message: 'Твое сообщение..',
 	},
 	de: {
 		code: 'de',
@@ -646,6 +659,7 @@ const Languages: Types.Languages = {
 		weeks_ago: ' vor wochen',
 		months_ago: ' vor monaten',
 		years_ago: ' vor jahren',
+		seconds_no_ago: ' vor sekunden',
 		minutes_no_ago: ' vor minuten',
 		hours_no_ago: ' vor stunden',
 		days_no_ago: ' vor tagen',
@@ -758,6 +772,9 @@ const Languages: Types.Languages = {
 		image_thin: 'Das von Ihnen hochgeladene Bild ist zu dünn oder zu lang. Das Seitenverhältnis kann höchstens 1: 2 oder 2: 1 betragen.',
 		profile_photo: 'Profilbild',
 		background_photo: 'Hintergrund Foto',
+		messages: 'Mitteilungen',
+		could_not_connect_to_message_socket: 'Es konnte keine Verbindung zum Nachrichtendienst hergestellt werden',
+		your_message: 'Deine Nachricht..',
 	},
 }
 

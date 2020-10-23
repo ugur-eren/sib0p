@@ -1,10 +1,9 @@
 import React from 'react'
-import { View, Dimensions, StyleProp, ImageStyle } from 'react-native'
+import { View, Dimensions, StyleProp, ImageStyle, ActivityIndicator } from 'react-native'
 import { Text, withTheme } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import RNVideo from 'react-native-video'
 import Feather from 'react-native-vector-icons/Feather'
-import ActivityIndicator from '../../Components/ActivityIndicator/ActivityIndicator'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import styles from './styles'
@@ -99,7 +98,7 @@ class Video extends React.PureComponent<Props, State> {
 					</View>
 				) : !this.state.ready ? (
 					<View style={[styles.loader, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
-						<ActivityIndicator size={36} />
+						<ActivityIndicator size={36} color={theme.colors.main} />
 					</View>
 				) : (
 					<></>

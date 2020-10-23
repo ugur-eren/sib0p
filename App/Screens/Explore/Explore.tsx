@@ -1,14 +1,13 @@
 import React from 'react'
-import { View, Dimensions } from 'react-native'
-import { withTheme, ActivityIndicator } from 'react-native-paper'
+import { View, ActivityIndicator } from 'react-native'
+import { withTheme } from 'react-native-paper'
 import MainHeader from '../../Components/MainHeader/MainHeader'
+import Header from '../../Components/Header/Header'
 import Posts from '../../Contents/Posts/Posts'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
 import Api from '../../Includes/Api'
 import styles from './styles'
-import Loader from './Loader'
-import Header from '../../Components/Header/Header'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -123,7 +122,9 @@ class Explore extends React.PureComponent<Props, State> {
 				)}
 
 				{this.state.loading ? (
-					<Loader theme={this.props.theme} />
+					<View style={styles.loader}>
+						<ActivityIndicator size='large' color={this.props.theme.colors.main} />
+					</View>
 				) : (
 					<>
 						<Posts

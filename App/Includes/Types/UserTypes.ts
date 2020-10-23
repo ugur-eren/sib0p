@@ -20,6 +20,7 @@ declare namespace UserTypes {
 		postsCount: number
 		followsCount: number
 		followersCount: number
+		sevapPoints: number
 	}
 
 	export interface Relations {

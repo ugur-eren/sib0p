@@ -21,6 +21,7 @@ declare namespace MessageTypes {
 	export interface MessageStatus {
 		status: boolean
 		message_id: string
+		new_message_id: number
 	}
 	
 	export interface NewMessage {

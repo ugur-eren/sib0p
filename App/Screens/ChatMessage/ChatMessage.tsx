@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList, RefreshControl } from 'react-native'
+import { View, FlatList, RefreshControl, ActivityIndicator } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import Message from './Message'
@@ -37,21 +37,11 @@ class ChatMessage extends React.PureComponent<Props, State> {
 	}
 
 	private newPageActive: boolean = false
+	private hasNewPage: boolean = true
 	private user = this.props.navigation.getParam('user')
 
 	componentDidMount() {
 		this.init()
-
-		/* this.props.navigation.getScreenProps().socket.on('new_message', (data: { message: string; from_user: number; time: number }) => {
-			this.state.messageUsers.map((user, index) => {
-				if (data.from_user === user.user_id) {
-					let messageUsers = [...this.state.messageUsers]
-					messageUsers[index].lastMessage = data.message
-					messageUsers[index].time = data.time
-					this.setState({ messageUsers })
-				}
-			})
-		}) */
 
 		let screen = this.props.navigation.getScreenProps()
 		let socket = screen.getSocket()
@@ -77,9 +67,10 @@ class ChatMessage extends React.PureComponent<Props, State> {
 		if (!refresh && !this.state.loading) {
 			this.setState({ loading: true })
 		}
+
 		let messages = await Api.getMessages({
 			token: screen.user.token,
-			last: nextPage ? this.state.messages[this.state.messages.length - 1].time : 0,
+			last: nextPage ? this.state.messages[this.state.messages.length - 1].id : 0,
 			user_id: this.user.user_id,
 		})
 
@@ -87,6 +78,7 @@ class ChatMessage extends React.PureComponent<Props, State> {
 
 		if (messages) {
 			if (messages.status) {
+				this.hasNewPage = messages.messages.length >= 20
 				stateObject = {
 					messages: nextPage ? [...this.state.messages, ...messages.messages] : messages.messages,
 					currentTime: messages.currentTime,
@@ -114,18 +106,18 @@ class ChatMessage extends React.PureComponent<Props, State> {
 
 	_renderItem = ({ item }: { item: MessageTypes.Message }) => <Message user={this.user} message={item} />
 	_keyExtractor = (item: MessageTypes.Message) => item.id.toString()
+	_renderHeaderAvatar = () => <FastImage source={{ uri: this.user.profilePhoto }} style={styles.headerAvatar} />
+	_renderFooterComponent = () => <View style={styles.listHeaderStyle} />
 
 	onRefresh = () => {
+		this.hasNewPage = true
 		return this.init(true)
 	}
 	getNewPage = () => {
-		if (this.newPageActive) return
+		if (this.newPageActive || !this.hasNewPage) return
 		this.newPageActive = true
-		return this.init(true, true)
+		return this.init(false, true)
 	}
-
-	_renderHeaderAvatar = () => <FastImage source={{ uri: this.user.profilePhoto }} style={styles.headerAvatar} />
-	_renderFooterComponent = () => <View style={styles.listHeaderStyle} />
 
 	sendMessage = (message: string) => {
 		if (!this.user.user_id) return false // error
@@ -162,7 +154,7 @@ class ChatMessage extends React.PureComponent<Props, State> {
 	onMessageStatus = (data: MessageTypes.MessageStatus) => {
 		let messages: MessageTypes.Message[] = this.state.messages.map((message) => {
 			if (data.message_id === (message.id as any)) {
-				message.id = (message.id + 'i') as any
+				message.id = data.new_message_id
 				message.sending = false
 				message.error = !data.status
 			}
@@ -172,14 +164,14 @@ class ChatMessage extends React.PureComponent<Props, State> {
 	}
 
 	onNewMessage = (data: MessageTypes.NewMessage) => {
-		if (data.from_user === this.user.user_id){
+		if (data.from_user === this.user.user_id) {
 			let messages: MessageTypes.Message[] = [
 				{
 					id: data.message_id,
 					isMine: false,
 					message: data.message,
 					seen: true,
-					time: data.time
+					time: data.time,
 				},
 				...this.state.messages,
 			]
@@ -189,29 +181,36 @@ class ChatMessage extends React.PureComponent<Props, State> {
 
 	render() {
 		let { theme } = this.props
-
-		console.log(this.user.user_id)
+		let screen = this.props.navigation.getScreenProps()
 
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				<Header
 					title={this.user.username}
-					subtitle={this.state.socketConnected ? undefined : 'Mesaj Servisine Bağlanılamadı'}
+					subtitle={this.state.socketConnected ? undefined : screen.language.could_not_connect_to_message_socket}
 					avatar={this._renderHeaderAvatar}
 				/>
 
-				<FlatList
-					inverted
-					data={this.state.messages}
-					keyExtractor={this._keyExtractor}
-					renderItem={this._renderItem}
-					ListHeaderComponent={this._renderFooterComponent}
-					refreshing={this.state.refreshing || this.state.loading}
-					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
-					// onEndReached={this.getNewPage}
-				/>
+				{this.state.loading ? (
+					<View style={styles.loader}>
+						<ActivityIndicator size='large' color={theme.colors.main} />
+					</View>
+				) : (
+					<>
+						<FlatList
+							inverted
+							data={this.state.messages}
+							keyExtractor={this._keyExtractor}
+							renderItem={this._renderItem}
+							ListHeaderComponent={this._renderFooterComponent}
+							refreshing={this.state.refreshing || this.state.loading}
+							refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+							onEndReached={this.getNewPage}
+						/>
 
-				<WriteMessage sendMessage={this.sendMessage} />
+						<WriteMessage sendMessage={this.sendMessage} language={screen.language} />
+					</>
+				)}
 			</View>
 		)
 	}

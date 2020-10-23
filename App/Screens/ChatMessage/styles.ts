@@ -60,6 +60,11 @@ export default StyleSheet.create({
 		borderBottomRightRadius: 0,
 	},
 	sendingIcon: {
-		marginLeft: 10
-	}
+		marginLeft: 10,
+	},
+	loader: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 })

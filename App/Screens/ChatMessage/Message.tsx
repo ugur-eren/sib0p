@@ -20,7 +20,7 @@ class MyMessageComp extends React.PureComponent<Props, { sending: boolean }> {
 		return (
 			<View style={styles.myMessageContainer}>
 				<View style={styles.myMessage}>
-					<Text style={[styles.myMessageText, { backgroundColor: theme.colors.main }]}>{message.message}</Text>
+					<Text style={[styles.myMessageText, { backgroundColor: theme.colors.main, color: theme.colors.surface }]}>{message.message}</Text>
 					{message.sending ? <Feather name='send' color={theme.colors.contrast} size={14} style={styles.sendingIcon} /> : <></>}
 				</View>
 			</View>

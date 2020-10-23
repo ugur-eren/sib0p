@@ -62,6 +62,7 @@ declare namespace Types {
 		user: ScreenPropsUser
 		errorMessage: false | string
 		postSharing: boolean
+		hasNewVersion: boolean
 	}
 
 	export interface ScreenPropsUser {
@@ -102,6 +103,7 @@ declare namespace Types {
 			inputBackground: string
 			inputBorder: string
 			inputPlaceholder: string
+			mainRgb: string
 			surfaceRgb: string
 			gradient: string[]
 		}
@@ -314,6 +316,9 @@ declare namespace Types {
 		image_thin: string
 		profile_photo: string
 		background_photo: string
+		messages: string
+		could_not_connect_to_message_socket: string
+		your_message: string
 	}
 
 	export type SupportedLanguages = 'tr' | 'en' | 'ru' | 'de'

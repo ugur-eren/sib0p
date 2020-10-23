@@ -112,6 +112,14 @@ class EditProfile extends React.PureComponent<Props, State> {
 
 		if (response) {
 			if (response.status) {
+				screen.setUserData({
+					username: this.state.username,
+					active: true,
+					token: screen.user.token,
+					notifCount: screen.user.notifCount,
+					profilePhoto: screen.user.profilePhoto,
+				})
+
 				this.setState({
 					loading: false,
 					isErrorVisible: true,

@@ -14,7 +14,9 @@ export default new (class Functions {
 		return new Promise((resolve, reject) => {
 			fetch(this.uri + method + '.php')
 				.then((response) => response.json())
-				.then((data) => resolve(data))
+				.then((res) => {
+					resolve(res)
+				})
 				.catch((err) => {
 					resolve(false)
 				})
@@ -36,10 +38,9 @@ export default new (class Functions {
 				},
 				body: joinedBody,
 			})
-				.then((response) => response.text())
+				.then((response) => response.json())
 				.then((res) => {
-					console.log(res)
-					resolve(JSON.parse(res))
+					resolve(res)
 				})
 				.catch((err) => {
 					resolve(false)
@@ -121,6 +122,10 @@ export default new (class Functions {
 
 	getMessages = (params: Params): Response<ApiTypes.GetMessagesReponse> => {
 		return this.post('GetMessages', params)
+	}
+
+	getMessageUserDetail = (params: Params): Response<ApiTypes.GetMessageUserDetailReponse> => {
+		return this.post('GetMessageUserDetail', params)
 	}
 
 	requestCaptcha = (): Response<ApiTypes.RequestCaptchaResponse> => {

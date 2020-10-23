@@ -32,6 +32,7 @@ import SinglePost from './Screens/SinglePost/SinglePost'
 import ImageViewer from './Screens/ImageViewer/ImageViewer'
 import Chat from './Screens/Chat/Chat'
 import ChatMessage from './Screens/ChatMessage/ChatMessage'
+import UserShop from './Screens/UserShop/UserShop'
 
 import FastImage from 'react-native-fast-image'
 import { Badge } from 'react-native-paper'
@@ -221,6 +222,9 @@ const mainStack = createStackNavigator(
 		},
 		ChatMessage: {
 			screen: ChatMessage,
+		},
+		UserShop: {
+			screen: UserShop,
 		},
 	},
 	{

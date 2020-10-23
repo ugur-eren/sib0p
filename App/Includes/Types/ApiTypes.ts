@@ -20,6 +20,7 @@ declare namespace ApiTypes {
 		profilePhoto?: string
 		notif_token?: string
 		notifCount?: number
+		version?: number
 	}
 
 	export interface LoginResponse extends Init {
@@ -141,6 +142,11 @@ declare namespace ApiTypes {
 	export interface GetMessagesReponse extends Init {
 		messages: MessageTypes.Message[]
 		currentTime: number
+	}
+
+	export interface GetMessageUserDetailReponse extends Init {
+		username: string
+		profilePhoto: string
 	}
 }
 
