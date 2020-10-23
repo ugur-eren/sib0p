@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, FlatList, RefreshControl, FlatListProperties, FlatListProps } from 'react-native'
+import { View, FlatList, RefreshControl, ActivityIndicator, FlatListProps } from 'react-native'
 import { Divider, withTheme, List, Dialog, Button, Paragraph, Portal } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Header from '../../Components/Header/Header'
@@ -8,7 +8,6 @@ import Types from '../../Includes/Types/Types'
 import CommentTypes from '../../Includes/Types/CommentTypes'
 import Api from '../../Includes/Api'
 import Comment from './Comment'
-import Loader from './Loader'
 import { CommentsStyles as styles } from './styles'
 import WriteComment from './WriteComment'
 
@@ -177,7 +176,9 @@ class Comments extends React.PureComponent<Props, State> {
 				{this.props.ListHeaderComponent ? <></> : <Header title={screen.language.comments} />}
 
 				{this.state.loading ? (
-					<Loader theme={theme} />
+					<View style={styles.loader}>
+						<ActivityIndicator size='large' color={theme.colors.main} />
+					</View>
 				) : (
 					<>
 						<FlatList

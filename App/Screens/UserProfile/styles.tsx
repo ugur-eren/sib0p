@@ -5,6 +5,11 @@ export default StyleSheet.create({
 	container: {
 		flex: 1,
 	},
+	loading: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
 	scrollView: {
 		flex: 1,
 	},
@@ -26,12 +31,11 @@ export default StyleSheet.create({
 	profilePhotoContainer: {
 		width: 100,
 		height: 100,
-		backgroundColor: 'red',
 		borderRadius: 100,
 		top: -25,
 		borderWidth: 0.5,
 		overflow: 'hidden',
-		position: 'relative'
+		position: 'relative',
 	},
 	profilePhoto: {
 		width: 100,
@@ -103,5 +107,18 @@ export default StyleSheet.create({
 		height: '100%',
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	sevapPoints: {
+		position: 'absolute',
+		marginLeft: 65,
+		height: 35,
+		left: 0,
+		bottom: 0,
+		alignItems: 'center',
+		justifyContent: 'center',
+		flexDirection: 'row',
+		paddingLeft: 45,
+		paddingRight: 25,
+		borderTopRightRadius: 35,
 	},
 })

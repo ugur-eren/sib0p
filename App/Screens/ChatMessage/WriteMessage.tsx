@@ -6,6 +6,7 @@ import Types from '../../Includes/Types/Types'
 interface Props {
 	theme: Types.Theme
 	sendMessage: (message: string) => void
+	language: Types.Language
 }
 
 interface State {
@@ -26,6 +27,7 @@ class WriteMessage extends React.PureComponent<Props, State> {
 			}
 		}
 	}
+	private inputRef: TextInput = null
 
 	_onChangeText = (text: string) => {
 		LayoutAnimation.configureNext(LayoutAnimation.create(150, 'easeInEaseOut', 'opacity'))
@@ -33,21 +35,29 @@ class WriteMessage extends React.PureComponent<Props, State> {
 	}
 
 	sendMessage = () => {
-		this.props.sendMessage(this.state.messageValue)
-		this.setState({ messageValue: '' })
+		this.setState(
+			(state) => {
+				this.props.sendMessage(state.messageValue)
+				return { messageValue: '' }
+			},
+			() => {
+				setTimeout(() => this.inputRef && this.inputRef.focus(), 50)
+			}
+		)
 	}
 
 	sendImage = () => {}
 
 	render() {
-		let { theme } = this.props
+		let { theme, language } = this.props
 
 		return (
 			<View style={{ backgroundColor: theme.colors.surface, flexDirection: 'row' }}>
-				{this.state.messageValue.length < 1 ? <IconButton icon='image' onPress={this.sendImage} /> : <></>}
+				{false && this.state.messageValue.length < 1 ? <IconButton icon='image' onPress={this.sendImage} /> : <></>}
 				<TextInput
+					ref={(ref) => (this.inputRef = ref)}
 					style={{ flex: 1, color: theme.colors.contrast, paddingHorizontal: 10 }}
-					placeholder='Mesajınız..'
+					placeholder={language.your_message}
 					placeholderTextColor={theme.colors.placeholder}
 					value={this.state.messageValue}
 					onChangeText={this._onChangeText}

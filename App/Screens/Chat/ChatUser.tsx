@@ -27,7 +27,7 @@ class ChatUser extends React.PureComponent<Props, {}> {
 			<TouchableOpacity onPress={this.navigateToMessage} style={styles.userContainer}>
 				<View style={styles.imageContainer}>
 					<FastImage source={{ uri: user.profilePhoto }} style={styles.image} />
-					{user.lastMessageSeen ? <></> : <View style={[styles.notSeen, { borderColor: theme.colors.background }]} />}
+					{true || user.lastMessageSeen ? <></> : <View style={[styles.notSeen, { borderColor: theme.colors.background }]} />}
 				</View>
 
 				<View style={styles.content}>

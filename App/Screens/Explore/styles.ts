@@ -10,4 +10,9 @@ export default StyleSheet.create({
 		justifyContent: 'center',
 		width: '100%',
 	},
+	loader: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 })

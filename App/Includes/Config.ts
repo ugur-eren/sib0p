@@ -3,9 +3,9 @@ const Config = {
 	siteUri: 'http://192.168.1.26/',
 
 	api: {
-		version: '2',
+		version: 2,
 		uri: 'http://192.168.1.26/api/v2/',
-		socketUri: 'http://192.168.1.26:3750',
+		socketUri: 'http://192.168.1.26:2053',
 	},
 
 	fonts: {
@@ -34,6 +34,7 @@ const Config = {
 			inputBackground: '#F7F9FC',
 			inputBorder: '#EEF2F7',
 			inputPlaceholder: '#737985',
+			mainRgb: '250, 128, 87',
 			surfaceRgb: '240, 240, 240',
 			gradient: ['#FA8057', '#F94D1D', '#F94D1D', '#F94D1D', '#FA8057'],
 		},
@@ -54,6 +55,7 @@ const Config = {
 			inputBackground: '#272727',
 			inputBorder: '#3D3D3D',
 			inputPlaceholder: '#BABABA',
+			mainRgb: '250, 128, 87',
 			surfaceRgb: '39, 39, 39',
 			gradient: ['#FA8057', '#F94D1D', '#F94D1D', '#F94D1D', '#FA8057'],
 		},

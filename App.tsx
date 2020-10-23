@@ -48,6 +48,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			},
 			errorMessage: false,
 			postSharing: false,
+			hasNewVersion: false,
 		}
 	}
 
@@ -72,7 +73,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 	}
 
 	componentWillUnmount() {
-		this.socket.disconnect()
+		if (this.socket) this.socket.disconnect()
 	}
 
 	init = async () => {
@@ -184,8 +185,8 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 			let loggedIn = await Api.checkLogin({ token: stateObject.user.token })
 			if (!loggedIn) {
 				return this.setState({ ready: true }, () => {
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
 					SplashScreen.hide()
-					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
 				})
 			}
 
@@ -217,6 +218,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 						profilePhoto: loggedIn.profilePhoto,
 						notifCount: loggedIn.notifCount,
 					},
+					hasNewVersion: loggedIn.version > Config.api.version,
 				}
 				Storage.setMultiple({
 					username: loggedIn.username || '',
@@ -381,6 +383,10 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		this.setState({ errorMessage: false })
 	}
 
+	onVersionSnackbarDismiss = () => {
+		this.setState({ hasNewVersion: false })
+	}
+
 	setSharePost = (ref: any) => {
 		this.sharePostRef = ref
 	}
@@ -492,6 +498,14 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					<Portal>
 						<Snackbar visible={!!this.state.errorMessage} onDismiss={this.onSnackbarDismiss}>
 							<Text style={{ color: Theme[this.state.theme].colors.contrast }}>{this.state.errorMessage}</Text>
+						</Snackbar>
+					</Portal>
+
+					<Portal>
+						<Snackbar visible={this.state.hasNewVersion} onDismiss={this.onVersionSnackbarDismiss}>
+							<Text style={{ color: Theme[this.state.theme].colors.contrast }}>
+								Uygulamanın yeni bir sürümü mevcut. Lütfen uygulamayı güncelleyiniz.
+							</Text>
 						</Snackbar>
 					</Portal>
 				</PaperProvider>

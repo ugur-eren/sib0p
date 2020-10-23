@@ -35,7 +35,7 @@ class MainHeader extends React.Component<Props, State> {
 				<TouchableOpacity onPress={this.props.onLogoPress} style={styles.logoContainer}>
 					<FastImage source={require('../../Assets/Images/logo-wide.png')} style={styles.logo} resizeMode='contain' />
 				</TouchableOpacity>
-				<Appbar.Action size={22} icon='feather' color={this.props.theme.colors.contrast} onPress={this.onChatPress} />
+				<Appbar.Action size={22} icon='send' color={this.props.theme.colors.contrast} onPress={this.onChatPress} />
 			</Appbar.Header>
 		)
 	}

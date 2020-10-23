@@ -37,4 +37,9 @@ export default StyleSheet.create({
 		right: 2,
 		bottom: 2,
 	},
+	loader: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
 })

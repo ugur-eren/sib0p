@@ -4,10 +4,10 @@ const CommentStyles = StyleSheet.create({
 	container: {
 		flex: 1,
 		padding: 10,
-		paddingBottom: 0
+		paddingBottom: 0,
 	},
 	content: {
-		paddingHorizontal: 10
+		paddingHorizontal: 10,
 	},
 	buttonsContainer: {
 		flex: 1,
@@ -15,8 +15,8 @@ const CommentStyles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	likeButton: {
-		paddingTop: 3
-	}
+		paddingTop: 3,
+	},
 })
 
 const CommentsStyles = StyleSheet.create({
@@ -42,7 +42,12 @@ const CommentsStyles = StyleSheet.create({
 		paddingHorizontal: 10,
 		marginLeft: 6,
 		flex: 1,
-		...Platform.OS === 'ios' ? { height: 49 } : {},
+		...(Platform.OS === 'ios' ? { height: 49 } : {}),
+	},
+	loader: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 })
 

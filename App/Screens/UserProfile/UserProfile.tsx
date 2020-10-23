@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar, Dialog, Button, Paragraph, List } from 'react-native-paper'
+import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar, Dialog, Button, Paragraph, List, IconButton } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import Feather from 'react-native-vector-icons/Feather'
 import { Modalize } from 'react-native-modalize'
@@ -328,15 +328,15 @@ class UserProfile extends React.PureComponent<Props, State> {
 	)
 
 	_viewBG = () => {
-		this.props.navigation.navigate("ImageViewer", {
+		this.props.navigation.navigate('ImageViewer', {
 			image: this.state.user.backgroundPhoto,
-			title: this.state.user.username + ' ' + this.props.navigation.getScreenProps().language.background_photo
+			title: this.state.user.username + ' ' + this.props.navigation.getScreenProps().language.background_photo,
 		})
 	}
 	_viewPP = () => {
-		this.props.navigation.navigate("ImageViewer", {
+		this.props.navigation.navigate('ImageViewer', {
 			image: this.state.user.profilePhoto,
-			title: this.state.user.username + ' ' + this.props.navigation.getScreenProps().language.profile_photo
+			title: this.state.user.username + ' ' + this.props.navigation.getScreenProps().language.profile_photo,
 		})
 	}
 
@@ -351,23 +351,24 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 		const ImagePicker = require('react-native-image-crop-picker')
 
-		ImagePicker.default.openPicker({
-			mediaType: 'photo',
-			multiple: false,
-			width: type === 'pp' ? 500 : 2520,
-			height: type === 'pp' ? 500 : 1080,
-			cropping: true,
-			forceJpg: true,
-			freeStyleCropEnabled: false,
-			includeBase64: true,
-			compressImageMaxWidth: 1080,
-			compressImageMaxHeight: 1080,
-			compressImageQuality: 0.75,
-			cropperToolbarTitle: screen.language.cropper_title,
-			loadingLabelText: screen.language.loading,
-			cropperChooseText: screen.language.choose,
-			cropperCancelText: screen.language.cancel,
-		})
+		ImagePicker.default
+			.openPicker({
+				mediaType: 'photo',
+				multiple: false,
+				width: type === 'pp' ? 500 : 2520,
+				height: type === 'pp' ? 500 : 1080,
+				cropping: true,
+				forceJpg: true,
+				freeStyleCropEnabled: false,
+				includeBase64: true,
+				compressImageMaxWidth: 1080,
+				compressImageMaxHeight: 1080,
+				compressImageQuality: 0.75,
+				cropperToolbarTitle: screen.language.cropper_title,
+				loadingLabelText: screen.language.loading,
+				cropperChooseText: screen.language.choose,
+				cropperCancelText: screen.language.cancel,
+			})
 			.then(async (images) => {
 				if (images) {
 					let im: any = null
@@ -460,6 +461,18 @@ class UserProfile extends React.PureComponent<Props, State> {
 						onSettings={isMyself ? this.onSettingsPress : undefined}
 						onMore={isMyself ? undefined : this.openModalize}
 					/>
+
+					{isMyself ? (
+						<TouchableOpacity
+							style={[styles.sevapPoints, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}
+							onPress={this.openShop}
+						>
+							<Text style={{ color: theme.colors.main }}>Sevap Points: {user.sevapPoints || 0}</Text>
+							<IconButton icon='shopping-cart' color={theme.colors.main} size={16} />
+						</TouchableOpacity>
+					) : (
+						<></>
+					)}
 				</View>
 				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
 					<View style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}>
@@ -551,7 +564,11 @@ class UserProfile extends React.PureComponent<Props, State> {
 	openModalize = () => {
 		this.modalizeRef?.open()
 	}
+	openShop = () => {
+		this.props.navigation.navigate('UserShop')
+	}
 
+	// <Loader theme={theme} />
 	render() {
 		let { theme } = this.props
 		let screen = this.props.navigation.getScreenProps()
@@ -559,7 +576,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 		return (
 			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
 				{this.state.loading ? (
-					<Loader theme={theme} />
+					<View style={styles.loading}>
+						<ActivityIndicator color={theme.colors.main} size='large' />
+					</View>
 				) : this.state.noUser ? (
 					<>
 						<Header title={screen.language.not_found} />

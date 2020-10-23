@@ -33,11 +33,8 @@ export default StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 	},
-	tag: {
-		paddingHorizontal: 7,
-		paddingVertical: 5,
-		borderWidth: 1,
-		marginRight: 10,
+	tagChip: {
+		marginBottom: 3
 	},
 	tagHash: {
 		fontFamily: Config.fonts.semi,

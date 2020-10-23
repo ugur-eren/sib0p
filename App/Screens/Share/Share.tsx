@@ -1,19 +1,6 @@
 import React from 'react'
-import { View, ScrollView, Alert, TouchableOpacity, SafeAreaView } from 'react-native'
-import {
-	Text,
-	Divider,
-	Surface,
-	TouchableRipple,
-	withTheme,
-	Snackbar,
-	IconButton,
-	Portal,
-	Dialog,
-	Paragraph,
-	Button,
-	ActivityIndicator,
-} from 'react-native-paper'
+import { View, ScrollView, Alert, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native'
+import { Text, Divider, Surface, TouchableRipple, withTheme, Snackbar, IconButton, Portal, Dialog, Paragraph, Button, Chip } from 'react-native-paper'
 import Feather from 'react-native-vector-icons/Feather'
 import ImagePicker from 'react-native-image-crop-picker'
 import FastImage from 'react-native-fast-image'
@@ -24,6 +11,7 @@ import EmptyList from '../../Components/EmptyList/EmptyList'
 import Permissions from '../../Includes/Permissions'
 import Types from '../../Includes/Types/Types'
 import styles from './styles'
+import Config from '../../Includes/Config'
 
 interface Props {
 	navigation: Types.Navigation
@@ -216,6 +204,13 @@ class Share extends React.PureComponent<Props, State> {
 		</Surface>
 	)
 
+	_renderTags = () => this.state.tags.map(this._renderTag)
+	_renderTag =  (tag: string, index: number) => (
+		<Chip key={tag} onPress={() => this.removeTag(index)} style={styles.tagChip}>
+			<Text style={styles.tagHash}># </Text> {tag}
+		</Chip>
+	)
+
 	tryPermissionAgain = async () => {
 		if (this.state.filePermission === 'blocked') {
 			if (!(await Permissions.openSettings())) {
@@ -285,24 +280,7 @@ class Share extends React.PureComponent<Props, State> {
 										placeholder={screen.language.tags}
 										leftIcon='hash'
 									/>
-									<View style={styles.tags}>
-										{this.state.tags.map((tag, index) => (
-											<Text
-												key={tag}
-												style={[
-													styles.tag,
-													{
-														backgroundColor: this.props.theme.colors.inputBackground,
-														borderColor: this.props.theme.colors.inputBorder,
-													},
-												]}
-												onPress={() => this.removeTag(index)}
-											>
-												<Text style={styles.tagHash}># </Text>
-												{tag}
-											</Text>
-										))}
-									</View>
+									<View style={styles.tags}>{this._renderTags()}</View>
 								</View>
 							</View>
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, RefreshControl } from 'react-native'
+import { View, RefreshControl, ActivityIndicator } from 'react-native'
 import { withTheme } from 'react-native-paper'
 import { FlatList } from 'react-native-gesture-handler'
 import ChatUser from './ChatUser'
@@ -37,19 +37,63 @@ class Chat extends React.PureComponent<Props, State> {
 		this.init()
 
 		let screen = this.props.navigation.getScreenProps()
-
 		let socket = screen.getSocket()
-		
-		socket.on('new_message', (data: { message: string; from_user: number; time: number }) => {
-			this.state.messageUsers.map((user, index) => {
-				if (data.from_user === user.user_id) {
-					let messageUsers = [...this.state.messageUsers]
-					messageUsers[index].lastMessage = data.message
-					messageUsers[index].time = data.time
-					messageUsers[index].lastMessageSeen = false
-					this.setState({ messageUsers })
-				}
+
+		socket.on('new_message', async (data: { message: string; from_user: number; time: number }) => {
+			let found = false
+
+			await new Promise((resolve) => {
+				this.setState((state) => {
+					let messageUsers = [...state.messageUsers]
+					messageUsers.map((user) => {
+						if (data.from_user === user.user_id) {
+							user.lastMessage = data.message
+							user.time = data.time
+							user.lastMessageSeen = false
+
+							found = true
+						}
+						return user
+					})
+
+					resolve()
+					if (found) {
+						return {
+							messageUsers: messageUsers,
+						}
+					}
+				})
 			})
+
+			if (!found) {
+				let fromUserDetail = await Api.getMessageUserDetail({
+					token: screen.user.token,
+					user_id: data.from_user,
+				})
+
+				if (!fromUserDetail) {
+					return screen.unknown_error()
+				}
+
+				if (!fromUserDetail.status) {
+					if (fromUserDetail.error === 'noUser') {
+						return screen.error(screen.language.wrong_username)
+					} else {
+						return screen.unknown_error(fromUserDetail.error)
+					}
+				}
+
+				let messageUser: MessageTypes.MessageUser = {
+					time: data.time,
+					user_id: data.from_user,
+					lastMessage: data.message,
+					lastMessageSeen: false,
+					username: fromUserDetail.username,
+					profilePhoto: fromUserDetail.profilePhoto,
+				}
+
+				this.setState((state) => ({ messageUsers: [messageUser, ...state.messageUsers] }))
+			}
 		})
 	}
 
@@ -108,18 +152,27 @@ class Chat extends React.PureComponent<Props, State> {
 	}
 
 	render() {
+		let { theme } = this.props
+		let screen = this.props.navigation.getScreenProps()
+		
 		return (
-			<View style={[styles.container, { backgroundColor: this.props.theme.colors.background }]}>
-				<Header title='Mesajlar' />
+			<View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+				<Header title={screen.language.messages} />
 
-				<FlatList
-					data={this.state.messageUsers}
-					renderItem={this._renderItem}
-					keyExtractor={this._keyExtractor}
-					refreshing={this.state.refreshing || this.state.loading}
-					refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
-					// onEndReached={this.getNewPage}
-				/>
+				{this.state.loading ? (
+					<View style={styles.loader}>
+						<ActivityIndicator size='large' color={theme.colors.main} />
+					</View>
+				) : (
+					<FlatList
+						data={this.state.messageUsers}
+						renderItem={this._renderItem}
+						keyExtractor={this._keyExtractor}
+						refreshing={this.state.refreshing || this.state.loading}
+						refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+						// onEndReached={this.getNewPage}
+					/>
+				)}
 			</View>
 		)
 	}
