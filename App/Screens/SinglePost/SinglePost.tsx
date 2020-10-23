@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, RefreshControl } from 'react-native'
-import { withTheme, ActivityIndicator, Divider } from 'react-native-paper'
-import { ScrollView } from 'react-native-gesture-handler'
+import { Dimensions } from 'react-native'
+import { withTheme, Divider } from 'react-native-paper'
 import Post from '../../Contents/Post/Post'
 import Types from '../../Includes/Types/Types'
 import PostTypes from '../../Includes/Types/PostTypes'
@@ -9,6 +8,7 @@ import Api from '../../Includes/Api'
 import Comments from '../Comments/Comments'
 import Header from '../../Components/Header/Header'
 import Loader from './Loader'
+import EmptyList from '../../Components/EmptyList/EmptyList'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -36,13 +36,20 @@ class SinglePost extends React.PureComponent<Props, State> {
 		}
 	}
 
+	private PostRef: { setVisible: (visible: boolean) => void; key: number } = null
+	private _viewabilityConfig = {
+		viewAreaCoveragePercentThreshold: 60,
+	}
+	private width = Dimensions.get('window').width
+
 	componentDidMount() {
 		this.init()
 	}
 
 	init = async () => {
+		let screen = this.props.navigation.getScreenProps()
 		let post = await Api.getExplore({
-			token: this.props.navigation.getScreenProps().user.token,
+			token: screen.user.token,
 			type: 'single',
 			post: this.props.navigation.getParam('post'),
 		})
@@ -54,21 +61,39 @@ class SinglePost extends React.PureComponent<Props, State> {
 					post: post.posts.length > 0 ? post.posts[0] : null,
 					currentTime: post.currentTime,
 				}
-				this.props.navigation.getScreenProps().setCurrentTime(post.currentTime)
+				screen.setCurrentTime(post.currentTime)
 			} else {
 				if (post.error === 'no_login') {
-					this.props.navigation.getScreenProps().logout(true)
+					screen.logout(true)
+				} else if (post.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else {
-					this.props.navigation.getScreenProps().unknown_error(post.error)
+					screen.unknown_error(post.error)
 				}
 			}
 		} else {
-			this.props.navigation.getScreenProps().unknown_error()
+			screen.unknown_error()
 		}
 
 		stateObject = { ...stateObject, loading: false }
 
 		this.setState(stateObject)
+	}
+
+	_setVisibleRef = (ref: any) => {
+		this.PostRef = ref
+	}
+
+	_viewableItemsChanged = ({ viewableItems }: { viewableItems: Array<{ index: number; isViewable: boolean; item: PostTypes.Post; key: any }> }) => {
+		if (viewableItems.length > 0) {
+			if (this.PostRef) this.PostRef.setVisible(false)
+		} else {
+			if (this.PostRef) this.PostRef.setVisible(true)
+		}
+	}
+
+	_onLayout = () => {
+		if (this.PostRef) this.PostRef.setVisible(true)
 	}
 
 	render() {
@@ -78,15 +103,21 @@ class SinglePost extends React.PureComponent<Props, State> {
 
 				{this.state.loading ? (
 					<Loader theme={this.props.theme} />
+				) : !this.state.post ? (
+					<EmptyList image={require('../../Assets/Images/no-posts.png')} title={this.props.navigation.getScreenProps().language.no_posts} />
 				) : (
 					<Comments
 						navigation={this.props.navigation}
-						customHeader={() => (
+						viewabilityConfig={this._viewabilityConfig}
+						onViewableItemsChanged={this._viewableItemsChanged}
+						onLayout={this._onLayout}
+						ListHeaderComponent={() => (
 							<>
 								<Post
+									width={this.width}
 									post={this.state.post}
 									currentTime={this.state.currentTime}
-									isVisible={true}
+									setVisibleRef={this._setVisibleRef}
 									navigation={this.props.navigation}
 									commentsVisible
 								/>

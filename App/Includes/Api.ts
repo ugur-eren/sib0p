@@ -38,6 +38,7 @@ export default new (class Functions {
 			})
 				.then((response) => response.text())
 				.then((res) => {
+					console.log(res)
 					resolve(JSON.parse(res))
 				})
 				.catch((err) => {
@@ -112,6 +113,14 @@ export default new (class Functions {
 
 	getBlockedUsers = (params: Params): Response<ApiTypes.GetBlockedUsersResponse> => {
 		return this.post('GetBlockedUsers', params)
+	}
+
+	getMessageUsers = (params: Params): Response<ApiTypes.GetMessageUsersReponse> => {
+		return this.post('GetMessageUsers', params)
+	}
+
+	getMessages = (params: Params): Response<ApiTypes.GetMessagesReponse> => {
+		return this.post('GetMessages', params)
 	}
 
 	requestCaptcha = (): Response<ApiTypes.RequestCaptchaResponse> => {

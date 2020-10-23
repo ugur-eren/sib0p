@@ -7,13 +7,15 @@ import Feather from 'react-native-vector-icons/Feather'
 import { NavigationActions } from 'react-navigation'
 import SplashScreen from 'react-native-splash-screen'
 import OneSignal from 'react-native-onesignal'
+import IO from 'socket.io-client'
 import PostSharer from './App/Contents/PostSharer/PostSharer'
 import AppRouter from './App/router'
+import Api from './App/Includes/Api'
+import Config from './App/Includes/Config'
 import Storage from './App/Includes/Storage'
 import Theme from './App/Includes/Theme/Theme'
-import Types from './App/Includes/Types/Types'
-import Api from './App/Includes/Api'
 import { Languages, DefaultLanguage } from './App/Includes/Languages'
+import Types from './App/Includes/Types/Types'
 import UserTypes from './App/Includes/Types/UserTypes'
 import PostTypes from './App/Includes/Types/PostTypes'
 
@@ -62,158 +64,194 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		currentTime: 0,
 	}
 
+	public socket: SocketIOClient.Socket = null
+	public socketConnected: boolean = false
+
 	async componentDidMount() {
 		this.init()
 	}
 
+	componentWillUnmount() {
+		this.socket.disconnect()
+	}
+
 	init = async () => {
-		let connected = await Api.checkConnection()
-		if (!connected || !connected.status) {
-			return this.setState({ ready: true }, () => {
-				SplashScreen.hide()
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
-			})
-		}
-
-		let settings = await Storage.getMultipleWithDefault({
-			theme: 'system',
-			notification: 'true',
-			language: 'system',
-			token: '',
-			username: '',
-		})
-		let allSettings: any = {}
-		let stateObject: any = {
-			ready: true,
-		}
-
-		if (!settings) {
-			allSettings = {
-				theme: 'system',
-				notification: 'true',
-				language: 'system',
-				token: '',
-				username: '',
-			}
-		} else {
-			allSettings = settings
-		}
-
-		// check and set notificaiton perm at settings
-		stateObject = {
-			...stateObject,
-			selectedTheme: allSettings.theme,
-			notification: allSettings.notification === 'true',
-			selectedLanguage: allSettings.language,
-		}
-
-		if (allSettings.token && allSettings.username) {
-			stateObject = {
-				...stateObject,
-				user: {
-					active: true,
-					token: allSettings.token,
-					username: allSettings.username,
-				},
-			}
-		} else {
-			stateObject = {
-				...stateObject,
-				user: {
-					active: false,
+		try {
+			let values = await Promise.all([
+				Api.checkConnection(),
+				Storage.getMultipleWithDefault({
+					theme: 'system',
+					notification: 'true',
+					language: 'system',
 					token: '',
 					username: '',
-				},
-			}
-		}
+				}),
+			])
 
-		// themeing
-		if (allSettings.theme === 'system') {
-			let colorScheme = Appearance.getColorScheme()
-			if (!colorScheme) {
-				colorScheme = 'light'
+			let connected = values[0]
+			let settings = values[1]
+
+			if (!connected || !connected.status) {
+				return this.setState({ ready: true }, () => {
+					SplashScreen.hide()
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+				})
 			}
 
-			stateObject = {
-				...stateObject,
-				theme: colorScheme,
+			let allSettings: any = {}
+			let stateObject: any = {
+				ready: true,
 			}
-		} else if (allSettings.theme === 'timed') {
-			let date = new Date()
-			let time = parseInt(date.getHours() + '' + date.getMinutes())
-			stateObject = {
-				...stateObject,
-				theme: time > 730 && time < 1730 ? 'light' : 'dark',
-			}
-		} else {
-			stateObject = {
-				...stateObject,
-				theme: allSettings.theme === 'dark' ? 'dark' : 'light',
-			}
-		}
 
-		// Language
-		if (allSettings.language === 'system') {
-			stateObject = {
-				...stateObject,
-				language: DefaultLanguage,
-			}
-		} else {
-			stateObject = {
-				...stateObject,
-				language: allSettings.language === 'tr' ? 'tr' : 'en',
-			}
-		}
-
-		let loggedIn = await Api.checkLogin({ token: stateObject.user.token })
-		if (!loggedIn) {
-			return this.setState({ ready: true }, () => {
-				SplashScreen.hide()
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
-			})
-		}
-		
-		if (!loggedIn.username && !loggedIn.profilePhoto) {
-			stateObject = {
-				...stateObject,
-				user: {
-					active: false,
+			if (!settings) {
+				allSettings = {
+					theme: 'system',
+					notification: 'true',
+					language: 'system',
 					token: '',
 					username: '',
-					profilePhoto: '',
-					notifCount: 0
-				},
-			}
-
-			return this.setState(stateObject, async () => {
-				await this.logout()
-				SplashScreen.hide()
-			})
-		} else {
-			stateObject = {
-				...stateObject,
-				user: {
-					active: true,
-					token: stateObject.user.token,
-					username: loggedIn.username,
-					profilePhoto: loggedIn.profilePhoto,
-					notifCount: loggedIn.notifCount
-				},
-			}
-			Storage.setMultiple({
-				username: loggedIn.username || '',
-				profilePhoto: loggedIn.profilePhoto || '',
-			})
-		}
-
-		this.setState(stateObject, () => {
-			SplashScreen.hide()
-			if (!this.state.user.active) {
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
+				}
 			} else {
-				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'mainStack' }))
+				allSettings = settings
 			}
-		})
+
+			// check and set notificaiton perm at settings
+			stateObject = {
+				...stateObject,
+				selectedTheme: allSettings.theme,
+				notification: allSettings.notification === 'true',
+				selectedLanguage: allSettings.language,
+			}
+
+			if (allSettings.token && allSettings.username) {
+				stateObject = {
+					...stateObject,
+					user: {
+						active: true,
+						token: allSettings.token,
+						username: allSettings.username,
+					},
+				}
+			} else {
+				stateObject = {
+					...stateObject,
+					user: {
+						active: false,
+						token: '',
+						username: '',
+					},
+				}
+			}
+
+			// themeing
+			if (allSettings.theme === 'system') {
+				let colorScheme = Appearance.getColorScheme()
+				if (!colorScheme) {
+					colorScheme = 'light'
+				}
+
+				stateObject = {
+					...stateObject,
+					theme: colorScheme,
+				}
+			} else if (allSettings.theme === 'timed') {
+				let date = new Date()
+				let time = parseInt(date.getHours() + '' + date.getMinutes())
+				stateObject = {
+					...stateObject,
+					theme: time > 730 && time < 1730 ? 'light' : 'dark',
+				}
+			} else {
+				stateObject = {
+					...stateObject,
+					theme: allSettings.theme === 'dark' ? 'dark' : 'light',
+				}
+			}
+
+			// Language
+			if (allSettings.language === 'system') {
+				stateObject = {
+					...stateObject,
+					language: DefaultLanguage,
+				}
+			} else {
+				stateObject = {
+					...stateObject,
+					language: allSettings.language || 'tr',
+				}
+			}
+
+			let loggedIn = await Api.checkLogin({ token: stateObject.user.token })
+			if (!loggedIn) {
+				return this.setState({ ready: true }, () => {
+					SplashScreen.hide()
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+				})
+			}
+
+			if (!loggedIn.username && !loggedIn.profilePhoto) {
+				stateObject = {
+					...stateObject,
+					user: {
+						active: false,
+						token: '',
+						username: '',
+						profilePhoto: '',
+						notifCount: 0,
+					},
+				}
+
+				return this.setState(stateObject, async () => {
+					await this.logout()
+					SplashScreen.hide()
+				})
+			} else {
+				OneSignal.sendTag('token', loggedIn.notif_token)
+
+				stateObject = {
+					...stateObject,
+					user: {
+						active: true,
+						token: stateObject.user.token,
+						username: loggedIn.username,
+						profilePhoto: loggedIn.profilePhoto,
+						notifCount: loggedIn.notifCount,
+					},
+				}
+				Storage.setMultiple({
+					username: loggedIn.username || '',
+					profilePhoto: loggedIn.profilePhoto || '',
+				})
+			}
+
+			this.setState(stateObject, () => {
+				SplashScreen.hide()
+				if (!this.state.user.active) {
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'authStack' }))
+				} else {
+					this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'mainStack' }))
+
+					this.socket = IO(Config.api.socketUri, {
+						path: '/socket.io',
+						transports: ['websocket'],
+					})
+					this.socket.on('connect', () => {
+						this.socket.emit('auth', this.state.user.token)
+					})
+					this.socket.on('disconnect', () => {
+						this.socketConnected = false
+					})
+					this.socket.on('auth', (data: { status: boolean }) => {
+						this.socketConnected = data.status
+					})
+				}
+			})
+		} catch (e) {
+			return this.setState({ ready: true }, () => {
+				SplashScreen.hide()
+				this._navigationRef.dispatch(NavigationActions.navigate({ routeName: 'NoConnection' }))
+			})
+		}
 	}
 
 	private isVideoMuted: boolean = false
@@ -264,17 +302,15 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		}
 	}
 
-	setLanguage = (language: 'tr' | 'en' | 'system', callback?: () => void) => {
+	setLanguage = (language: Types.SupportedLanguages | 'system', callback?: () => void) => {
 		Storage.set('language', language)
 
-		let setLanguage: 'tr' | 'en' = null
+		let setLanguage: Types.SupportedLanguages = null
 
 		if (language === 'system') {
 			setLanguage = DefaultLanguage
-		} else if (language === 'tr') {
-			setLanguage = 'tr'
 		} else {
-			setLanguage = 'en'
+			setLanguage = language || 'tr'
 		}
 
 		if (this.state.language !== setLanguage || this.state.selectedLanguage !== language) {
@@ -389,6 +425,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 		this.setState({ notification: active })
 	}
 
+	getSocket = () => this.socket
+	isSocketConnected = () => this.socketConnected
+
 	render() {
 		return (
 			<View style={{ flex: 1 }}>
@@ -406,7 +445,7 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 					}}
 					theme={Theme[this.state.theme]}
 				>
-					<PostSharer language={Languages['en']} sharePost={this.setSharePost} token={this.state.user.token} />
+					<PostSharer language={Languages[this.state.language]} sharePost={this.setSharePost} token={this.state.user.token} />
 					{this.state.ready ? (
 						<AppRouter
 							ref={this._setNavigationRef}
@@ -423,6 +462,9 @@ export default class App extends React.PureComponent<{}, Types.AppState> {
 									logout: this.logout,
 									unknown_error: this.unknown_error,
 									error: this.error,
+
+									getSocket: this.getSocket,
+									isSocketConnected: this.isSocketConnected,
 
 									sharePost: this.sharePost,
 									isSharePostActive: this.isSharePostActive,

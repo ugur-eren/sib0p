@@ -3,8 +3,9 @@ const Config = {
 	siteUri: 'http://192.168.1.26/',
 
 	api: {
-		version: '1',
-		uri: 'http://192.168.1.26/api/v1/',
+		version: '2',
+		uri: 'http://192.168.1.26/api/v2/',
+		socketUri: 'http://192.168.1.26:3750',
 	},
 
 	fonts: {

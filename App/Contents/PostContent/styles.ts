@@ -41,4 +41,7 @@ export default StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
+	postContent: {
+		marginTop: 10,
+	},
 })

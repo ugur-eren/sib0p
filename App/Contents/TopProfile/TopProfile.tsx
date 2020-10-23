@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Platform } from 'react-native'
-import { Text, IconButton, withTheme } from 'react-native-paper'
+import { Text, IconButton } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Feather from 'react-native-vector-icons/Feather'
@@ -15,19 +15,19 @@ import TextButton from '../../Components/TextButton/TextButton'
 
 interface Props {
 	navigation: Types.Navigation
-	theme: Types.Theme
 	user: UserTypes.TopContent
 	time: string
 	post?: PostTypes.Post
 	openModal?: (post: PostTypes.Post) => void
 	noUserTouchable?: boolean
+	small?: boolean
 }
 
 interface State {
 	user: UserTypes.TopContent
 }
 
-class Post extends React.PureComponent<Props, State> {
+class TopProfile extends React.PureComponent<Props, State> {
 	constructor(props: Props) {
 		super(props)
 
@@ -61,11 +61,11 @@ class Post extends React.PureComponent<Props, State> {
 		if (response) {
 			if (response.status) {
 				let cached = screen.DataCache()
-				if (cached.profiles[this.state.user.username]){
+				if (cached.profiles[this.state.user.username]) {
 					cached.profiles[this.state.user.username].data.isFollowed = true
 					screen.setProfileDataCache(cached.profiles[this.state.user.username].data)
 				}
-				
+
 				this.setState({
 					user: {
 						...this.state.user,
@@ -75,6 +75,8 @@ class Post extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username_error)
 				} else if (response.error === 'no_user') {
@@ -89,20 +91,25 @@ class Post extends React.PureComponent<Props, State> {
 	}
 
 	_renderUserTags = () => this.props.user.tags.map(this._renderUserTag)
-	_renderUserTag = (tag: UserTagTypes.Tag) => <Feather key={tag.id.toString()} name={tag.icon} size={16} color={tag.color} style={styles.usertag} />
+	_renderUserTag = (tag: UserTagTypes.Tag) => (
+		<Feather key={tag.id.toString()} name={tag.icon} size={this.props.small ? 12 : 16} color={tag.color} style={styles.usertag} />
+	)
 
 	render() {
-		let { theme, noUserTouchable } = this.props
+		let { noUserTouchable, small } = this.props
 		let { user } = this.state
 		let ContainerComponent = noUserTouchable ? TouchableWithoutFeedback : TouchableOpacity
 		let screen = this.props.navigation.getScreenProps()
 		return (
 			<View style={styles.container}>
-				<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.imageContainer}>
-					<FastImage source={{ uri: user.profilePhoto }} style={styles.image} />
+				<ContainerComponent
+					onPress={noUserTouchable ? undefined : this.handleProfilePress}
+					style={small ? styles.smallImageContainer : styles.imageContainer}
+				>
+					<FastImage source={{ uri: user.profilePhoto }} style={small ? styles.smallImage : styles.image} />
 				</ContainerComponent>
 
-				<View style={styles.outerContent}>
+				<View style={small ? styles.smallOuterContent : styles.outerContent}>
 					<ContainerComponent onPress={noUserTouchable ? undefined : this.handleProfilePress} style={styles.innerContent}>
 						<View style={styles.usernameContainer}>
 							<Text style={styles.username}>{user.username}</Text>
@@ -133,4 +140,4 @@ class Post extends React.PureComponent<Props, State> {
 	}
 }
 
-export default withTheme(Post)
+export default TopProfile

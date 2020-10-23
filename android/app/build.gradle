@@ -90,6 +90,7 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     enableHermes: false,  // clean and rebuild if changing
+    bundleCommand: "ram-bundle",
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -143,8 +144,8 @@ android {
         applicationId "net.ugureren.sib0p"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 23
-        versionName "2.0.3"
+        versionCode 25
+        versionName "2.0.5"
 
         multiDexEnabled true
     }

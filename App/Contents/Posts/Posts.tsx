@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle, FlatListProps } from 'react-native'
+import { View, RefreshControl, Share, Platform, FlatList, StyleProp, ViewStyle, FlatListProps, Dimensions } from 'react-native'
 import { List, withTheme, Dialog, Paragraph, Button, Divider, RadioButton } from 'react-native-paper'
 import { Modalize } from 'react-native-modalize'
 import Post from '../Post/Post'
@@ -17,6 +17,7 @@ interface Props {
 	currentTime: number
 	refresh: () => Promise<any>
 	getNextPage: () => Promise<any>
+	flatlistRef?: React.LegacyRef<FlatList<PostTypes.Post>>
 	noUserTouchable?: boolean
 	ListHeaderComponent?: React.ComponentType
 	ListEmptyComponent?: React.ComponentType
@@ -28,7 +29,6 @@ interface Props {
 interface State {
 	visibleItem: string
 	refreshing: boolean
-	focused: boolean
 	activePost: PostTypes.Post
 	reportPostLoading: boolean
 	selectedReportType: Types.ReportTypes
@@ -45,7 +45,6 @@ class Posts extends React.PureComponent<Props, State> {
 		this.state = {
 			visibleItem: '',
 			refreshing: false,
-			focused: true,
 			activePost: null,
 			reportPostLoading: false,
 			selectedReportType: 'spam',
@@ -60,17 +59,23 @@ class Posts extends React.PureComponent<Props, State> {
 		viewAreaCoveragePercentThreshold: 60,
 	}
 
+	private width = Dimensions.get('window').width
 	private focusListener: any = null
 	private blurListener: any = null
 	private modalRef: any = null
 	private reportModalRef: any = null
+	private VisibilityRefs: { [key: string]: { setVisible: (visible: boolean) => void; key: number } } = {}
+	private lastViewedItem: number = null
 
 	componentDidMount() {
 		this.focusListener = this.props.navigation.addListener('didFocus', () => {
-			if (!this.state.focused) this.setState({ focused: true })
+			Object.values(this.VisibilityRefs).map((ref) => ref.setVisible(false))
+			if (this.lastViewedItem){
+				this.VisibilityRefs[this.lastViewedItem]?.setVisible(true)
+			}
 		})
 		this.blurListener = this.props.navigation.addListener('didBlur', () => {
-			if (this.state.focused) this.setState({ focused: false })
+			Object.values(this.VisibilityRefs).map((ref) => ref.setVisible(false))
 		})
 	}
 
@@ -79,12 +84,17 @@ class Posts extends React.PureComponent<Props, State> {
 		if (this.blurListener) this.blurListener.remove()
 	}
 
+	_setVisibleRef = (ref: { setVisible: (visible: boolean) => void; key: number }) => {
+		this.VisibilityRefs[ref.key] = ref
+	}
+
 	_renderItem = ({ item }: { item: PostTypes.Post }) => (
 		<Post
 			key={item.id.toString()}
+			setVisibleRef={this._setVisibleRef}
 			post={item}
+			width={this.width}
 			navigation={this.props.navigation}
-			isVisible={this.state.focused && this.state.visibleItem === item.id.toString()}
 			currentTime={this.props.currentTime}
 			noUserTouchable={this.props.noUserTouchable}
 			openModal={this.openModal}
@@ -94,10 +104,10 @@ class Posts extends React.PureComponent<Props, State> {
 	_keyExtractor = (item: PostTypes.Post) => item.id.toString()
 
 	_viewableItemsChanged = ({ viewableItems }: { viewableItems: Array<{ index: number; isViewable: boolean; item: PostTypes.Post; key: any }> }) => {
+		Object.values(this.VisibilityRefs).map((ref) => ref.setVisible(false))
 		if (viewableItems.length > 0) {
-			this.setState({ visibleItem: viewableItems[0].key })
-		} else {
-			this.setState({ visibleItem: '' })
+			this.lastViewedItem = viewableItems[0].key
+			this.VisibilityRefs[viewableItems[0].key]?.setVisible(true)
 		}
 	}
 
@@ -179,6 +189,8 @@ class Posts extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'no_auth') {
@@ -210,6 +222,8 @@ class Posts extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'already_reported') {
@@ -241,6 +255,8 @@ class Posts extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'no_post') {
 					screen.error(screen.language.no_post_error)
 				} else if (response.error === 'not_reported') {
@@ -261,6 +277,7 @@ class Posts extends React.PureComponent<Props, State> {
 		return (
 			<>
 				<FlatList
+					ref={this.props.flatlistRef}
 					data={this.props.posts}
 					keyExtractor={this._keyExtractor}
 					ItemSeparatorComponent={this._itemSeperatorComponent}

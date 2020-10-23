@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { View, StyleProp, ViewStyle } from 'react-native'
-import { Text, IconButton, ActivityIndicator, useTheme } from 'react-native-paper'
+import { Text, IconButton, ActivityIndicator, useTheme, withTheme } from 'react-native-paper'
 import Types from '../../Includes/Types/Types'
 import styles from './styles'
 
 interface Props {
+	theme: Types.Theme
 	type: 'like' | 'dislike' | 'resib'
 	active: boolean
 	count: number
@@ -12,43 +13,56 @@ interface Props {
 	onPress: () => Promise<void>
 
 	containerStyle?: StyleProp<ViewStyle>
+	small?: boolean
 }
 
-const LikeButton = (props: Props) => {
-	const theme: Types.Theme = useTheme() as any
-	const [loading, setLoading] = useState(false)
+interface State {
+	loading: boolean
+}
 
-	const _onPress = async () => {
-		if (!loading) {
-			setLoading(true)
-			await props.onPress()
-			setLoading(false)
+class LikeButton extends React.PureComponent<Props, State> {
+	constructor(props: Props) {
+		super(props)
+
+		this.state = {
+			loading: false,
 		}
 	}
 
-	return (
-		<View style={[styles.container, props.containerStyle]}>
-			{loading ? (
-				<ActivityIndicator size={22} color={theme.colors.main} style={styles.loading} />
-			) : (
-				<IconButton
-					icon={props.type == 'like' ? 'thumbs-up' : props.type == 'dislike' ? 'thumbs-down' : 'repeat'}
-					color={
-						props.active
-							? props.type == 'dislike'
-								? theme.colors.error
-								: props.type == 'resib'
-								? theme.colors.main
-								: theme.colors.success
-							: theme.colors.contrast
-					}
-					onPress={_onPress}
-					size={22}
-				/>
-			)}
-			<Text style={styles.count}>{props.count}</Text>
-		</View>
-	)
+	_onPress = async () => {
+		if (!this.state.loading) {
+			this.setState({ loading: true })
+			await this.props.onPress()
+			this.setState({ loading: false })
+		}
+	}
+
+	render() {
+		let { theme, type, small } = this.props
+		return (
+			<View style={[styles.container, this.props.containerStyle]}>
+				{this.state.loading ? (
+					<ActivityIndicator size={22} color={theme.colors.main} style={styles.loading} />
+				) : (
+					<IconButton
+						icon={type == 'like' ? 'thumbs-up' : type == 'dislike' ? 'thumbs-down' : 'repeat'}
+						color={
+							this.props.active
+								? type == 'dislike'
+									? theme.colors.error
+									: type == 'resib'
+									? theme.colors.main
+									: theme.colors.success
+								: theme.colors.contrast
+						}
+						onPress={this._onPress}
+						size={small ? 18 : 22}
+					/>
+				)}
+				<Text style={small ? styles.smallCount : styles.count}>{this.props.count}</Text>
+			</View>
+		)
+	}
 }
 
-export default React.memo(LikeButton)
+export default withTheme(LikeButton)

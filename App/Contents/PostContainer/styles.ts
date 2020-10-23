@@ -2,9 +2,8 @@ import { StyleSheet } from 'react-native'
 import Config from '../../Includes/Config'
 
 export default StyleSheet.create({
-    post: {
+	post: {
 		width: '100%',
-		marginTop: 10,
 	},
 	carouselContainer: {
 		position: 'relative',
@@ -29,5 +28,5 @@ export default StyleSheet.create({
 	},
 	inactiveDotStyle: {
 		marginHorizontal: 2,
-	}
+	},
 })

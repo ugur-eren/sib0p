@@ -3,20 +3,19 @@ import { View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { Text, withTheme, Divider, ActivityIndicator, Portal, Snackbar, Dialog, Button, Paragraph, List } from 'react-native-paper'
 import FastImage from 'react-native-fast-image'
 import Feather from 'react-native-vector-icons/Feather'
-import ImagePicker, { Image as ImageType } from 'react-native-image-crop-picker'
+import { Modalize } from 'react-native-modalize'
 import TextButton from '../../Components/TextButton/TextButton'
 import TransparentHeader from '../../Components/TransparentHeader/TransparentHeader'
-import Types from '../../Includes/Types/Types'
-import UserTypes from '../../Includes/Types/UserTypes'
-import styles from './styles'
-import Posts from '../../Contents/Posts/Posts'
-import Api from '../../Includes/Api'
-import PostTypes from '../../Includes/Types/PostTypes'
-import Loader from './Loader'
 import EmptyList from '../../Components/EmptyList/EmptyList'
 import Header from '../../Components/Header/Header'
+import Posts from '../../Contents/Posts/Posts'
+import Loader from './Loader'
+import Api from '../../Includes/Api'
+import Types from '../../Includes/Types/Types'
+import UserTypes from '../../Includes/Types/UserTypes'
 import UserTagTypes from '../../Includes/Types/UserTagTypes'
-import { Modalize } from 'react-native-modalize'
+import PostTypes from '../../Includes/Types/PostTypes'
+import styles from './styles'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -63,6 +62,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 		}
 	}
 
+	private newPageActive = false
 	private modalizeRef: any = null
 
 	componentDidMount() {
@@ -105,6 +105,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 					} else {
 						if (user.error === 'no_login') {
 							screen.logout(true)
+						} else if (user.error === 'too_fast_action') {
+							screen.error(screen.language.too_fast_action)
 						} else {
 							if (user.error === 'no_user') {
 								stateObject = { ...stateObject, noUser: true }
@@ -133,12 +135,16 @@ class UserProfile extends React.PureComponent<Props, State> {
 							posts: nextPage ? [...this.state.posts, ...posts.posts] : posts.posts,
 							currentTime: posts.currentTime,
 						}
-						screen.setProfileDataCache(stateObject.user, posts.posts)
+						if (!nextPage) {
+							screen.setProfileDataCache(stateObject.user, posts.posts)
+						}
 						screen.setCurrentTime(posts.currentTime)
 					}
 				} else {
 					if (posts.error === 'no_login') {
 						screen.logout(true)
+					} else if (posts.error === 'too_fast_action') {
+						screen.error(screen.language.too_fast_action)
 					} else {
 						screen.unknown_error(posts.error)
 					}
@@ -149,11 +155,15 @@ class UserProfile extends React.PureComponent<Props, State> {
 		}
 
 		stateObject = { ...stateObject, loading: false }
-		this.setState(stateObject)
+		this.setState(stateObject, () => {
+			if (nextPage) this.newPageActive = false
+		})
 	}
 
 	getNextPage = () => {
 		if (this.state.hasPage) {
+			if (this.newPageActive) return
+			this.newPageActive = true
 			return this.init(true, true)
 		}
 	}
@@ -210,6 +220,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username)
 				} else if (response.error === 'no_user') {
@@ -251,6 +263,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username_error)
 				} else if (response.error === 'no_user') {
@@ -284,6 +298,8 @@ class UserProfile extends React.PureComponent<Props, State> {
 			} else {
 				if (response.error === 'no_login') {
 					screen.logout(true)
+				} else if (response.error === 'too_fast_action') {
+					screen.error(screen.language.too_fast_action)
 				} else if (response.error === 'wrong_username') {
 					screen.error(screen.language.wrong_username)
 				} else if (response.error === 'no_user') {
@@ -311,6 +327,19 @@ class UserProfile extends React.PureComponent<Props, State> {
 		</View>
 	)
 
+	_viewBG = () => {
+		this.props.navigation.navigate("ImageViewer", {
+			image: this.state.user.backgroundPhoto,
+			title: this.state.user.username + ' ' + this.props.navigation.getScreenProps().language.background_photo
+		})
+	}
+	_viewPP = () => {
+		this.props.navigation.navigate("ImageViewer", {
+			image: this.state.user.profilePhoto,
+			title: this.state.user.username + ' ' + this.props.navigation.getScreenProps().language.profile_photo
+		})
+	}
+
 	_changePP = () => {
 		this._changePhoto('pp')
 	}
@@ -320,7 +349,9 @@ class UserProfile extends React.PureComponent<Props, State> {
 	_changePhoto = (type: 'pp' | 'bg') => {
 		let screen = this.props.navigation.getScreenProps()
 
-		ImagePicker.openPicker({
+		const ImagePicker = require('react-native-image-crop-picker')
+
+		ImagePicker.default.openPicker({
 			mediaType: 'photo',
 			multiple: false,
 			width: type === 'pp' ? 500 : 2520,
@@ -339,7 +370,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 		})
 			.then(async (images) => {
 				if (images) {
-					let im: ImageType = null
+					let im: any = null
 					if (images instanceof Array) {
 						if (images.length > 0) {
 							im = images[0]
@@ -409,7 +440,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 			<>
 				<View style={styles.backgroundContainer}>
 					<TouchableWithoutFeedback
-						onPress={isMyself ? this._changeBG : undefined}
+						onPress={isMyself ? this._changeBG : this._viewBG}
 						style={[styles.backgroundImage, { backgroundColor: 'red' }]}
 					>
 						<View style={styles.backgroundImage}>
@@ -433,7 +464,7 @@ class UserProfile extends React.PureComponent<Props, State> {
 				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
 					<View style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}>
 						<TouchableWithoutFeedback
-							onPress={isMyself ? this._changePP : undefined}
+							onPress={isMyself ? this._changePP : this._viewPP}
 							style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}
 						>
 							<View>

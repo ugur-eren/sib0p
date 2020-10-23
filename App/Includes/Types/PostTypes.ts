@@ -18,8 +18,9 @@ declare namespace PostTypes {
 		commentsCount: number
 		featuredComments: CommentTypes.Comment[]
 		isMine: boolean
-		postType: 'media' | 'poll' | 'resib' | 'message'
+		postType: 'media' | 'poll' | 'resib' | 'message' | 'adMob'
 		resibber?: UserTypes.TopContent
+		points?: number
 	}
 	
 	export interface PostData {

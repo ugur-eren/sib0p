@@ -3,6 +3,7 @@ import { View, Image, ScrollView, RefreshControl, ActivityIndicator } from 'reac
 import { withTheme, Text, Checkbox } from 'react-native-paper'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import FastImage from 'react-native-fast-image'
+import OneSignal from 'react-native-onesignal'
 import Button from '../../../Components/Button/Button'
 import Input from '../../../Components/Input/Input'
 import Api from '../../../Includes/Api'
@@ -141,6 +142,8 @@ class Register extends React.PureComponent<Props, State> {
 					username: register.username,
 				})
 
+				OneSignal.sendTag('token', register.notif_token)
+
 				this.props.navigation.getScreenProps().setUserData({
 					active: true,
 					token: register.token,
@@ -156,7 +159,7 @@ class Register extends React.PureComponent<Props, State> {
 				} else if (register.error == 'some_empty') {
 					this.props.navigation.getScreenProps().error(screen.language.some_empty)
 				} else if (register.error == 'username_in_use') {
-					this.props.navigation.getScreenProps().error(screen.language.email_in_use)
+					this.props.navigation.getScreenProps().error(screen.language.username_in_use)
 				} else if (register.error == 'username_not_allowed') {
 					this.props.navigation.getScreenProps().error(screen.language.username_not_allowed)
 				} else if (register.error == 'username_short') {
@@ -181,7 +184,7 @@ class Register extends React.PureComponent<Props, State> {
 	}
 
 	_onUsernameChange = (text: string) => {
-		this.setState({ username: text })
+		this.setState({ username: text.replace(/[^a-zA-Z0-9.\-_]/g, '') })
 	}
 	_onNameChange = (text: string) => {
 		this.setState({ name: text })
@@ -355,7 +358,12 @@ class Register extends React.PureComponent<Props, State> {
 						</View>
 
 						<View style={styles.bottomContainer}>
-							<Button label={screen.language.register} loading={true} containerStyle={styles.buttonContainer} onPress={this.onRegisterPress} />
+							<Button
+								label={screen.language.register}
+								loading={true}
+								containerStyle={styles.buttonContainer}
+								onPress={this.onRegisterPress}
+							/>
 							<TouchableOpacity onPress={this.navigateToLogin}>
 								<Text style={[styles.bottomText, { color: theme.colors.contrast }]}>
 									{screen.language.have_an_account}{' '}
