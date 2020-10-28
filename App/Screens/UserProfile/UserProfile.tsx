@@ -16,6 +16,7 @@ import UserTypes from '../../Includes/Types/UserTypes'
 import UserTagTypes from '../../Includes/Types/UserTagTypes'
 import PostTypes from '../../Includes/Types/PostTypes'
 import styles from './styles'
+import UserProfileHead from './UserProfileHead'
 
 interface Props {
 	navigation: Types.Navigation<{
@@ -170,14 +171,6 @@ class UserProfile extends React.PureComponent<Props, State> {
 
 	refresh = () => {
 		return this.init(true)
-	}
-
-	handleFollowsPress = () => {
-		this.props.navigation.push('Relations', { type: 'follows', username: this.state.user.username })
-	}
-
-	handleFollowersPress = () => {
-		this.props.navigation.push('Relations', { type: 'followers', username: this.state.user.username })
 	}
 
 	onSettingsPress = () => {
@@ -431,113 +424,14 @@ class UserProfile extends React.PureComponent<Props, State> {
 	}
 
 	_renderHeader = () => {
-		let { theme, navigation } = this.props
-		let screen = navigation.getScreenProps()
-		let myself = screen.user
-		let isMyself = this.state.loading === false && myself.username === this.state.user.username
-		let user = this.state.user
-
 		return (
-			<>
-				<View style={styles.backgroundContainer}>
-					<TouchableWithoutFeedback
-						onPress={isMyself ? this._changeBG : this._viewBG}
-						style={[styles.backgroundImage, { backgroundColor: 'red' }]}
-					>
-						<View style={styles.backgroundImage}>
-							<FastImage source={{ uri: user.backgroundPhoto }} resizeMode='cover' style={styles.backgroundImage} />
-
-							{this.state.bgLoading ? (
-								<View style={[styles.ppbgLoading, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
-									<ActivityIndicator size='small' color={theme.colors.main} />
-								</View>
-							) : (
-								<></>
-							)}
-						</View>
-					</TouchableWithoutFeedback>
-					<TransparentHeader
-						title={user.username}
-						onSettings={isMyself ? this.onSettingsPress : undefined}
-						onMore={isMyself ? undefined : this.openModalize}
-					/>
-
-					{isMyself ? (
-						<TouchableOpacity
-							style={[styles.sevapPoints, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}
-							onPress={this.openShop}
-						>
-							<Text style={{ color: theme.colors.main }}>Sevap Points: {user.sevapPoints || 0}</Text>
-							<IconButton icon='shopping-cart' color={theme.colors.main} size={16} />
-						</TouchableOpacity>
-					) : (
-						<></>
-					)}
-				</View>
-				<View style={[styles.topInfoContainer, { backgroundColor: theme.colors.surface }]}>
-					<View style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}>
-						<TouchableWithoutFeedback
-							onPress={isMyself ? this._changePP : this._viewPP}
-							style={[styles.profilePhotoContainer, { borderColor: this.props.theme.colors.main }]}
-						>
-							<View>
-								<FastImage source={{ uri: user.profilePhoto }} style={styles.profilePhoto} />
-
-								{this.state.ppLoading ? (
-									<View style={[styles.ppbgLoading, { backgroundColor: 'rgba(' + theme.colors.surfaceRgb + ', .75)' }]}>
-										<ActivityIndicator size='small' color={theme.colors.main} />
-									</View>
-								) : (
-									<></>
-								)}
-							</View>
-						</TouchableWithoutFeedback>
-					</View>
-
-					<View style={styles.userInfo}>
-						<Text style={styles.username}>{user.username}</Text>
-						<Text>{user.fullName}</Text>
-					</View>
-
-					<TextButton
-						loadable
-						label={isMyself ? screen.language.edit_profile : user.isFollowed ? screen.language.unfollow : screen.language.follow}
-						onPress={this.onFollow}
-						language={screen.language}
-					/>
-				</View>
-
-				{user.bio ? (
-					<View style={[styles.bio, { backgroundColor: theme.colors.surface }]}>
-						<Text>{user.bio}</Text>
-					</View>
-				) : (
-					<></>
-				)}
-
-				{this._renderUserTagsContainer()}
-
-				<View style={[styles.centerContainer, { backgroundColor: theme.colors.surface }]}>
-					<View style={styles.postsCount}>
-						<Text>{screen.language.posts}</Text>
-						<Text style={styles.centerText}>{user.postsCount}</Text>
-					</View>
-
-					<Divider style={styles.centerDivider} />
-
-					<TouchableOpacity onPress={this.handleFollowsPress} style={styles.centerTouchable}>
-						<Text>{screen.language.follows}</Text>
-						<Text style={styles.centerText}>{user.followsCount}</Text>
-					</TouchableOpacity>
-
-					<Divider style={styles.centerDivider} />
-
-					<TouchableOpacity onPress={this.handleFollowersPress} style={styles.centerTouchable}>
-						<Text>{screen.language.followers}</Text>
-						<Text style={styles.centerText}>{user.followersCount}</Text>
-					</TouchableOpacity>
-				</View>
-			</>
+			<UserProfileHead
+				navigation={this.props.navigation}
+				onFollow={this.onFollow}
+				openModalize={this.openModalize}
+				refresh={this.refresh}
+				user={this.state.user}
+			/>
 		)
 	}
 

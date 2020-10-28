@@ -10,6 +10,7 @@ declare namespace UserTypes {
 	}
 
 	export interface Profile {
+		user_id: number
 		username: string
 		fullName: string
 		bio: string

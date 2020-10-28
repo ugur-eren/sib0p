@@ -209,6 +209,8 @@ const Languages: Types.Languages = {
 		messages: 'Mesajlar',
 		could_not_connect_to_message_socket: 'Mesaj servisine bağlanılamadı',
 		your_message: 'Mesajınız..',
+		no_message_users: 'Hiç mesajınız yok, mesaj göndermek için bir kullanıcının profiline girerek mesaj gönder butonuna tıklayınız :).',
+		send_message: 'Mesaj Gönder',
 	},
 	en: {
 		code: 'en',
@@ -398,6 +400,8 @@ const Languages: Types.Languages = {
 		messages: 'Messages',
 		could_not_connect_to_message_socket: 'Could not connect to the message service',
 		your_message: 'Your Message..',
+		no_message_users: "You have no messages, go into a user's account and press send message button to send messages :)",
+		send_message: 'Send Message',
 	},
 	ru: {
 		code: 'ru',
@@ -586,6 +590,8 @@ const Languages: Types.Languages = {
 		messages: 'Сообщения',
 		could_not_connect_to_message_socket: 'Не удалось подключиться к службе сообщений',
 		your_message: 'Твое сообщение..',
+		no_message_users: 'У вас нет сообщений, войдите в учетную запись пользователя и нажмите кнопку отправки сообщения, чтобы отправить сообщение',
+		send_message: 'Отправить сообщение',
 	},
 	de: {
 		code: 'de',
@@ -775,6 +781,9 @@ const Languages: Types.Languages = {
 		messages: 'Mitteilungen',
 		could_not_connect_to_message_socket: 'Es konnte keine Verbindung zum Nachrichtendienst hergestellt werden',
 		your_message: 'Deine Nachricht..',
+		no_message_users:
+			'Sie haben keine Nachrichten, gehen in das Konto eines Benutzers und drücken die Schaltfläche Nachricht senden, um Nachrichten zu senden',
+		send_message: 'Nachricht senden',
 	},
 }
 

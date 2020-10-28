@@ -33,7 +33,7 @@ class TextButton extends React.PureComponent<Props, State> {
 			this.setState({ loading: true })
 			await this.props.onPress()
 			this.setState({ loading: false })
-		} else if (this.props.loadable) {
+		} else if (!this.props.loadable) {
 			this.props.onPress()
 		}
 	}

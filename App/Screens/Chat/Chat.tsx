@@ -4,6 +4,7 @@ import { withTheme } from 'react-native-paper'
 import { FlatList } from 'react-native-gesture-handler'
 import ChatUser from './ChatUser'
 import Header from '../../Components/Header/Header'
+import EmptyList from '../../Components/EmptyList/EmptyList'
 import Api from '../../Includes/Api'
 import Types from '../../Includes/Types/Types'
 import MessageTypes from '../../Includes/Types/MessageTypes'
@@ -141,6 +142,9 @@ class Chat extends React.PureComponent<Props, State> {
 
 	_renderItem = ({ item }: { item: MessageTypes.MessageUser }) => <ChatUser navigation={this.props.navigation} user={item} />
 	_keyExtractor = (item: MessageTypes.MessageUser) => item.username
+	_listEmptyComponent = () => (
+		<EmptyList image={require('../../Assets/Images/no-comments.png')} title={this.props.navigation.getScreenProps().language.no_message_users} />
+	)
 
 	onRefresh = () => {
 		return this.init(true)
@@ -170,6 +174,7 @@ class Chat extends React.PureComponent<Props, State> {
 						keyExtractor={this._keyExtractor}
 						refreshing={this.state.refreshing || this.state.loading}
 						refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.onRefresh} />}
+						ListEmptyComponent={this._listEmptyComponent}
 						// onEndReached={this.getNewPage}
 					/>
 				)}

@@ -319,6 +319,8 @@ declare namespace Types {
 		messages: string
 		could_not_connect_to_message_socket: string
 		your_message: string
+		no_message_users: string
+		send_message: string
 	}
 
 	export type SupportedLanguages = 'tr' | 'en' | 'ru' | 'de'
